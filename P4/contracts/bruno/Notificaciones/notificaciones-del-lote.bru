@@ -1,0 +1,19 @@
+meta {
+  name: Notificaciones del lote
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/notifications/batches/{{batchId}}
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenAuditor}}
+}
+
+docs {
+  Las genera el sistema al autorizar el lote, una por beneficiario valido.
+}

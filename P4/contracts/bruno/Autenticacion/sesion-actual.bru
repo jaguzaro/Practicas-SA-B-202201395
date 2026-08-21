@@ -1,0 +1,19 @@
+meta {
+  name: Sesion actual
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/me
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenMaker}}
+}
+
+docs {
+  Devuelve el sujeto y el rol del token vigente.
+}

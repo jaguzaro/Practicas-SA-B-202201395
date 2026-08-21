@@ -1,0 +1,27 @@
+type Approval {
+  id: Int!
+  batchId: Int!
+  status: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  steps: [ApprovalStep!]!
+}
+
+type ApprovalStep {
+  action: String!
+  actor: String!
+  actorRole: String!
+  comment: String
+  createdAt: DateTime!
+}
+
+"""Date with time (isoformat)"""
+scalar DateTime
+
+type Mutation {
+  registerStep(batchId: Int!, action: String!, comment: String = null): Approval!
+}
+
+type Query {
+  approval(batchId: Int!): Approval
+}

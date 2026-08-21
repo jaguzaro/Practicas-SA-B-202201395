@@ -1,0 +1,9 @@
+erDiagram
+    usuarios {
+        serial id PK
+        text nombre "cifrado con AES-GCM"
+        text correo UK "cifrado determinista para busqueda"
+        text password "cifrado con AES-GCM"
+        text rol "admin, maker, checker, authorizer, auditor"
+        timestamptz created_at
+    }

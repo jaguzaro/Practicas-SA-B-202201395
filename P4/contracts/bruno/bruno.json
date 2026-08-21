@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Practica 4 - Sistema de transacciones",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

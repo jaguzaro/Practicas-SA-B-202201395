@@ -1,0 +1,24 @@
+erDiagram
+    batches ||--o{ batch_transactions : contiene
+
+    batches {
+        serial id PK
+        text reference UK
+        text created_by "identificador del usuario"
+        text status "validated o rejected"
+        integer total_transactions
+        integer valid_transactions
+        numeric total_amount
+        timestamptz created_at
+    }
+
+    batch_transactions {
+        serial id PK
+        integer batch_id FK
+        text source_account
+        text target_account
+        text beneficiary
+        numeric amount
+        text status "valid o invalid"
+        text reason "regla que fallo"
+    }

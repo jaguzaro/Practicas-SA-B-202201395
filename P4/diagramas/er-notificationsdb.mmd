@@ -1,0 +1,10 @@
+erDiagram
+    notifications {
+        serial id PK
+        integer batch_id "referencia logica al lote"
+        text beneficiary
+        text target_account
+        numeric amount
+        text status "sent o failed"
+        timestamptz created_at
+    }

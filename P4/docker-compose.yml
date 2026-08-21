@@ -1,0 +1,136 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sa-postgres
+    environment:
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: sa
+      POSTGRES_DB: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sa -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - sa-net
+
+  auth-api:
+    build: ./services/auth-api
+    container_name: sa-auth-api
+    environment:
+      PORT: 4000
+      DATABASE_URL: postgresql://sa:sa@postgres:5432/authdb
+      JWT_SECRET: practica4-secreto-compartido
+      JWT_EXPIRATION: 60m
+      JWT_GRACE_PERIOD: 10m
+      AES_SECRET_KEY: 09c4d02d59b198be7f3247a8bf239cf8043247d0629da61a9c9ae262939d62f2
+      FRONTEND_ORIGIN: http://localhost:8000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - sa-net
+
+  authz-service:
+    build: ./services/authz-service
+    container_name: sa-authz-service
+    environment:
+      PORT: 4001
+      JWT_SECRET: practica4-secreto-compartido
+    networks:
+      - sa-net
+
+  transactions-service:
+    build: ./services/transactions-service
+    container_name: sa-transactions-service
+    environment:
+      PORT: 4002
+      DATABASE_URL: postgresql://sa:sa@postgres:5432/transactionsdb
+      JWT_SECRET: practica4-secreto-compartido
+      AUTHZ_SERVICE_URL: http://authz-service:4001
+      AUDIT_SERVICE_URL: http://audit-service:4005
+      MAX_TRANSACTION_AMOUNT: 50000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - sa-net
+
+  approvals-service:
+    build: ./services/approvals-service
+    container_name: sa-approvals-service
+    environment:
+      PORT: 4004
+      DATABASE_URL: postgresql://sa:sa@postgres:5432/approvalsdb
+      JWT_SECRET: practica4-secreto-compartido
+      AUTHZ_SERVICE_URL: http://authz-service:4001
+      AUDIT_SERVICE_URL: http://audit-service:4005
+      NOTIFICATIONS_SERVICE_URL: http://notifications-service:4003
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - sa-net
+
+  audit-service:
+    build: ./services/audit-service
+    container_name: sa-audit-service
+    environment:
+      PORT: 4005
+      DATABASE_URL: postgresql://sa:sa@postgres:5432/auditdb
+      JWT_SECRET: practica4-secreto-compartido
+      AUTHZ_SERVICE_URL: http://authz-service:4001
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - sa-net
+
+  notifications-service:
+    build: ./services/notifications-service
+    container_name: sa-notifications-service
+    environment:
+      PORT: 4003
+      DATABASE_URL: postgresql://sa:sa@postgres:5432/notificationsdb
+      JWT_SECRET: practica4-secreto-compartido
+      AUTHZ_SERVICE_URL: http://authz-service:4001
+      AUDIT_SERVICE_URL: http://audit-service:4005
+      TRANSACTIONS_SERVICE_URL: http://transactions-service:4002
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - sa-net
+
+  kong:
+    image: kong:3.9
+    container_name: sa-kong
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /kong/kong.yml
+      KONG_PROXY_LISTEN: 0.0.0.0:8000
+      KONG_ADMIN_LISTEN: 127.0.0.1:8001
+      KONG_LOG_LEVEL: notice
+    volumes:
+      - ./gateway/kong.yml:/kong/kong.yml:ro
+    ports:
+      - "8000:8000"
+    depends_on:
+      - auth-api
+      - authz-service
+      - transactions-service
+      - notifications-service
+      - approvals-service
+      - audit-service
+    networks:
+      - sa-net
+
+volumes:
+  pgdata:
+
+networks:
+  sa-net:
+    driver: bridge

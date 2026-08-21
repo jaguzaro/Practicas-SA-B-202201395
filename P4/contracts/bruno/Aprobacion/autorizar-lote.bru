@@ -1,0 +1,34 @@
+meta {
+  name: Autorizar lote
+  type: graphql
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/approvals/graphql
+  body: graphql
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenAuthorizer}}
+}
+
+body:graphql {
+  mutation AuthorizeBatch($batchId: Int!) {
+    registerStep(batchId: $batchId, action: "authorize") {
+      batchId
+      status
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "batchId": {{batchId}}
+  }
+}
+
+docs {
+  Tercer paso, lo ejecuta el authorizer y dispara las notificaciones.
+}

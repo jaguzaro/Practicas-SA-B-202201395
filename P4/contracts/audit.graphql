@@ -1,0 +1,17 @@
+type AuditEvent {
+  id: Int!
+  correlationId: String!
+  service: String!
+  action: String!
+  actor: String
+  batchId: Int
+  detail: String
+  createdAt: DateTime!
+}
+
+"""Date with time (isoformat)"""
+scalar DateTime
+
+type Query {
+  events(correlationId: String = null, service: String = null, batchId: Int = null): [AuditEvent!]!
+}

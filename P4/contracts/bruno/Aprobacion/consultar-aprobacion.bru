@@ -1,0 +1,37 @@
+meta {
+  name: Consultar aprobacion
+  type: graphql
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/approvals/graphql
+  body: graphql
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenChecker}}
+}
+
+body:graphql {
+  query BatchApproval($batchId: Int!) {
+    approval(batchId: $batchId) {
+      batchId
+      status
+      steps {
+        action
+        actor
+        actorRole
+        comment
+        createdAt
+      }
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "batchId": {{batchId}}
+  }
+}

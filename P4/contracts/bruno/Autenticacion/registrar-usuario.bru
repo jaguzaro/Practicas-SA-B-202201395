@@ -1,0 +1,28 @@
+meta {
+  name: Registrar usuario
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/register
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "nombre": "Usuario de prueba",
+    "correo": "prueba{{ts}}@sa.gt",
+    "password": "Clave123",
+    "rol": "maker"
+  }
+}
+
+docs {
+  Crea un usuario con sus datos cifrados en la base.
+}

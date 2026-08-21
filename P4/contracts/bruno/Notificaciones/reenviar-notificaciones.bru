@@ -1,0 +1,19 @@
+meta {
+  name: Reenviar notificaciones
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/notifications/batches/{{batchId}}
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenAuthorizer}}
+}
+
+docs {
+  Vuelve a generar el envio para el lote indicado.
+}

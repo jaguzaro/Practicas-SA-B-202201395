@@ -1,0 +1,20 @@
+erDiagram
+    approvals ||--o{ approval_steps : registra
+
+    approvals {
+        serial id PK
+        integer batch_id UK "referencia logica al lote"
+        text status "pending_review, pending_authorization, authorized, rejected"
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    approval_steps {
+        serial id PK
+        integer approval_id FK
+        text action "submit, review, authorize, reject"
+        text actor "identificador del usuario"
+        text actor_role
+        text comment
+        timestamptz created_at
+    }

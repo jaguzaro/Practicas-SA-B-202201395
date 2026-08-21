@@ -1,0 +1,38 @@
+meta {
+  name: Eventos del lote
+  type: graphql
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/audit/graphql
+  body: graphql
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenAuditor}}
+}
+
+body:graphql {
+  query BatchEvents($batchId: Int!) {
+    events(batchId: $batchId) {
+      service
+      action
+      actor
+      detail
+      correlationId
+      createdAt
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "batchId": {{batchId}}
+  }
+}
+
+docs {
+  Traza completa del lote a traves de todos los servicios.
+}

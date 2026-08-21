@@ -1,0 +1,26 @@
+meta {
+  name: Consultar permiso
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/authorize
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "token": "{{tokenAuditor}}",
+    "route": "audit"
+  }
+}
+
+docs {
+  Decide si un rol puede acceder a una ruta. Lo consumen los microservicios.
+}

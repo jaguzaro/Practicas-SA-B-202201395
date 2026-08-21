@@ -1,0 +1,35 @@
+meta {
+  name: Someter lote
+  type: graphql
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/approvals/graphql
+  body: graphql
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenMaker}}
+}
+
+body:graphql {
+  mutation SubmitBatch($batchId: Int!, $comment: String) {
+    registerStep(batchId: $batchId, action: "submit", comment: $comment) {
+      batchId
+      status
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "batchId": {{batchId}},
+    "comment": "lote listo para revision"
+  }
+}
+
+docs {
+  Primer paso del flujo, lo ejecuta el maker.
+}

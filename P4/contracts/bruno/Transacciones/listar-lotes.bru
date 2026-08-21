@@ -1,0 +1,15 @@
+meta {
+  name: Listar lotes
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/transactions/batches
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenMaker}}
+}

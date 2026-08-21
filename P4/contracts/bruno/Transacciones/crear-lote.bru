@@ -1,0 +1,50 @@
+meta {
+  name: Crear lote
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/transactions/batches
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenMaker}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "reference": "LOTE-{{ts}}",
+    "transactions": [
+      {
+        "sourceAccount": "1111111111",
+        "targetAccount": "2222222222",
+        "beneficiary": "Ana Perez",
+        "amount": 900
+      },
+      {
+        "sourceAccount": "1111111111",
+        "targetAccount": "3333333333",
+        "beneficiary": "Luis Gomez",
+        "amount": 1200
+      },
+      {
+        "sourceAccount": "1111111111",
+        "targetAccount": "4444444444",
+        "beneficiary": "Monto excedido",
+        "amount": 80000
+      }
+    ]
+  }
+}
+
+script:post-response {
+  bru.setVar("batchId", res.body.id);
+}
+
+docs {
+  Valida cada transaccion y guarda el lote con el resultado de la validacion.
+}

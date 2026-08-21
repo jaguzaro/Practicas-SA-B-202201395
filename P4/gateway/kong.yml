@@ -1,0 +1,60 @@
+_format_version: "3.0"
+
+services:
+  - name: auth-api
+    url: http://auth-api:4000
+    routes:
+      - name: auth-routes
+        strip_path: false
+        paths:
+          - /register
+          - /login
+          - /logout
+          - /me
+
+  - name: authz-service
+    url: http://authz-service:4001
+    routes:
+      - name: authz-routes
+        strip_path: false
+        paths:
+          - /authorize
+
+  - name: transactions-service
+    url: http://transactions-service:4002
+    routes:
+      - name: transactions-routes
+        strip_path: false
+        paths:
+          - /transactions
+
+  - name: notifications-service
+    url: http://notifications-service:4003
+    routes:
+      - name: notifications-routes
+        strip_path: false
+        paths:
+          - /notifications
+
+  - name: approvals-service
+    url: http://approvals-service:4004
+    routes:
+      - name: approvals-routes
+        strip_path: false
+        paths:
+          - /approvals
+
+  - name: audit-service
+    url: http://audit-service:4005
+    routes:
+      - name: audit-routes
+        strip_path: false
+        paths:
+          - /audit
+
+plugins:
+  - name: correlation-id
+    config:
+      header_name: x-correlation-id
+      generator: uuid
+      echo_downstream: true

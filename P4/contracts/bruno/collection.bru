@@ -1,0 +1,7 @@
+auth {
+  mode: none
+}
+
+script:pre-request {
+  bru.setVar("ts", Date.now());
+}

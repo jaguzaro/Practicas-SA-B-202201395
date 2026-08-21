@@ -1,0 +1,31 @@
+meta {
+  name: Eventos por servicio
+  type: graphql
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/audit/graphql
+  body: graphql
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenAuditor}}
+}
+
+body:graphql {
+  query ServiceEvents($service: String!) {
+    events(service: $service) {
+      action
+      batchId
+      detail
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "service": "approvals-service"
+  }
+}

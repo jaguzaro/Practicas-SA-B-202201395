@@ -1,0 +1,11 @@
+erDiagram
+    audit_events {
+        serial id PK
+        text correlation_id "identificador de la peticion"
+        text service "servicio que emitio el evento"
+        text action
+        text actor
+        integer batch_id "referencia logica al lote"
+        text detail
+        timestamptz created_at
+    }

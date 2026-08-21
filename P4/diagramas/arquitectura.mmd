@@ -1,0 +1,46 @@
+flowchart TB
+    cliente["Cliente"]
+    kong["API Gateway"]
+
+    subgraph microservicios["Microservicios"]
+        tx["Servicio de transacciones"]
+        ap["Servicio de aprobacion"]
+        nt["Servicio de notificaciones"]
+        au["Servicio de auditoria"]
+    end
+
+    subgraph identidad["Autenticacion y autorizacion"]
+        auth["Servicio de autenticacion"]
+        authz["Servicio de autorizacion"]
+    end
+
+    subgraph datos["Bases de datos, una por servicio"]
+        authdb[("authdb")]
+        txdb[("transactionsdb")]
+        apdb[("approvalsdb")]
+        ntdb[("notificationsdb")]
+        audb[("auditdb")]
+    end
+
+    cliente -->|"puerto 8000"| kong
+
+    kong --> auth
+    kong --> authz
+    kong --> tx
+    kong --> ap
+    kong --> nt
+    kong --> au
+
+    microservicios -.->|"valida rol y ruta"| authz
+
+    ap ==>|"lote autorizado"| nt
+    nt ==>|"detalle del lote"| tx
+    tx -->|"evento"| au
+    ap -->|"evento"| au
+    nt -->|"evento"| au
+
+    auth --> authdb
+    tx --> txdb
+    ap --> apdb
+    nt --> ntdb
+    au --> audb

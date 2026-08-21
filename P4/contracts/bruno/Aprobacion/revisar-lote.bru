@@ -1,0 +1,35 @@
+meta {
+  name: Revisar lote
+  type: graphql
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/approvals/graphql
+  body: graphql
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenChecker}}
+}
+
+body:graphql {
+  mutation ReviewBatch($batchId: Int!, $comment: String) {
+    registerStep(batchId: $batchId, action: "review", comment: $comment) {
+      batchId
+      status
+    }
+  }
+}
+
+body:graphql:vars {
+  {
+    "batchId": {{batchId}},
+    "comment": "revisado"
+  }
+}
+
+docs {
+  Segundo paso, lo ejecuta el checker.
+}

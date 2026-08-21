@@ -1,0 +1,615 @@
+{
+  "info": {
+    "name": "Practica 4 - Sistema de transacciones",
+    "description": "Contrato de los microservicios. Todas las peticiones pasan por el API Gateway en {{baseUrl}}.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "tokenMaker",
+      "value": ""
+    },
+    {
+      "key": "tokenChecker",
+      "value": ""
+    },
+    {
+      "key": "tokenAuthorizer",
+      "value": ""
+    },
+    {
+      "key": "tokenAuditor",
+      "value": ""
+    },
+    {
+      "key": "batchId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Autenticacion",
+      "item": [
+        {
+          "name": "Registrar usuario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "register"
+              ]
+            },
+            "description": "Crea un usuario con sus datos cifrados en la base.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Usuario de prueba\",\n  \"correo\": \"prueba{{$timestamp}}@sa.gt\",\n  \"password\": \"Clave123\",\n  \"rol\": \"maker\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login maker",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"maker@sa.gt\",\n  \"password\": \"Practica4\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"tokenMaker\", pm.response.json().token);",
+                  "pm.test(\"login exitoso\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login checker",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"checker@sa.gt\",\n  \"password\": \"Practica4\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"tokenChecker\", pm.response.json().token);",
+                  "pm.test(\"login exitoso\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login authorizer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"authorizer@sa.gt\",\n  \"password\": \"Practica4\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"tokenAuthorizer\", pm.response.json().token);",
+                  "pm.test(\"login exitoso\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login auditor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"auditor@sa.gt\",\n  \"password\": \"Practica4\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"tokenAuditor\", pm.response.json().token);",
+                  "pm.test(\"login exitoso\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sesion actual",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenMaker}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "me"
+              ]
+            },
+            "description": "Devuelve el sujeto y el rol del token vigente."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Autorizacion",
+      "item": [
+        {
+          "name": "Consultar permiso",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/authorize",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "authorize"
+              ]
+            },
+            "description": "Decide si un rol puede acceder a una ruta. Lo consumen los microservicios.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{tokenAuditor}}\",\n  \"route\": \"audit\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transacciones",
+      "item": [
+        {
+          "name": "Crear lote",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenMaker}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/transactions/batches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "transactions",
+                "batches"
+              ]
+            },
+            "description": "Valida cada transaccion y guarda el lote con el resultado de la validacion.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reference\": \"LOTE-{{$timestamp}}\",\n  \"transactions\": [\n    {\n      \"sourceAccount\": \"1111111111\",\n      \"targetAccount\": \"2222222222\",\n      \"beneficiary\": \"Ana Perez\",\n      \"amount\": 900\n    },\n    {\n      \"sourceAccount\": \"1111111111\",\n      \"targetAccount\": \"3333333333\",\n      \"beneficiary\": \"Luis Gomez\",\n      \"amount\": 1200\n    },\n    {\n      \"sourceAccount\": \"1111111111\",\n      \"targetAccount\": \"4444444444\",\n      \"beneficiary\": \"Monto excedido\",\n      \"amount\": 80000\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"batchId\", pm.response.json().id);",
+                  "pm.test(\"lote creado\", () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar lotes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenMaker}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/transactions/batches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "transactions",
+                "batches"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Detalle del lote",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenMaker}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/transactions/batches/{{batchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "transactions",
+                "batches",
+                "{{batchId}}"
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "Aprobacion",
+      "item": [
+        {
+          "name": "Someter lote",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenMaker}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/approvals/graphql",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "approvals",
+                "graphql"
+              ]
+            },
+            "description": "Primer paso del flujo, lo ejecuta el maker.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation { registerStep(batchId: {{batchId}}, action: \\\"submit\\\", comment: \\\"lote listo para revision\\\") { batchId status } }\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Revisar lote",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenChecker}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/approvals/graphql",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "approvals",
+                "graphql"
+              ]
+            },
+            "description": "Segundo paso, lo ejecuta el checker.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation { registerStep(batchId: {{batchId}}, action: \\\"review\\\", comment: \\\"revisado\\\") { batchId status } }\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Autorizar lote",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAuthorizer}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/approvals/graphql",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "approvals",
+                "graphql"
+              ]
+            },
+            "description": "Tercer paso, lo ejecuta el authorizer y dispara las notificaciones.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation { registerStep(batchId: {{batchId}}, action: \\\"authorize\\\") { batchId status } }\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Consultar aprobacion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenChecker}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/approvals/graphql",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "approvals",
+                "graphql"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"{ approval(batchId: {{batchId}}) { batchId status steps { action actor actorRole comment createdAt } } }\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notificaciones",
+      "item": [
+        {
+          "name": "Notificaciones del lote",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAuditor}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/batches/{{batchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications",
+                "batches",
+                "{{batchId}}"
+              ]
+            },
+            "description": "Las genera el sistema al autorizar el lote, una por beneficiario valido."
+          }
+        },
+        {
+          "name": "Reenviar notificaciones",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAuthorizer}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/batches/{{batchId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications",
+                "batches",
+                "{{batchId}}"
+              ]
+            },
+            "description": "Vuelve a generar el envio para el lote indicado."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auditoria",
+      "item": [
+        {
+          "name": "Eventos del lote",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAuditor}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/audit/graphql",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "audit",
+                "graphql"
+              ]
+            },
+            "description": "Traza completa del lote a traves de todos los servicios.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"{ events(batchId: {{batchId}}) { service action actor detail correlationId createdAt } }\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eventos por servicio",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{tokenAuditor}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/audit/graphql",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "audit",
+                "graphql"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"{ events(service: \\\"approvals-service\\\") { action batchId detail } }\"\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

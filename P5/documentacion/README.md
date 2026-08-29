@@ -1,6 +1,6 @@
 # Documentacion
 
-Los comandos reproducibles levantan la plataforma desde una maquina sin cluster y estan en comandos-reproducibles.md. La comparacion del tamano de las imagenes antes y despues de optimizarlas esta en tabla-imagenes.md. Las respuestas a las preguntas del enunciado estan en preguntas-teoricas.md. Los diagramas de arquitectura y de politicas de red estan en la carpeta diagramas.
+Los comandos reproducibles levantan la plataforma desde una maquina sin cluster y estan en comandos-reproducibles.md. La comparacion del tamano de las imagenes antes y despues de optimizarlas esta en tabla-imagenes.md. Las respuestas a las preguntas del enunciado estan en preguntas-teoricas.md. El diagrama de arquitectura esta en la carpeta diagramas.
 
 La carpeta evidencias reune la salida de las cinco comprobaciones que pide el enunciado. El archivo helm-history-rollback.txt muestra el historial del release con la reversion registrada, escalado-hpa.txt muestra al autoescalado agregando replicas bajo carga con el motivo que dio el controlador, persistencia.txt muestra que los datos siguen ahi despues de borrar el pod de la base, bloqueo-networkpolicy.txt muestra a un pod no autorizado quedandose sin acceso mientras el trafico legitimo pasa, y actualizacion-sin-downtime.txt muestra que ninguna de las peticiones lanzadas durante un upgrade fallo. En prueba-de-carga.txt estan las peticiones por segundo, la latencia p95 y la tasa de error.
 

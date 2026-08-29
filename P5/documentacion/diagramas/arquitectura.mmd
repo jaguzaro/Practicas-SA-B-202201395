@@ -1,55 +1,64 @@
 graph TB
-    subgraph externo["Fuera del cluster"]
-        cliente["Cliente HTTP"]
-        k6["k6 prueba de carga"]
+    subgraph externo["Externo al cluster"]
+        cliente["Consumidor de la API"]
+        generador["Generador de carga"]
     end
 
-    subgraph cluster["Cluster de Kubernetes"]
-        subgraph ingns["namespace ingress-nginx"]
-            controller["Ingress Controller NGINX"]
-        end
+    subgraph cluster["Interno al cluster"]
+        entrada["Punto de entrada HTTP"]
 
-        subgraph sap5["namespace sa-p5 creado por el chart"]
-            ingress["Ingress sa-platform<br/>host sa-p5.local"]
-            gateway["API Gateway Kong 3.9<br/>unica puerta de entrada"]
+        subgraph plataforma["Namespace de la plataforma"]
+            gateway["API Gateway"]
 
-            auth["auth-api<br/>TypeScript 4000"]
-            authz["authz-service<br/>TypeScript 4001"]
-            trans["transactions-service<br/>TypeScript 4002<br/>PRODUCTOR"]
-            audit["audit-service<br/>Python 4005<br/>CONSUMIDOR"]
+            subgraph servicios["Zona de servicios"]
+                autenticacion["Autenticacion"]
+                autorizacion["Autorizacion"]
+                transacciones["Transacciones<br/>productor"]
+                auditoria["Auditoria<br/>consumidor"]
+            end
 
-            broker[("RabbitMQ<br/>audit.events<br/>audit.summaries<br/>colas durables")]
-            db[("PostgreSQL<br/>StatefulSet + PVC<br/>authdb transactionsdb auditdb")]
+            subgraph datos["Zona de datos"]
+                broker[("Broker de mensajeria")]
+                basedatos[("Base de datos")]
+            end
 
-            cron1["CronJob registro<br/>cada 2 min"]
-            cron2["CronJob resumen<br/>cada 10 min"]
+            registro["Trabajo programado<br/>registro periodico"]
+            resumen["Trabajo programado<br/>resumen agregado"]
+
+            intruso["Componente sin autorizacion"]
         end
     end
 
-    cliente --> controller
-    k6 --> controller
-    controller --> ingress
-    ingress --> gateway
+    cliente --> entrada
+    generador --> entrada
+    entrada --> gateway
 
-    gateway -->|sincrono| auth
-    gateway -->|sincrono| authz
-    gateway -->|sincrono| trans
-    gateway -->|sincrono| audit
+    gateway --> autenticacion
+    gateway --> autorizacion
+    gateway --> transacciones
+    gateway --> auditoria
 
-    trans -->|sincrono| authz
-    audit -->|sincrono| authz
+    transacciones --> autorizacion
+    auditoria --> autorizacion
 
-    trans -.->|ASINCRONO<br/>publica evento| broker
-    broker -.->|ASINCRONO<br/>consume con ack manual| audit
+    autenticacion --> basedatos
+    transacciones --> basedatos
+    auditoria --> basedatos
+    registro --> basedatos
+    resumen --> basedatos
 
-    cron1 -->|inserta fecha GMT-6 + carne| db
-    cron2 -->|consulta ejecuciones| db
-    cron2 -.->|ASINCRONO<br/>publica resumen| broker
+    transacciones -.->|evento| broker
+    broker -.->|consumo con confirmacion| auditoria
+    resumen -.->|resumen| broker
 
-    auth --> db
-    trans --> db
-    audit --> db
+    intruso x--x servicios
+    intruso x--x datos
 
-    classDef asincrono stroke-dasharray: 5 5
-    classDef datos fill:#e8e8e8
-    class broker,db datos
+    nota["Limites de red<br/>Todo el trafico entrante esta denegado por defecto.<br/>Al gateway solo llega el punto de entrada.<br/>A cada servicio solo llegan quienes lo invocan.<br/>A la zona de datos solo llegan los servicios y trabajos autorizados.<br/>Linea continua flujo sincrono, linea punteada flujo asincrono."]
+
+    classDef almacen fill:#eeeeee,stroke:#555555
+    classDef bloqueado fill:#ffffff,stroke:#aa3333,stroke-dasharray: 4 3
+    classDef leyenda fill:#ffffff,stroke:#999999
+    class broker,basedatos almacen
+    class intruso bloqueado
+    class nota leyenda

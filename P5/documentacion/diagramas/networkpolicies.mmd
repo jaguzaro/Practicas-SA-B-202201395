@@ -1,0 +1,26 @@
+graph LR
+    subgraph politica["Modelo de aislamiento: negar por defecto, abrir lo necesario"]
+        direction TB
+
+        base["denegar-todo-por-defecto<br/>ningun pod acepta trafico entrante"]
+
+        subgraph permitido["Excepciones declaradas"]
+            direction TB
+            r1["gateway-desde-ingress<br/>gateway acepta solo desde<br/>el namespace ingress-nginx"]
+            r2["auth-api-solo-autorizados<br/>acepta solo desde gateway"]
+            r3["authz-service-solo-autorizados<br/>acepta desde gateway,<br/>transactions y audit"]
+            r4["transactions-service-solo-autorizados<br/>acepta solo desde gateway"]
+            r5["audit-service-solo-autorizados<br/>acepta desde gateway y transactions"]
+            r6["postgres-solo-autorizados<br/>acepta desde auth-api, transactions,<br/>audit y los dos cronjobs"]
+            r7["rabbitmq-solo-autorizados<br/>acepta desde transactions, audit<br/>y el cronjob de resumen"]
+        end
+
+        base --> permitido
+    end
+
+    intruso["Pod no autorizado<br/>dentro del mismo namespace"]
+    intruso -.->|BLOQUEADO| r6
+    intruso -.->|BLOQUEADO| r7
+    intruso -.->|BLOQUEADO| r2
+
+    nota["Requiere un CNI que implemente NetworkPolicy.<br/>El CNI por defecto de minikube las acepta y las ignora.<br/>Este cluster usa Calico."]

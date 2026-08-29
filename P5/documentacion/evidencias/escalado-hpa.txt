@@ -1,0 +1,29 @@
+Escalado por HPA bajo carga
+
+El autoescalado esta configurado entre dos y cinco replicas con un objetivo del setenta
+por ciento de uso de CPU, y se apoya en metrics-server.
+
+$ kubectl get hpa -n sa-p5
+NAME                   REFERENCE                         TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+audit-service          Deployment/audit-service          cpu: 20%/70%   2         5         3          4h1m
+auth-api               Deployment/auth-api               cpu: 10%/70%   2         5         2          4h1m
+authz-service          Deployment/authz-service          cpu: 10%/70%   2         5         2          4h1m
+gateway                Deployment/gateway                cpu: 17%/70%   2         5         2          4h1m
+transactions-service   Deployment/transactions-service   cpu: 10%/70%   2         5         2          4h1m
+
+Con dos generadores de carga golpeando el gateway la utilizacion sube por encima del
+objetivo y el controlador agrega replicas.
+
+  audit-service          14%/70%   replicas 2
+  audit-service          18%/70%   replicas 2
+  audit-service          84%/70%   replicas 2
+  audit-service          84%/70%   replicas 3
+
+El motivo queda registrado como evento del controlador.
+
+$ kubectl describe hpa audit-service -n sa-p5
+  Normal   SuccessfulRescale             4m8s                   horizontal-pod-autoscaler  New size: 3; reason: cpu resource utilization (percentage of request) above target
+
+En una corrida anterior con mayor concurrencia sostenida el gateway alcanzo cinco
+replicas y los cuatro microservicios llegaron a cuatro, y al cesar la carga los cinco
+regresaron al minimo de dos.

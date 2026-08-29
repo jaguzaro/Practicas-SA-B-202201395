@@ -1,0 +1,32 @@
+Historial de Helm con rollback
+
+El chart se publico en dos versiones, la 1.0.0 inicial y la 1.1.0 que incorpora la
+comunicacion asincrona. Para comprobar el rollback se cambio un valor de configuracion,
+se verifico dentro del pod y se revirtio.
+
+$ helm upgrade sa-platform charts/sa-platform ... --set auth-api.config.JWT_GRACE_PERIOD=20m
+  REVISION: 16
+
+$ kubectl exec -n sa-p5 deploy/auth-api -- printenv JWT_GRACE_PERIOD
+  20m
+
+$ helm rollback sa-platform 15
+  Rollback was a success! Happy Helming!
+
+$ kubectl exec -n sa-p5 deploy/auth-api -- printenv JWT_GRACE_PERIOD
+  10m
+
+El historial conserva cada revision y la reversion queda registrada como una nueva.
+
+$ helm history sa-platform
+REVISION	UPDATED                 	STATUS    	CHART            	APP VERSION	DESCRIPTION     
+9       	Fri Aug 28 19:19:14 2026	superseded	sa-platform-1.1.0	1.1.0      	Upgrade complete
+10      	Fri Aug 28 19:19:36 2026	superseded	sa-platform-1.1.0	1.1.0      	Upgrade complete
+11      	Fri Aug 28 19:19:48 2026	superseded	sa-platform-1.1.0	1.1.0      	Rollback to 9   
+12      	Fri Aug 28 19:40:50 2026	superseded	sa-platform-1.1.0	1.1.0      	Upgrade complete
+13      	Fri Aug 28 19:46:57 2026	superseded	sa-platform-1.1.0	1.1.0      	Upgrade complete
+14      	Fri Aug 28 19:56:38 2026	superseded	sa-platform-1.1.0	1.1.0      	Upgrade complete
+15      	Fri Aug 28 19:58:15 2026	superseded	sa-platform-1.1.0	1.1.0      	Upgrade complete
+16      	Fri Aug 28 22:48:52 2026	superseded	sa-platform-1.1.0	1.1.0      	Upgrade complete
+17      	Fri Aug 28 22:49:13 2026	superseded	sa-platform-1.1.0	1.1.0      	Rollback to 15  
+18      	Fri Aug 28 22:52:12 2026	deployed  	sa-platform-1.1.0	1.1.0      	Upgrade complete

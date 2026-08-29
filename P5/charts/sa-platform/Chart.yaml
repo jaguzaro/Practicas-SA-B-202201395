@@ -1,0 +1,26 @@
+apiVersion: v2
+name: sa-platform
+description: Plataforma de microservicios de la Practica 5 empaquetada como chart de Helm
+type: application
+version: 1.1.0
+appVersion: "1.1.0"
+
+dependencies:
+  - name: auth-api
+    version: 1.0.0
+  - name: authz-service
+    version: 1.0.0
+  - name: transactions-service
+    version: 1.0.0
+  - name: audit-service
+    version: 1.0.0
+  - name: gateway
+    version: 1.0.0
+  - name: postgresql
+    version: 18.8.13
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled
+  - name: rabbitmq
+    version: 16.0.14
+    repository: https://charts.bitnami.com/bitnami
+    condition: rabbitmq.enabled

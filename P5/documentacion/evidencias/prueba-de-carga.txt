@@ -1,0 +1,35 @@
+Resultados de la prueba de carga
+
+El script sube de veinte a ciento veinte usuarios virtuales en cuatro etapas y golpea
+tres rutas del gateway a traves del Ingress. Se ejecuta desde dentro del cluster para
+que el reenvio de puertos no sea el cuello de botella de la medicion.
+
+Peticiones por segundo   12433
+Latencia p95             13.19 ms
+Tasa de error            0.00 por ciento, 76 fallos de 4476021 peticiones
+
+Salida de k6.
+
+    █ TOTAL RESULTS 
+  
+      checks_total.......: 4476021 12433.03327/s
+      checks_succeeded...: 99.99%  4475945 out of 4476021
+      checks_failed......: 0.00%   76 out of 4476021
+  
+      ✗ login respondio
+        ↳  99% — ✓ 1491981 / ✗ 26
+      ✗ authorize respondio
+        ↳  99% — ✓ 1491970 / ✗ 37
+      ✗ transactions respondio
+        ↳  99% — ✓ 1491994 / ✗ 13
+  
+      HTTP
+      http_req_duration..............: avg=4.7ms   min=-357639ns med=1.28ms max=19.88s p(90)=5.55ms  p(95)=13.19ms
+        { expected_response:true }...: avg=4.69ms  min=-357639ns med=1.28ms max=19.88s p(90)=5.55ms  p(95)=13.18ms
+      http_req_failed................: 0.00%   76 out of 4476021
+      http_reqs......................: 4476021 12433.03327/s
+  
+      EXECUTION
+      iteration_duration.............: avg=16.82ms min=107.83µs  med=4.92ms max=35.34s p(90)=58.34ms p(95)=64.99ms
+
+La cifra corresponde a uno de los dos generadores que corrieron en paralelo.

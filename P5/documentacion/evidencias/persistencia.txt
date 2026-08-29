@@ -1,0 +1,44 @@
+Persistencia tras el borrado del pod de base de datos
+
+La base corre como StatefulSet con su volumen y su headless service.
+
+$ kubectl get statefulset postgres -n sa-p5
+NAME       READY   AGE
+postgres   1/1     3h55m
+
+$ kubectl get pvc data-postgres-0 -n sa-p5
+NAME              STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+data-postgres-0   Bound    pvc-e29fa429-1c03-4efd-b03b-c29eaea3e113   1Gi        RWO            standard       <unset>                 3h55m
+
+$ kubectl get svc postgres-hl -n sa-p5
+NAME          TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE
+postgres-hl   ClusterIP   None         <none>        5432/TCP   3h55m
+
+Antes de borrar el pod habia 117 registros insertados por el cronjob.
+
+identificador del pod    19d0d559-4aec-4d41-8b02-fe88ca2c23e2
+volumen del reclamo      pvc-e29fa429-1c03-4efd-b03b-c29eaea3e113
+
+$ kubectl delete pod postgres-0 -n sa-p5
+
+Despues de que el StatefulSet lo recreo el pod es otro y el volumen es el mismo.
+
+identificador del pod    c35bc959-4417-49a2-91df-26c4e53ab942
+volumen del reclamo      pvc-e29fa429-1c03-4efd-b03b-c29eaea3e113
+
+$ kubectl exec -n sa-p5 postgres-0 -- psql -U sa -d auditdb -c "SELECT count(*) FROM ejecuciones_cronjob"
+ count 
+-------
+   118
+(1 row)
+
+$ kubectl exec -n sa-p5 postgres-0 -- psql -U sa -d auditdb -c "SELECT carne, ejecutado_en FROM ejecuciones_cronjob ORDER BY id LIMIT 3"
+   carne   |         ejecutado_en          
+-----------+-------------------------------
+ 202201395 | 2026-08-29 00:58:35.926277+00
+ 202201395 | 2026-08-29 01:00:02.197618+00
+ 202201395 | 2026-08-29 01:02:03.504674+00
+(3 rows)
+
+
+Los registros anteriores al borrado siguen ahi.

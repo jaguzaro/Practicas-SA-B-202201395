@@ -1,0 +1,44 @@
+Bloqueo por NetworkPolicy
+
+Politicas creadas por el chart, con negacion por defecto y aperturas explicitas.
+
+$ kubectl get networkpolicy -n sa-p5
+NAME                                    POD-SELECTOR                        AGE
+audit-service-solo-autorizados          app=audit-service                   3h56m
+auth-api-solo-autorizados               app=auth-api                        3h56m
+authz-service-solo-autorizados          app=authz-service                   3h56m
+denegar-todo-por-defecto                <none>                              3h56m
+gateway-desde-ingress                   app=gateway                         3h56m
+postgres-solo-autorizados               app.kubernetes.io/name=postgresql   3h56m
+rabbitmq-solo-autorizados               app.kubernetes.io/name=rabbitmq     3h56m
+transactions-service-solo-autorizados   app=transactions-service            3h56m
+
+Ningun servicio se expone fuera del cluster.
+
+$ kubectl get svc -n sa-p5 -o custom-columns=NOMBRE:.metadata.name,TIPO:.spec.type
+NOMBRE                 TIPO
+audit-service          ClusterIP
+auth-api               ClusterIP
+authz-service          ClusterIP
+gateway                ClusterIP
+postgres               ClusterIP
+postgres-hl            ClusterIP
+rabbitmq               ClusterIP
+rabbitmq-headless      ClusterIP
+transactions-service   ClusterIP
+
+Desde un pod que no esta autorizado por ninguna politica.
+
+$ kubectl run intruso --rm -it --image=curlimages/curl -n sa-p5 --command -- sh
+
+  peticion a auth-api desde pod no autorizado, codigo 000
+  peticion a transactions-service desde pod no autorizado, codigo 000
+  conexion a postgres rechazada
+  conexion a rabbitmq rechazada
+
+El codigo 000 corresponde a un tiempo de espera agotado, no a una respuesta del servicio.
+
+Desde un servicio que si esta autorizado el trafico fluye con normalidad.
+
+  audit-service alcanza postgres en el puerto 5432
+  audit-service alcanza rabbitmq en el puerto 5672

@@ -1,0 +1,21 @@
+Actualizacion sin downtime
+
+Se lanzaron 150 peticiones continuas contra el Ingress mientras corria un helm upgrade
+que modificaba la configuracion de auth-api.
+
+$ helm upgrade sa-platform charts/sa-platform -f values-prod.yaml -f values-secrets.yaml \
+    --set auth-api.config.JWT_GRACE_PERIOD=20m
+  REVISION: 16
+
+$ kubectl rollout status deploy/auth-api -n sa-p5
+  deployment "auth-api" successfully rolled out
+
+Resultado de las peticiones lanzadas durante la actualizacion.
+
+  peticiones exitosas: 150
+  peticiones fallidas: 0
+
+La estrategia que lo hace posible prohibe apagar una replica antes de que la nueva este lista.
+
+$ kubectl get deploy auth-api -n sa-p5 -o jsonpath='{.spec.strategy}'
+{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}

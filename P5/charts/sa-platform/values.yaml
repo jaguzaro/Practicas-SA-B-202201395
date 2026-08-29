@@ -1,0 +1,233 @@
+global:
+  namespace: sa-p5
+  postgresHost: postgres
+  rabbitHost: rabbitmq
+  credentials:
+    dbUser: ""
+    dbPassword: ""
+    dbAdminPassword: ""
+    jwtSecret: ""
+    aesSecretKey: ""
+    rabbitUser: ""
+    rabbitPassword: ""
+
+auth-api:
+  replicaCount: 1
+  image:
+    repository: sa-auth-api
+    tag: 1.0.0
+  service:
+    port: 4000
+  logLevel: info
+  database: authdb
+  needsAesKey: true
+  config:
+    JWT_EXPIRATION: 60m
+    JWT_GRACE_PERIOD: 10m
+    FRONTEND_ORIGIN: http://localhost:8000
+
+authz-service:
+  replicaCount: 1
+  image:
+    repository: sa-authz-service
+    tag: 1.0.0
+  service:
+    port: 4001
+  logLevel: info
+  config: {}
+
+transactions-service:
+  replicaCount: 1
+  image:
+    repository: sa-transactions-service
+    tag: 1.0.0
+  service:
+    port: 4002
+  logLevel: info
+  database: transactionsdb
+  needsBroker: true
+  config:
+    AUTHZ_SERVICE_URL: http://authz-service:4001
+    AUDIT_SERVICE_URL: http://audit-service:4005
+    MAX_TRANSACTION_AMOUNT: "50000"
+    AUDIT_QUEUE: audit.events
+
+audit-service:
+  replicaCount: 1
+  securityContext:
+    runAsUser: 1001
+  image:
+    repository: sa-audit-service
+    tag: 1.0.0
+  service:
+    port: 4005
+  logLevel: info
+  database: auditdb
+  needsBroker: true
+  config:
+    AUTHZ_SERVICE_URL: http://authz-service:4001
+    AUDIT_QUEUE: audit.events
+    SUMMARY_QUEUE: audit.summaries
+
+gateway:
+  replicaCount: 1
+  image:
+    repository: kong
+    tag: "3.9"
+  service:
+    port: 8000
+  logLevel: notice
+  workerProcesses: 2
+  securityContext:
+    runAsUser: 1000
+  rbac:
+    configMapName: gateway-declarative
+  probes:
+    path: /status
+  routes:
+    - name: auth-api
+      upstream: auth-api
+      port: 4000
+      paths:
+        - /register
+        - /login
+        - /logout
+        - /me
+    - name: authz-service
+      upstream: authz-service
+      port: 4001
+      paths:
+        - /authorize
+    - name: transactions-service
+      upstream: transactions-service
+      port: 4002
+      paths:
+        - /transactions
+    - name: audit-service
+      upstream: audit-service
+      port: 4005
+      paths:
+        - /audit
+
+ingress:
+  className: nginx
+  host: sa-p5.local
+  path: /
+  controllerNamespace: ingress-nginx
+
+microservicios:
+  auth-api:
+    puerto: 4000
+    permitirDesde: [gateway]
+  authz-service:
+    puerto: 4001
+    permitirDesde: [gateway, transactions-service, audit-service]
+  transactions-service:
+    puerto: 4002
+    permitirDesde: [gateway]
+  audit-service:
+    puerto: 4005
+    permitirDesde: [gateway, transactions-service]
+
+accesoDatos:
+  postgres: [auth-api, transactions-service, audit-service, cronjob-registro, cronjob-resumen]
+  rabbitmq: [transactions-service, audit-service, cronjob-resumen]
+
+resourceQuota:
+  requestsCpu: "8"
+  requestsMemory: 10Gi
+  limitsCpu: "32"
+  limitsMemory: 24Gi
+  pods: "40"
+
+limitRange:
+  defaultRequestCpu: 50m
+  defaultRequestMemory: 64Mi
+  defaultLimitCpu: 300m
+  defaultLimitMemory: 256Mi
+  maxCpu: "2"
+  maxMemory: 2Gi
+
+cronjobs:
+  carne: "202201395"
+  database: auditdb
+  summaryQueue: audit.summaries
+  timeZone: America/Guatemala
+  runAsUser: 1001
+  backoffLimit: 3
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  image:
+    repository: sa-cronjobs
+    tag: 1.0.0
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 192Mi
+  trabajos:
+    cronjob-registro:
+      schedule: "*/2 * * * *"
+      script: registrar_ejecucion.py
+    cronjob-resumen:
+      schedule: "*/10 * * * *"
+      script: publicar_resumen.py
+
+postgresql:
+  enabled: true
+  fullnameOverride: postgres
+  namespaceOverride: sa-p5
+  auth:
+    username: ""
+    password: ""
+    postgresPassword: ""
+    database: postgres
+  primary:
+    networkPolicy:
+      enabled: false
+    persistence:
+      enabled: true
+      size: 1Gi
+    initdb:
+      scripts:
+        01-databases.sql: |
+          CREATE DATABASE authdb;
+          CREATE DATABASE transactionsdb;
+          CREATE DATABASE auditdb;
+    resources:
+      requests:
+        cpu: 100m
+        memory: 192Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+
+rabbitmq:
+  enabled: true
+  fullnameOverride: rabbitmq
+  namespaceOverride: sa-p5
+  networkPolicy:
+    enabled: false
+  global:
+    security:
+      allowInsecureImages: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/rabbitmq
+    tag: 4.1.3-debian-12-r1
+  auth:
+    username: ""
+    password: ""
+  persistence:
+    enabled: true
+    size: 1Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 640Mi

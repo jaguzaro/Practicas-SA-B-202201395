@@ -1,0 +1,55 @@
+graph TB
+    subgraph externo["Fuera del cluster"]
+        cliente["Cliente HTTP"]
+        k6["k6 prueba de carga"]
+    end
+
+    subgraph cluster["Cluster de Kubernetes"]
+        subgraph ingns["namespace ingress-nginx"]
+            controller["Ingress Controller NGINX"]
+        end
+
+        subgraph sap5["namespace sa-p5 creado por el chart"]
+            ingress["Ingress sa-platform<br/>host sa-p5.local"]
+            gateway["API Gateway Kong 3.9<br/>unica puerta de entrada"]
+
+            auth["auth-api<br/>TypeScript 4000"]
+            authz["authz-service<br/>TypeScript 4001"]
+            trans["transactions-service<br/>TypeScript 4002<br/>PRODUCTOR"]
+            audit["audit-service<br/>Python 4005<br/>CONSUMIDOR"]
+
+            broker[("RabbitMQ<br/>audit.events<br/>audit.summaries<br/>colas durables")]
+            db[("PostgreSQL<br/>StatefulSet + PVC<br/>authdb transactionsdb auditdb")]
+
+            cron1["CronJob registro<br/>cada 2 min"]
+            cron2["CronJob resumen<br/>cada 10 min"]
+        end
+    end
+
+    cliente --> controller
+    k6 --> controller
+    controller --> ingress
+    ingress --> gateway
+
+    gateway -->|sincrono| auth
+    gateway -->|sincrono| authz
+    gateway -->|sincrono| trans
+    gateway -->|sincrono| audit
+
+    trans -->|sincrono| authz
+    audit -->|sincrono| authz
+
+    trans -.->|ASINCRONO<br/>publica evento| broker
+    broker -.->|ASINCRONO<br/>consume con ack manual| audit
+
+    cron1 -->|inserta fecha GMT-6 + carne| db
+    cron2 -->|consulta ejecuciones| db
+    cron2 -.->|ASINCRONO<br/>publica resumen| broker
+
+    auth --> db
+    trans --> db
+    audit --> db
+
+    classDef asincrono stroke-dasharray: 5 5
+    classDef datos fill:#e8e8e8
+    class broker,db datos

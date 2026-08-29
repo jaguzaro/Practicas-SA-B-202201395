@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-declarative
+  namespace: {{ include "sa-platform.namespace" . }}
+  labels:
+    app: {{ .Chart.Name }}
+    {{- include "sa-platform.labels" . | nindent 4 }}
+data:
+  kong.yml: |
+    _format_version: "3.0"
+    services:
+    {{- range .Values.routes }}
+      - name: {{ .name }}
+        url: {{ printf "http://%s:%v" .upstream .port | quote }}
+        routes:
+          - name: {{ printf "%s-routes" .name }}
+            strip_path: false
+            paths:
+            {{- range .paths }}
+              - {{ . | quote }}
+            {{- end }}
+    {{- end }}
+    plugins:
+      - name: correlation-id
+        config:
+          header_name: x-correlation-id
+          generator: uuid
+          echo_downstream: true

@@ -1,0 +1,20 @@
+global:
+  credentials:
+    dbUser: usuario-de-ejemplo
+    dbPassword: clave-de-ejemplo-cambiar
+    dbAdminPassword: clave-admin-de-ejemplo-cambiar
+    jwtSecret: secreto-jwt-de-ejemplo-cambiar
+    aesSecretKey: 0000000000000000000000000000000000000000000000000000000000000000
+    rabbitUser: usuario-broker-de-ejemplo
+    rabbitPassword: clave-broker-de-ejemplo-cambiar
+
+postgresql:
+  auth:
+    username: usuario-de-ejemplo
+    password: clave-de-ejemplo-cambiar
+    postgresPassword: clave-admin-de-ejemplo-cambiar
+
+rabbitmq:
+  auth:
+    username: usuario-broker-de-ejemplo
+    password: clave-broker-de-ejemplo-cambiar

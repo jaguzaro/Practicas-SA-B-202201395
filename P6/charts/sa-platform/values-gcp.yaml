@@ -1,0 +1,140 @@
+global:
+  namespace: sa-p6
+
+ingress:
+  enabled: false
+  desdeInternet: true
+
+auth-api:
+  replicaCount: 1
+  logLevel: warn
+  image:
+    repository: us-central1-docker.pkg.dev/softwareavanz/sa-platform/auth-api
+    tag: 1.0.0
+    pullPolicy: IfNotPresent
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+  resources:
+    requests:
+      cpu: 15m
+      memory: 128Mi
+    limits:
+      cpu: 400m
+      memory: 320Mi
+
+authz-service:
+  replicaCount: 1
+  logLevel: warn
+  image:
+    repository: us-central1-docker.pkg.dev/softwareavanz/sa-platform/authz-service
+    tag: 1.0.0
+    pullPolicy: IfNotPresent
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+  resources:
+    requests:
+      cpu: 15m
+      memory: 128Mi
+    limits:
+      cpu: 400m
+      memory: 320Mi
+
+transactions-service:
+  replicaCount: 1
+  logLevel: warn
+  image:
+    repository: us-central1-docker.pkg.dev/softwareavanz/sa-platform/transactions-service
+    tag: 1.1.0
+    pullPolicy: IfNotPresent
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+  resources:
+    requests:
+      cpu: 15m
+      memory: 128Mi
+    limits:
+      cpu: 400m
+      memory: 320Mi
+
+audit-service:
+  replicaCount: 1
+  logLevel: warn
+  image:
+    repository: us-central1-docker.pkg.dev/softwareavanz/sa-platform/audit-service
+    tag: 1.1.0
+    pullPolicy: IfNotPresent
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+  resources:
+    requests:
+      cpu: 15m
+      memory: 160Mi
+    limits:
+      cpu: 400m
+      memory: 384Mi
+
+gateway:
+  replicaCount: 1
+  logLevel: notice
+  service:
+    type: LoadBalancer
+    port: 8000
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 3
+  resources:
+    requests:
+      cpu: 25m
+      memory: 192Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+cronjobs:
+  image:
+    repository: us-central1-docker.pkg.dev/softwareavanz/sa-platform/cronjobs
+    tag: 1.0.0
+    pullPolicy: IfNotPresent
+
+resourceQuota:
+  requestsCpu: "4"
+  requestsMemory: 6Gi
+  limitsCpu: "12"
+  limitsMemory: 10Gi
+  pods: "40"
+
+postgresql:
+  namespaceOverride: sa-p6
+  primary:
+    persistence:
+      storageClass: standard-rwo
+      size: 5Gi
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 640Mi
+
+rabbitmq:
+  namespaceOverride: sa-p6
+  persistence:
+    storageClass: standard-rwo
+    size: 5Gi
+  resources:
+    requests:
+      cpu: 50m
+      memory: 320Mi
+    limits:
+      cpu: 500m
+      memory: 768Mi

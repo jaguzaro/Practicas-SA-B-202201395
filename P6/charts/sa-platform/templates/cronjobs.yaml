@@ -1,0 +1,110 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cronjobs
+  namespace: {{ include "sa-platform.namespace" . }}
+  labels:
+    {{- include "sa-platform.labels" . | nindent 4 }}
+automountServiceAccountToken: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cronjobs
+  namespace: {{ include "sa-platform.namespace" . }}
+  labels:
+    {{- include "sa-platform.labels" . | nindent 4 }}
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cronjobs
+  namespace: {{ include "sa-platform.namespace" . }}
+  labels:
+    {{- include "sa-platform.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cronjobs
+subjects:
+  - kind: ServiceAccount
+    name: cronjobs
+    namespace: {{ include "sa-platform.namespace" . }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cronjobs-secret
+  namespace: {{ include "sa-platform.namespace" . }}
+  labels:
+    {{- include "sa-platform.labels" . | nindent 4 }}
+type: Opaque
+stringData:
+  DATABASE_URL: {{ include "sa-platform.databaseUrl" (dict "ctx" . "database" .Values.cronjobs.database) | quote }}
+  BROKER_URL: {{ include "sa-platform.brokerUrl" . | quote }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cronjobs-config
+  namespace: {{ include "sa-platform.namespace" . }}
+  labels:
+    {{- include "sa-platform.labels" . | nindent 4 }}
+data:
+  CARNE: {{ required "Debe indicar cronjobs.carne" .Values.cronjobs.carne | quote }}
+  SUMMARY_QUEUE: {{ .Values.cronjobs.summaryQueue | quote }}
+{{- range $nombre, $trabajo := .Values.cronjobs.trabajos }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ $nombre }}
+  namespace: {{ include "sa-platform.namespace" $ }}
+  labels:
+    app: {{ $nombre }}
+    {{- include "sa-platform.labels" $ | nindent 4 }}
+spec:
+  schedule: {{ $trabajo.schedule | quote }}
+  timeZone: {{ $.Values.cronjobs.timeZone | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: {{ $.Values.cronjobs.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ $.Values.cronjobs.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      backoffLimit: {{ $.Values.cronjobs.backoffLimit }}
+      template:
+        metadata:
+          labels:
+            app: {{ $nombre }}
+            {{- include "sa-platform.labels" $ | nindent 12 }}
+        spec:
+          restartPolicy: Never
+          serviceAccountName: cronjobs
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: {{ $.Values.cronjobs.runAsUser }}
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: {{ $nombre }}
+              image: {{ printf "%s:%s" (required "Debe indicar cronjobs.image.repository" $.Values.cronjobs.image.repository) (required "Debe indicar cronjobs.image.tag" $.Values.cronjobs.image.tag) | quote }}
+              imagePullPolicy: {{ $.Values.cronjobs.image.pullPolicy | default "IfNotPresent" | quote }}
+              command: ["python", {{ $trabajo.script | quote }}]
+              securityContext:
+                readOnlyRootFilesystem: true
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+              envFrom:
+                - configMapRef:
+                    name: cronjobs-config
+                - secretRef:
+                    name: cronjobs-secret
+              resources:
+                {{- toYaml $.Values.cronjobs.resources | nindent 16 }}
+{{- end }}

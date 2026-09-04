@@ -1,0 +1,72 @@
+auth-api:
+  replicaCount: 1
+  logLevel: debug
+  image:
+    tag: 1.0.0
+  autoscaling:
+    enabled: false
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 300m
+      memory: 256Mi
+
+authz-service:
+  replicaCount: 1
+  logLevel: debug
+  image:
+    tag: 1.0.0
+  autoscaling:
+    enabled: false
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 300m
+      memory: 256Mi
+
+transactions-service:
+  replicaCount: 1
+  logLevel: debug
+  image:
+    tag: 1.1.0
+  autoscaling:
+    enabled: false
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 300m
+      memory: 256Mi
+
+audit-service:
+  replicaCount: 1
+  logLevel: debug
+  image:
+    tag: 1.1.0
+  autoscaling:
+    enabled: false
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 300m
+      memory: 256Mi
+
+gateway:
+  replicaCount: 1
+  logLevel: debug
+  autoscaling:
+    enabled: false
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi

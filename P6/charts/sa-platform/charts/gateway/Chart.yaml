@@ -1,0 +1,6 @@
+apiVersion: v2
+name: gateway
+description: Subchart del componente gateway de la plataforma sa-platform
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

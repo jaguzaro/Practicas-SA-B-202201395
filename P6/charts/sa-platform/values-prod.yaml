@@ -1,0 +1,62 @@
+auth-api:
+  replicaCount: 2
+  logLevel: warn
+  image:
+    tag: 1.0.0
+  resources:
+    requests:
+      cpu: 25m
+      memory: 192Mi
+    limits:
+      cpu: 800m
+      memory: 512Mi
+
+authz-service:
+  replicaCount: 2
+  logLevel: warn
+  image:
+    tag: 1.0.0
+  resources:
+    requests:
+      cpu: 25m
+      memory: 192Mi
+    limits:
+      cpu: 800m
+      memory: 512Mi
+
+transactions-service:
+  replicaCount: 2
+  logLevel: warn
+  image:
+    tag: 1.1.0
+  resources:
+    requests:
+      cpu: 25m
+      memory: 192Mi
+    limits:
+      cpu: 800m
+      memory: 512Mi
+
+audit-service:
+  replicaCount: 2
+  logLevel: warn
+  image:
+    tag: 1.1.0
+  resources:
+    requests:
+      cpu: 25m
+      memory: 192Mi
+    limits:
+      cpu: 800m
+      memory: 512Mi
+
+gateway:
+  replicaCount: 2
+  logLevel: notice
+  resources:
+    requests:
+      cpu: 40m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 768Mi

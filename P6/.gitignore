@@ -1,0 +1,3 @@
+charts/sa-platform/values-secrets.yaml
+charts/sa-platform/charts/*.tgz
+charts/sa-platform/Chart.lock

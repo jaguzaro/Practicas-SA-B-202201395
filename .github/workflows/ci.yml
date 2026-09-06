@@ -5,8 +5,10 @@ on:
     branches:
       - feature/p7-gh-actions
 jobs:
-  first_job:
+  build:
     runs-on: ubuntu-latest
     steps:
       - run: echo Hello world!
-      - run: ls
+      - run: ls -la
+      - uses: actions/checkout@v7
+      - run: ls -la

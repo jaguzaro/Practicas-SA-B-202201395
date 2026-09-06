@@ -129,8 +129,15 @@ jobs:
             helm upgrade sa-platform ./P6/charts/sa-platform \
               -f ./P6/charts/sa-platform/values-gcp.yaml \
               --reuse-values \
+              --wait \
+              --timeout 10m \
+              --set auth-api.image.repository=ghcr.io/jaguzaro/auth-api \
               --set auth-api.image.tag=${{ github.sha }} \
+              --set authz-service.image.repository=ghcr.io/jaguzaro/authz-service \
               --set authz-service.image.tag=${{ github.sha }} \
+              --set transactions-service.image.repository=ghcr.io/jaguzaro/transactions-service \
               --set transactions-service.image.tag=${{ github.sha }} \
+              --set audit-service.image.repository=ghcr.io/jaguzaro/audit-service \
               --set audit-service.image.tag=${{ github.sha }} \
+              --set cronjobs.image.repository=ghcr.io/jaguzaro/cronjobs \
               --set cronjobs.image.tag=${{ github.sha }}

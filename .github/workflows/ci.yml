@@ -52,6 +52,19 @@ jobs:
   publish_docker:
     needs: [build, build_python]
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - image: auth-api
+            context: ./P5/services/auth-api
+          - image: authz-service
+            context: ./P5/services/authz-service
+          - image: transactions-service
+            context: ./P5/services/transactions-service
+          - image: audit-service
+            context: ./P5/services/audit-service
+          - image: cronjobs
+            context: ./P5/scripts/cronjobs
     permissions:
       contents: read
       packages: write
@@ -63,7 +76,7 @@ jobs:
         uses: docker/login-action@v4
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker buildx
@@ -72,7 +85,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
-          context: ./P5/services/auth-api
+          context: ${{ matrix.context }}
           push: true
-          tags: 'ghcr.io/${{ github.actor }}/auth-api:${{ github.sha }}'
+          tags: 'ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}:${{ github.sha }}'
           platforms: linux/amd64

@@ -26,3 +26,17 @@ jobs:
       - name: Compile
         run: npm run build
         working-directory: ./P5/services/${{ matrix.service }}
+  build_python:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup python version
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - name: Dependencies install
+        run: pip install -r requirements.txt
+        working-directory: ./P5/services/audit-service

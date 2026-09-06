@@ -6,10 +6,10 @@ on:
       - feature/p7-gh-actions
 jobs:
   build:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         service: [auth-api, authz-service, transactions-service]
-    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -26,6 +26,11 @@ jobs:
       - name: Compile
         run: npm run build
         working-directory: ./P5/services/${{ matrix.service }}
+
+      - name: Test
+        run: node --test
+        working-directory: ./P5/services/${{ matrix.service }}
+
   build_python:
     runs-on: ubuntu-latest
     steps:
@@ -38,5 +43,9 @@ jobs:
           python-version: '3.12'
 
       - name: Dependencies install
-        run: pip install -r requirements.txt
+        run: pip install -r requirements.txt && pip install -r requirements-dev.txt
+        working-directory: ./P5/services/audit-service
+
+      - name: Test
+        run: pytest
         working-directory: ./P5/services/audit-service

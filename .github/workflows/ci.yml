@@ -7,7 +7,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: false
     strategy:
       matrix:
         service: [auth-api, authz-service, transactions-service]
@@ -33,7 +32,6 @@ jobs:
         working-directory: ./P5/services/${{ matrix.service }}
 
   build_python:
-    if: false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -52,7 +50,6 @@ jobs:
         run: pytest
         working-directory: ./P5/services/audit-service
   publish_docker:
-    if: false
     needs: [build, build_python]
     runs-on: ubuntu-latest
     strategy:
@@ -93,6 +90,7 @@ jobs:
           tags: 'ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}:${{ github.sha }}'
           platforms: linux/amd64
   deploy:
+    needs: publish_docker
     permissions:
       id-token: write
       contents: read
@@ -116,3 +114,23 @@ jobs:
 
       - name: Get pods
         run: 'kubectl get nodes'
+
+      - name: Set up helm
+        uses: azure/setup-helm@v5
+
+      - name: Add bitnami repository
+        run: 'helm repo add bitnami https://charts.bitnami.com/bitnami'
+
+      - name: Resolve dependencies
+        run: 'helm dependency update ./P6/charts/sa-platform'
+
+      - name: Upgrade images
+        run: |
+            helm upgrade sa-platform ./P6/charts/sa-platform \
+              -f ./P6/charts/sa-platform/values-gcp.yaml \
+              --reuse-values \
+              --set auth-api.image.tag=${{ github.sha }} \
+              --set authz-service.image.tag=${{ github.sha }} \
+              --set transactions-service.image.tag=${{ github.sha }} \
+              --set audit-service.image.tag=${{ github.sha }} \
+              --set cronjobs.image.tag=${{ github.sha }}

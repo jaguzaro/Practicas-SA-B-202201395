@@ -6,6 +6,9 @@ on:
       - feature/p7-gh-actions
 jobs:
   build:
+    strategy:
+      matrix:
+        service: [auth-api, authz-service, transactions-service]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -18,8 +21,8 @@ jobs:
 
       - name: Dependencies install
         run: npm i
-        working-directory: ./P5/services/auth-api
+        working-directory: ./P5/services/${{ matrix.service }}
 
-      - name: Compilar
+      - name: Compile
         run: npm run build
-        working-directory: ./P5/services/auth-api
+        working-directory: ./P5/services/${{ matrix.service }}

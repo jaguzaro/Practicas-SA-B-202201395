@@ -1,0 +1,11 @@
+name: Test-CI
+run-name: Test CI
+on:
+  push:
+    branches:
+      - feature/p7-gh-actions
+jobs:
+  first_job:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo Hello world!

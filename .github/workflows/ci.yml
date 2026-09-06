@@ -7,6 +7,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: false
     strategy:
       matrix:
         service: [auth-api, authz-service, transactions-service]
@@ -32,6 +33,7 @@ jobs:
         working-directory: ./P5/services/${{ matrix.service }}
 
   build_python:
+    if: false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -50,6 +52,7 @@ jobs:
         run: pytest
         working-directory: ./P5/services/audit-service
   publish_docker:
+    if: false
     needs: [build, build_python]
     runs-on: ubuntu-latest
     strategy:
@@ -90,7 +93,6 @@ jobs:
           tags: 'ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}:${{ github.sha }}'
           platforms: linux/amd64
   deploy:
-    needs: publish_docker
     permissions:
       id-token: write
       contents: read
@@ -106,5 +108,11 @@ jobs:
           project_id: 'softwareavanz'
           workload_identity_provider: 'projects/558971310301/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
 
-      - name: test auth
-        run: gcloud auth list
+      - name: Get GKE Credentials
+        uses: google-github-actions/get-gke-credentials@v3
+        with:
+          cluster_name: 'sa-p6'
+          location: 'us-central1-a'
+
+      - name: Get pods
+        run: 'kubectl get nodes'

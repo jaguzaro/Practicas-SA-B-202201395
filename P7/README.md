@@ -97,8 +97,6 @@ Las pruebas cubren logica pura. En transacciones, las cuatro reglas de validacio
 
 Las capturas de las ejecuciones estan en evidencias.md.
 
-## Preguntas teoricas
-
 ### Que es la integracion continua y que problema resuelve
 
 Es integrar los cambios al repositorio compartido con frecuencia y validar cada integracion automaticamente compilando y probando. Resuelve la integracion tardia, donde los cambios se acumulan en ramas separadas y al juntarlos aparecen conflictos que nadie sabe atribuir. Al integrar seguido cada conflicto es pequeno y reciente, y un cambio que rompe algo se detecta cuando todavia es barato arreglarlo.

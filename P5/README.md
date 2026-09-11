@@ -90,4 +90,4 @@ Ese resultado costo un ajuste de dimensionamiento, porque el autoescalado mide e
 
 ## Documentacion y evidencias
 
-En la carpeta de documentacion estan el diagrama de arquitectura, que distingue lo interno y lo externo al cluster y marca los flujos asincronos, el diagrama de las politicas de red con los limites que imponen, la lista completa de comandos para levantar el entorno desde cero, la tabla comparativa del tamano de las imagenes, las respuestas a las preguntas teoricas y la salida real de cada prueba capturada en el momento en que se ejecuto.
+En la carpeta de documentacion estan el diagrama de arquitectura, que distingue lo interno y lo externo al cluster, separa los flujos sincronos de los asincronos y marca los limites que imponen las politicas de red, la lista completa de comandos para levantar el entorno desde cero, la tabla comparativa del tamano de las imagenes, las respuestas a las preguntas teoricas y la salida real de cada prueba capturada en el momento en que se ejecuto.

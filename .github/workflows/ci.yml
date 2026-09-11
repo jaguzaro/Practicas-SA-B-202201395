@@ -1,0 +1,198 @@
+name: CI/CD Plataforma
+run-name: ${{ github.ref_type == 'tag' && format('Despliegue {0}', github.ref_name) || format('Integracion {0}', github.ref_name) }}
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+    tags:
+      - 'v*'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [auth-api, authz-service, transactions-service]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup node version
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Dependencies install
+        run: npm i
+        working-directory: ./P5/services/${{ matrix.service }}
+
+      - name: Compile
+        run: npm run build
+        working-directory: ./P5/services/${{ matrix.service }}
+
+      - name: Upload compiled output
+        uses: actions/upload-artifact@v7
+        with:
+          name: dist-${{ matrix.service }}
+          path: ./P5/services/${{ matrix.service }}/dist
+
+  build_python:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup python version
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - name: Dependencies install
+        run: pip install -r requirements.txt
+        working-directory: ./P5/services/audit-service
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [auth-api, authz-service, transactions-service]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup node version
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Dependencies install
+        run: npm i
+        working-directory: ./P5/services/${{ matrix.service }}
+
+      - name: Download compiled output
+        uses: actions/download-artifact@v8
+        with:
+          name: dist-${{ matrix.service }}
+          path: ./P5/services/${{ matrix.service }}/dist
+
+      - name: Run tests
+        run: npm test
+        working-directory: ./P5/services/${{ matrix.service }}
+
+  test_python:
+    needs: build_python
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup python version
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - name: Dependencies install
+        run: pip install -r requirements.txt -r requirements-dev.txt
+        working-directory: ./P5/services/audit-service
+
+      - name: Run tests
+        run: pytest
+        working-directory: ./P5/services/audit-service
+
+  publish_docker:
+    needs: [test, test_python]
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - image: auth-api
+            context: ./P5/services/auth-api
+          - image: authz-service
+            context: ./P5/services/authz-service
+          - image: transactions-service
+            context: ./P5/services/transactions-service
+          - image: audit-service
+            context: ./P5/services/audit-service
+          - image: cronjobs
+            context: ./P5/scripts/cronjobs
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Login to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build and push
+        uses: docker/build-push-action@v7
+        with:
+          context: ${{ matrix.context }}
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}:${{ github.sha }}
+            ${{ github.ref_type == 'tag' && format('ghcr.io/{0}/{1}:{2}', github.repository_owner, matrix.image, github.ref_name) || '' }}
+          platforms: linux/amd64
+  deploy:
+    needs: publish_docker
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      id-token: write
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Auth GCP
+        uses: google-github-actions/auth@v3
+        with:
+          service_account: github-actions-deploy@softwareavanz.iam.gserviceaccount.com
+          project_id: 'softwareavanz'
+          workload_identity_provider: 'projects/558971310301/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
+
+      - name: Get GKE Credentials
+        uses: google-github-actions/get-gke-credentials@v3
+        with:
+          cluster_name: 'sa-p6'
+          location: 'us-central1-a'
+
+      - name: Verify cluster access
+        run: 'kubectl get nodes'
+
+      - name: Set up helm
+        uses: azure/setup-helm@v5
+
+      - name: Add bitnami repository
+        run: 'helm repo add bitnami https://charts.bitnami.com/bitnami'
+
+      - name: Resolve dependencies
+        run: 'helm dependency update ./P6/charts/sa-platform'
+
+      - name: Upgrade images
+        run: |
+            helm upgrade sa-platform ./P6/charts/sa-platform \
+              -f ./P6/charts/sa-platform/values-gcp.yaml \
+              --reuse-values \
+              --wait \
+              --timeout 10m \
+              --set auth-api.image.repository=ghcr.io/jaguzaro/auth-api \
+              --set auth-api.image.tag=${{ github.sha }} \
+              --set authz-service.image.repository=ghcr.io/jaguzaro/authz-service \
+              --set authz-service.image.tag=${{ github.sha }} \
+              --set transactions-service.image.repository=ghcr.io/jaguzaro/transactions-service \
+              --set transactions-service.image.tag=${{ github.sha }} \
+              --set audit-service.image.repository=ghcr.io/jaguzaro/audit-service \
+              --set audit-service.image.tag=${{ github.sha }} \
+              --set cronjobs.image.repository=ghcr.io/jaguzaro/cronjobs \
+              --set cronjobs.image.tag=${{ github.sha }}

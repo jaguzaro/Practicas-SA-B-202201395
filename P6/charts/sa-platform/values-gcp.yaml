@@ -9,7 +9,7 @@ auth-api:
   replicaCount: 1
   logLevel: warn
   image:
-    repository: us-central1-docker.pkg.dev/softwareavanz/sa-platform/auth-api
+    repository: ghcr.io/jaguzaro/auth-api
     tag: 1.0.0
     pullPolicy: IfNotPresent
   autoscaling:
@@ -28,7 +28,7 @@ authz-service:
   replicaCount: 1
   logLevel: warn
   image:
-    repository: us-central1-docker.pkg.dev/softwareavanz/sa-platform/authz-service
+    repository: ghcr.io/jaguzaro/authz-service
     tag: 1.0.0
     pullPolicy: IfNotPresent
   autoscaling:
@@ -47,7 +47,7 @@ transactions-service:
   replicaCount: 1
   logLevel: warn
   image:
-    repository: us-central1-docker.pkg.dev/softwareavanz/sa-platform/transactions-service
+    repository: ghcr.io/jaguzaro/transactions-service
     tag: 1.1.0
     pullPolicy: IfNotPresent
   autoscaling:
@@ -66,7 +66,7 @@ audit-service:
   replicaCount: 1
   logLevel: warn
   image:
-    repository: us-central1-docker.pkg.dev/softwareavanz/sa-platform/audit-service
+    repository: ghcr.io/jaguzaro/audit-service
     tag: 1.1.0
     pullPolicy: IfNotPresent
   autoscaling:
@@ -101,7 +101,7 @@ gateway:
 
 cronjobs:
   image:
-    repository: us-central1-docker.pkg.dev/softwareavanz/sa-platform/cronjobs
+    repository: ghcr.io/jaguzaro/cronjobs
     tag: 1.0.0
     pullPolicy: IfNotPresent
 

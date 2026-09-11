@@ -76,6 +76,7 @@ spec:
   jobTemplate:
     spec:
       backoffLimit: {{ $.Values.cronjobs.backoffLimit }}
+      ttlSecondsAfterFinished: {{ $.Values.cronjobs.ttlSecondsAfterFinished }}
       template:
         metadata:
           labels:

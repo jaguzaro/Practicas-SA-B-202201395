@@ -157,6 +157,7 @@ cronjobs:
   timeZone: America/Guatemala
   runAsUser: 1001
   backoffLimit: 3
+  ttlSecondsAfterFinished: 300
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   image:

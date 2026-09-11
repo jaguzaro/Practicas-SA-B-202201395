@@ -1,9 +1,12 @@
-name: Test-CI
-run-name: Test CI
+name: CI/CD Plataforma
+run-name: ${{ github.ref_type == 'tag' && format('Despliegue {0}', github.ref_name) || format('Integracion {0}', github.ref_name) }}
 on:
   push:
     branches:
-      - feature/p7-gh-actions
+      - main
+      - 'feature/**'
+    tags:
+      - 'v*'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,9 +30,11 @@ jobs:
         run: npm run build
         working-directory: ./P5/services/${{ matrix.service }}
 
-      - name: Test
-        run: node --test
-        working-directory: ./P5/services/${{ matrix.service }}
+      - name: Upload compiled output
+        uses: actions/upload-artifact@v7
+        with:
+          name: dist-${{ matrix.service }}
+          path: ./P5/services/${{ matrix.service }}/dist
 
   build_python:
     runs-on: ubuntu-latest
@@ -43,14 +48,61 @@ jobs:
           python-version: '3.12'
 
       - name: Dependencies install
-        run: pip install -r requirements.txt && pip install -r requirements-dev.txt
+        run: pip install -r requirements.txt
         working-directory: ./P5/services/audit-service
 
-      - name: Test
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [auth-api, authz-service, transactions-service]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup node version
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Dependencies install
+        run: npm i
+        working-directory: ./P5/services/${{ matrix.service }}
+
+      - name: Download compiled output
+        uses: actions/download-artifact@v8
+        with:
+          name: dist-${{ matrix.service }}
+          path: ./P5/services/${{ matrix.service }}/dist
+
+      - name: Run tests
+        run: npm test
+        working-directory: ./P5/services/${{ matrix.service }}
+
+  test_python:
+    needs: build_python
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup python version
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - name: Dependencies install
+        run: pip install -r requirements.txt -r requirements-dev.txt
+        working-directory: ./P5/services/audit-service
+
+      - name: Run tests
         run: pytest
         working-directory: ./P5/services/audit-service
+
   publish_docker:
-    needs: [build, build_python]
+    needs: [test, test_python]
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -87,10 +139,13 @@ jobs:
         with:
           context: ${{ matrix.context }}
           push: true
-          tags: 'ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}:${{ github.sha }}'
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}:${{ github.sha }}
+            ${{ github.ref_type == 'tag' && format('ghcr.io/{0}/{1}:{2}', github.repository_owner, matrix.image, github.ref_name) || '' }}
           platforms: linux/amd64
   deploy:
     needs: publish_docker
+    if: startsWith(github.ref, 'refs/tags/v')
     permissions:
       id-token: write
       contents: read
@@ -112,7 +167,7 @@ jobs:
           cluster_name: 'sa-p6'
           location: 'us-central1-a'
 
-      - name: Get pods
+      - name: Verify cluster access
         run: 'kubectl get nodes'
 
       - name: Set up helm

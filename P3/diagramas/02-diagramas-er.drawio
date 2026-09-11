@@ -1,0 +1,159 @@
+<mxfile host="app.diagrams.net" pages="5">
+  <diagram id="er-transacciones" name="ER — Transacciones">
+    <mxGraphModel dx="774" dy="584" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="t1" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontStyle=1;" value="Servicio de Transacciones" vertex="1">
+          <mxGeometry height="30" width="900" x="60" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="arch" parent="1" style="swimlane;html=1;rounded=0;startSize=26;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;swimlaneFillColor=#ffffff;" value="archivos_csv" vertex="1">
+          <mxGeometry height="150" width="240" x="60" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="archA" parent="arch" style="text;html=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=11;fontStyle=0;" value="PK id&#xa;nombre_original&#xa;ruta_storage&#xa;hash_sha256&#xa;tamano_bytes&#xa;subido_por&#xa;fecha_subida" vertex="1">
+          <mxGeometry height="124" width="240" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="lot" parent="1" style="swimlane;html=1;rounded=0;startSize=26;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;swimlaneFillColor=#ffffff;" value="lotes" vertex="1">
+          <mxGeometry height="200" width="240" x="400" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="lotA" parent="lot" style="text;html=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=11;fontStyle=0;" value="PK id&#xa;FK archivo_id&#xa;tipo_lote&#xa;estado&#xa;total_registros&#xa;total_validos&#xa;total_invalidos&#xa;monto_total&#xa;creado_por&#xa;fecha_carga" vertex="1">
+          <mxGeometry height="174" width="240" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="trx" parent="1" style="swimlane;html=1;rounded=0;startSize=26;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;swimlaneFillColor=#ffffff;" value="transacciones" vertex="1">
+          <mxGeometry height="210" width="260" x="760" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="trxA" parent="trx" style="text;html=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=11;fontStyle=0;" value="PK id&#xa;FK lote_id&#xa;numero_linea&#xa;cuenta_origen&#xa;cuenta_destino&#xa;beneficiario_nombre&#xa;beneficiario_correo&#xa;monto&#xa;moneda&#xa;tipo&#xa;estado_validacion" vertex="1">
+          <mxGeometry height="184" width="260" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="val" parent="1" style="swimlane;html=1;rounded=0;startSize=26;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;swimlaneFillColor=#ffffff;" value="validaciones" vertex="1">
+          <mxGeometry height="130" width="260" x="760" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="valA" parent="val" style="text;html=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=11;fontStyle=0;" value="PK id&#xa;FK transaccion_id&#xa;regla&#xa;resultado&#xa;detalle&#xa;fecha" vertex="1">
+          <mxGeometry height="104" width="260" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="er1" edge="1" parent="1" source="arch" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;startArrow=ERone;startFill=0;endArrow=ERone;endFill=0;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="lot" value="1 : 1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="er2" edge="1" parent="1" source="lot" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;startArrow=ERone;startFill=0;endArrow=ERmany;endFill=0;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="trx" value="1 : N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="er3" edge="1" parent="1" source="trx" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;startArrow=ERone;startFill=0;endArrow=ERmany;endFill=0;fontSize=10;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="val" value="1 : N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="er-aprobaciones" name="ER — Aprobaciones">
+    <mxGraphModel dx="1327" dy="1001" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="t2" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontStyle=1;" value="Servicio de Aprobacion&amp;nbsp;" vertex="1">
+          <mxGeometry height="30" width="900" x="100" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="sol" parent="1" style="swimlane;html=1;rounded=0;startSize=26;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;swimlaneFillColor=#ffffff;" value="solicitudes_aprobacion" vertex="1">
+          <mxGeometry height="150" width="270" x="100" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="solA" parent="sol" style="text;html=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=11;fontStyle=0;" value="PK id&#xa;lote_id (referencia logica)&#xa;estado&#xa;paso_actual&#xa;creado_por&#xa;fecha_creacion&#xa;fecha_cierre" vertex="1">
+          <mxGeometry height="124" width="270" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="pas" parent="1" style="swimlane;html=1;rounded=0;startSize=26;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;swimlaneFillColor=#ffffff;" value="pasos_aprobacion" vertex="1">
+          <mxGeometry height="165" width="270" x="520" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="pasA" parent="pas" style="text;html=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=11;fontStyle=0;" value="PK id&#xa;FK solicitud_id&#xa;numero_paso&#xa;rol_requerido&#xa;usuario_id&#xa;accion&#xa;comentario&#xa;fecha" vertex="1">
+          <mxGeometry height="139" width="270" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="er4" edge="1" parent="1" source="sol" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;startArrow=ERone;startFill=0;endArrow=ERmany;endFill=0;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="pas" value="1 : N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="er-despachos" name="ER — Despachos">
+    <mxGraphModel dx="1429" dy="1078" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="t3" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontStyle=1;" value="Servicio de Despacho al Core" vertex="1">
+          <mxGeometry height="30" width="900" x="100" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="des" parent="1" style="swimlane;html=1;rounded=0;startSize=26;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;swimlaneFillColor=#ffffff;" value="despachos" vertex="1">
+          <mxGeometry height="135" width="260" x="100" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="desA" parent="des" style="text;html=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=11;fontStyle=0;" value="PK id&#xa;lote_id (referencia logica)&#xa;estado&#xa;intentos&#xa;fecha_creacion&#xa;fecha_confirmacion" vertex="1">
+          <mxGeometry height="109" width="260" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="int" parent="1" style="swimlane;html=1;rounded=0;startSize=26;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;swimlaneFillColor=#ffffff;" value="intentos_envio" vertex="1">
+          <mxGeometry height="150" width="270" x="520" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="intA" parent="int" style="text;html=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=11;fontStyle=0;" value="PK id&#xa;FK despacho_id&#xa;numero_intento&#xa;resultado&#xa;codigo_respuesta_core&#xa;detalle_error&#xa;fecha" vertex="1">
+          <mxGeometry height="124" width="270" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="con" parent="1" style="swimlane;html=1;rounded=0;startSize=26;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;swimlaneFillColor=#ffffff;" value="confirmaciones_core" vertex="1">
+          <mxGeometry height="120" width="270" x="520" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="conA" parent="con" style="text;html=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=11;fontStyle=0;" value="PK id&#xa;FK despacho_id&#xa;referencia_core&#xa;estado_core&#xa;fecha_recepcion" vertex="1">
+          <mxGeometry height="94" width="270" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="er5" edge="1" parent="1" source="des" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;startArrow=ERone;startFill=0;endArrow=ERmany;endFill=0;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.3;entryX=0;entryY=0.5;" target="int" value="1 : N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="er6" edge="1" parent="1" source="des" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;startArrow=ERone;startFill=0;endArrow=ERmany;endFill=0;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.8;entryX=0;entryY=0.5;" target="con" value="1 : N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="er-notificaciones" name="ER — Notificaciones">
+    <mxGraphModel dx="442" dy="334" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="t4" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontStyle=1;" value="Servicio de Notificaciones" vertex="1">
+          <mxGeometry height="30" width="900" x="100" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="pla" parent="1" style="swimlane;html=1;rounded=0;startSize=26;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;swimlaneFillColor=#ffffff;" value="plantillas_correo" vertex="1">
+          <mxGeometry height="135" width="260" x="100" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="plaA" parent="pla" style="text;html=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=11;fontStyle=0;" value="PK id&#xa;codigo&#xa;asunto&#xa;cuerpo_html&#xa;activa&#xa;fecha_actualizacion" vertex="1">
+          <mxGeometry height="109" width="260" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="notif" parent="1" style="swimlane;html=1;rounded=0;startSize=26;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;swimlaneFillColor=#ffffff;" value="notificaciones" vertex="1">
+          <mxGeometry height="180" width="280" x="520" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="notifA" parent="notif" style="text;html=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=11;fontStyle=0;" value="PK id&#xa;FK plantilla_id&#xa;lote_id (referencia logica)&#xa;transaccion_id (referencia logica)&#xa;destinatario_nombre&#xa;destinatario_correo&#xa;estado&#xa;intentos&#xa;fecha_envio" vertex="1">
+          <mxGeometry height="154" width="280" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="er7" edge="1" parent="1" source="pla" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;startArrow=ERone;startFill=0;endArrow=ERmany;endFill=0;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="notif" value="1 : N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="er-auditoria" name="ER — Auditoria">
+    <mxGraphModel dx="774" dy="584" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="t5" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontStyle=1;" value="Servicio de Auditoria" vertex="1">
+          <mxGeometry height="30" width="900" x="100" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="evl" parent="1" style="swimlane;html=1;rounded=0;startSize=26;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;swimlaneFillColor=#ffffff;" value="eventos_log" vertex="1">
+          <mxGeometry height="195" width="270" x="100" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="evlA" parent="evl" style="text;html=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=11;fontStyle=0;" value="PK id&#xa;correlation_id&#xa;servicio_origen&#xa;tipo_evento&#xa;nivel&#xa;usuario_id&#xa;entidad&#xa;entidad_id&#xa;payload (JSONB)&#xa;fecha" vertex="1">
+          <mxGeometry height="169" width="270" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="exp" parent="1" style="swimlane;html=1;rounded=0;startSize=26;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;swimlaneFillColor=#ffffff;" value="exportes_auditoria" vertex="1">
+          <mxGeometry height="120" width="270" x="540" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="expA" parent="exp" style="text;html=1;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;fontSize=11;fontStyle=0;" value="PK id&#xa;solicitado_por&#xa;filtros&#xa;ruta_archivo&#xa;fecha_generacion" vertex="1">
+          <mxGeometry height="94" width="270" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="er8" edge="1" parent="1" source="evl" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#666666;dashed=1;startArrow=none;endArrow=none;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="exp" value="agrupa eventos segun filtros">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

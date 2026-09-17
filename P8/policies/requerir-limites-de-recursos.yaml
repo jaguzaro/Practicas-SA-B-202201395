@@ -1,0 +1,46 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: requerir-limites-de-recursos
+spec:
+  validationFailureAction: Enforce
+  background: false
+  rules:
+    - name: pods-con-limites
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - sa-p8
+                - sa-p8-dev
+      validate:
+        message: "Todo contenedor debe declarar limites de CPU y de memoria."
+        pattern:
+          spec:
+            containers:
+              - resources:
+                  limits:
+                    cpu: "?*"
+                    memory: "?*"
+    - name: rollouts-con-limites
+      match:
+        any:
+          - resources:
+              kinds:
+                - argoproj.io/v1alpha1/Rollout
+              namespaces:
+                - sa-p8
+                - sa-p8-dev
+      validate:
+        message: "Todo contenedor debe declarar limites de CPU y de memoria."
+        pattern:
+          spec:
+            template:
+              spec:
+                containers:
+                  - resources:
+                      limits:
+                        cpu: "?*"
+                        memory: "?*"

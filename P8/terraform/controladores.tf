@@ -51,3 +51,21 @@ resource "helm_release" "sealed_secrets" {
   wait       = true
   timeout    = 300
 }
+
+resource "kubernetes_namespace_v1" "kyverno" {
+  metadata {
+    name   = "kyverno"
+    labels = local.etiquetas
+  }
+}
+
+resource "helm_release" "kyverno" {
+  name       = "kyverno"
+  namespace  = kubernetes_namespace_v1.kyverno.metadata[0].name
+  repository = "https://kyverno.github.io/kyverno"
+  chart      = "kyverno"
+  version    = "3.9.1"
+  values     = [file("${path.module}/values/kyverno.yaml")]
+  wait       = true
+  timeout    = 600
+}

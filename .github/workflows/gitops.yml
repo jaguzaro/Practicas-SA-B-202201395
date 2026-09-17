@@ -260,7 +260,7 @@ jobs:
 
       - name: Install cosign
         if: env.PUBLICAR == 'true'
-        uses: sigstore/cosign-installer@v4
+        uses: sigstore/cosign-installer@v4.1.2
 
       - name: Sign image
         if: env.PUBLICAR == 'true'
@@ -290,7 +290,7 @@ jobs:
       AMBIENTE: ${{ needs.version.outputs.ambiente }}
     steps:
       - name: Install cosign
-        uses: sigstore/cosign-installer@v4
+        uses: sigstore/cosign-installer@v4.1.2
 
       - name: Verify every image before deploying
         run: |

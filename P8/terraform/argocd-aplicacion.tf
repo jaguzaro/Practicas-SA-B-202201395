@@ -13,6 +13,9 @@ resource "kubernetes_manifest" "aplicacion_raiz" {
         repoURL        = var.repositorio_gitops
         targetRevision = "main"
         path           = "apps"
+        directory = {
+          recurse = true
+        }
       }
       destination = {
         server    = "https://kubernetes.default.svc"

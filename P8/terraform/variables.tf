@@ -10,12 +10,6 @@ variable "contexto" {
   default     = "gke_softwareavanz_us-central1-a_sa-p6"
 }
 
-variable "namespace" {
-  description = "Namespace donde corre la plataforma"
-  type        = string
-  default     = "sa-p8"
-}
-
 variable "servicios" {
   description = "Microservicios de la plataforma y el ConfigMap que cada uno puede leer"
   type        = map(string)
@@ -28,21 +22,39 @@ variable "servicios" {
   }
 }
 
-variable "cuota" {
-  description = "Cuota total de recursos del namespace"
-  type = object({
-    requests_cpu    = string
-    requests_memory = string
-    limits_cpu      = string
-    limits_memory   = string
-    pods            = string
-  })
+variable "ambientes" {
+  description = "Ambientes de la plataforma, cada uno con su namespace y su cuota total de recursos"
+  type = map(object({
+    namespace = string
+    cuota = object({
+      requests_cpu    = string
+      requests_memory = string
+      limits_cpu      = string
+      limits_memory   = string
+      pods            = string
+    })
+  }))
   default = {
-    requests_cpu    = "8"
-    requests_memory = "10Gi"
-    limits_cpu      = "32"
-    limits_memory   = "24Gi"
-    pods            = "60"
+    prod = {
+      namespace = "sa-p8"
+      cuota = {
+        requests_cpu    = "8"
+        requests_memory = "10Gi"
+        limits_cpu      = "32"
+        limits_memory   = "24Gi"
+        pods            = "60"
+      }
+    }
+    dev = {
+      namespace = "sa-p8-dev"
+      cuota = {
+        requests_cpu    = "2"
+        requests_memory = "4Gi"
+        limits_cpu      = "8"
+        limits_memory   = "8Gi"
+        pods            = "30"
+      }
+    }
   }
 }
 

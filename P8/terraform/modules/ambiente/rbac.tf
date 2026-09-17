@@ -4,7 +4,7 @@ resource "kubernetes_service_account_v1" "servicio" {
   metadata {
     name      = each.key
     namespace = kubernetes_namespace_v1.plataforma.metadata[0].name
-    labels    = merge(local.etiquetas, { app = each.key })
+    labels    = merge(var.etiquetas, { app = each.key })
   }
 
   automount_service_account_token = false
@@ -16,7 +16,7 @@ resource "kubernetes_role_v1" "servicio" {
   metadata {
     name      = each.key
     namespace = kubernetes_namespace_v1.plataforma.metadata[0].name
-    labels    = merge(local.etiquetas, { app = each.key })
+    labels    = merge(var.etiquetas, { app = each.key })
   }
 
   rule {
@@ -33,7 +33,7 @@ resource "kubernetes_role_binding_v1" "servicio" {
   metadata {
     name      = each.key
     namespace = kubernetes_namespace_v1.plataforma.metadata[0].name
-    labels    = merge(local.etiquetas, { app = each.key })
+    labels    = merge(var.etiquetas, { app = each.key })
   }
 
   role_ref {
@@ -53,7 +53,7 @@ resource "kubernetes_service_account_v1" "cronjobs" {
   metadata {
     name      = "cronjobs"
     namespace = kubernetes_namespace_v1.plataforma.metadata[0].name
-    labels    = merge(local.etiquetas, { app = "cronjobs" })
+    labels    = merge(var.etiquetas, { app = "cronjobs" })
   }
 
   automount_service_account_token = false
@@ -63,7 +63,7 @@ resource "kubernetes_role_v1" "cronjobs" {
   metadata {
     name      = "cronjobs"
     namespace = kubernetes_namespace_v1.plataforma.metadata[0].name
-    labels    = merge(local.etiquetas, { app = "cronjobs" })
+    labels    = merge(var.etiquetas, { app = "cronjobs" })
   }
 
   rule {
@@ -77,7 +77,7 @@ resource "kubernetes_role_binding_v1" "cronjobs" {
   metadata {
     name      = "cronjobs"
     namespace = kubernetes_namespace_v1.plataforma.metadata[0].name
-    labels    = merge(local.etiquetas, { app = "cronjobs" })
+    labels    = merge(var.etiquetas, { app = "cronjobs" })
   }
 
   role_ref {

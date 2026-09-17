@@ -1,0 +1,1055 @@
+module.ambiente["prod"].kubernetes_namespace_v1.plataforma: Refreshing state... [id=sa-p8]
+kubernetes_namespace_v1.argo_rollouts: Refreshing state... [id=argo-rollouts]
+kubernetes_namespace_v1.argocd: Refreshing state... [id=argocd]
+kubernetes_namespace_v1.sealed_secrets: Refreshing state... [id=sealed-secrets]
+module.ambiente["prod"].kubernetes_service_account_v1.cronjobs: Refreshing state... [id=sa-p8/cronjobs]
+module.ambiente["prod"].kubernetes_role_v1.cronjobs: Refreshing state... [id=sa-p8/cronjobs]
+module.ambiente["prod"].kubernetes_limit_range_v1.plataforma: Refreshing state... [id=sa-p8/sa-platform]
+module.ambiente["prod"].kubernetes_resource_quota_v1.plataforma: Refreshing state... [id=sa-p8/sa-platform]
+helm_release.argocd: Refreshing state... [id=argocd]
+module.ambiente["prod"].kubernetes_service_account_v1.servicio["gateway"]: Refreshing state... [id=sa-p8/gateway]
+module.ambiente["prod"].kubernetes_service_account_v1.servicio["transactions-service"]: Refreshing state... [id=sa-p8/transactions-service]
+module.ambiente["prod"].kubernetes_service_account_v1.servicio["audit-service"]: Refreshing state... [id=sa-p8/audit-service]
+module.ambiente["prod"].kubernetes_service_account_v1.servicio["auth-api"]: Refreshing state... [id=sa-p8/auth-api]
+module.ambiente["prod"].kubernetes_service_account_v1.servicio["authz-service"]: Refreshing state... [id=sa-p8/authz-service]
+module.ambiente["prod"].kubernetes_role_v1.servicio["authz-service"]: Refreshing state... [id=sa-p8/authz-service]
+module.ambiente["prod"].kubernetes_role_v1.servicio["gateway"]: Refreshing state... [id=sa-p8/gateway]
+module.ambiente["prod"].kubernetes_role_v1.servicio["transactions-service"]: Refreshing state... [id=sa-p8/transactions-service]
+module.ambiente["prod"].kubernetes_role_v1.servicio["audit-service"]: Refreshing state... [id=sa-p8/audit-service]
+module.ambiente["prod"].kubernetes_role_v1.servicio["auth-api"]: Refreshing state... [id=sa-p8/auth-api]
+module.ambiente["prod"].kubernetes_role_binding_v1.cronjobs: Refreshing state... [id=sa-p8/cronjobs]
+helm_release.sealed_secrets: Refreshing state... [id=sealed-secrets]
+helm_release.argo_rollouts: Refreshing state... [id=argo-rollouts]
+module.ambiente["prod"].kubernetes_role_binding_v1.servicio["gateway"]: Refreshing state... [id=sa-p8/gateway]
+module.ambiente["prod"].kubernetes_role_binding_v1.servicio["audit-service"]: Refreshing state... [id=sa-p8/audit-service]
+module.ambiente["prod"].kubernetes_role_binding_v1.servicio["auth-api"]: Refreshing state... [id=sa-p8/auth-api]
+module.ambiente["prod"].kubernetes_role_binding_v1.servicio["authz-service"]: Refreshing state... [id=sa-p8/authz-service]
+module.ambiente["prod"].kubernetes_role_binding_v1.servicio["transactions-service"]: Refreshing state... [id=sa-p8/transactions-service]
+kubernetes_secret_v1.repositorio_codigo: Refreshing state... [id=argocd/repositorio-codigo]
+kubernetes_manifest.aplicacion_raiz: Refreshing state...
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+  ~ update in-place
+
+Terraform will perform the following actions:
+
+  # kubernetes_manifest.aplicacion_raiz will be updated in-place
+  ~ resource "kubernetes_manifest" "aplicacion_raiz" {
+      ~ manifest = {
+          ~ spec       = {
+              ~ source      = {
+                  + directory      = {
+                      + recurse = true
+                    }
+                    # (3 unchanged attributes hidden)
+                }
+                # (3 unchanged attributes hidden)
+            }
+            # (3 unchanged attributes hidden)
+        }
+      ~ object   = {
+          ~ spec       = {
+              ~ source               = {
+                  ~ directory      = {
+                      ~ recurse = null -> true
+                        # (3 unchanged attributes hidden)
+                    }
+                    name           = null
+                    # (9 unchanged attributes hidden)
+                }
+                # (8 unchanged attributes hidden)
+            }
+            # (4 unchanged attributes hidden)
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_limit_range_v1.plataforma will be created
+  + resource "kubernetes_limit_range_v1" "plataforma" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "sa-platform"
+          + namespace        = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + limit {
+              + default         = {
+                  + "cpu"    = "300m"
+                  + "memory" = "256Mi"
+                }
+              + default_request = {
+                  + "cpu"    = "50m"
+                  + "memory" = "64Mi"
+                }
+              + max             = {
+                  + "cpu"    = "2"
+                  + "memory" = "2Gi"
+                }
+              + type            = "Container"
+            }
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_namespace_v1.plataforma will be created
+  + resource "kubernetes_namespace_v1" "plataforma" {
+      + id                               = (known after apply)
+      + wait_for_default_service_account = false
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_resource_quota_v1.plataforma will be created
+  + resource "kubernetes_resource_quota_v1" "plataforma" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "sa-platform"
+          + namespace        = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + hard = {
+              + "limits.cpu"      = "8"
+              + "limits.memory"   = "8Gi"
+              + "pods"            = "30"
+              + "requests.cpu"    = "2"
+              + "requests.memory" = "4Gi"
+            }
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_role_binding_v1.cronjobs will be created
+  + resource "kubernetes_role_binding_v1" "cronjobs" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app"                          = "cronjobs"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "cronjobs"
+          + namespace        = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + role_ref {
+          + api_group = "rbac.authorization.k8s.io"
+          + kind      = "Role"
+          + name      = "cronjobs"
+        }
+
+      + subject {
+          + api_group = (known after apply)
+          + kind      = "ServiceAccount"
+          + name      = "cronjobs"
+          + namespace = "sa-p8-dev"
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_role_binding_v1.servicio["audit-service"] will be created
+  + resource "kubernetes_role_binding_v1" "servicio" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app"                          = "audit-service"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "audit-service"
+          + namespace        = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + role_ref {
+          + api_group = "rbac.authorization.k8s.io"
+          + kind      = "Role"
+          + name      = "audit-service"
+        }
+
+      + subject {
+          + api_group = (known after apply)
+          + kind      = "ServiceAccount"
+          + name      = "audit-service"
+          + namespace = "sa-p8-dev"
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_role_binding_v1.servicio["auth-api"] will be created
+  + resource "kubernetes_role_binding_v1" "servicio" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app"                          = "auth-api"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "auth-api"
+          + namespace        = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + role_ref {
+          + api_group = "rbac.authorization.k8s.io"
+          + kind      = "Role"
+          + name      = "auth-api"
+        }
+
+      + subject {
+          + api_group = (known after apply)
+          + kind      = "ServiceAccount"
+          + name      = "auth-api"
+          + namespace = "sa-p8-dev"
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_role_binding_v1.servicio["authz-service"] will be created
+  + resource "kubernetes_role_binding_v1" "servicio" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app"                          = "authz-service"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "authz-service"
+          + namespace        = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + role_ref {
+          + api_group = "rbac.authorization.k8s.io"
+          + kind      = "Role"
+          + name      = "authz-service"
+        }
+
+      + subject {
+          + api_group = (known after apply)
+          + kind      = "ServiceAccount"
+          + name      = "authz-service"
+          + namespace = "sa-p8-dev"
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_role_binding_v1.servicio["gateway"] will be created
+  + resource "kubernetes_role_binding_v1" "servicio" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app"                          = "gateway"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "gateway"
+          + namespace        = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + role_ref {
+          + api_group = "rbac.authorization.k8s.io"
+          + kind      = "Role"
+          + name      = "gateway"
+        }
+
+      + subject {
+          + api_group = (known after apply)
+          + kind      = "ServiceAccount"
+          + name      = "gateway"
+          + namespace = "sa-p8-dev"
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_role_binding_v1.servicio["transactions-service"] will be created
+  + resource "kubernetes_role_binding_v1" "servicio" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app"                          = "transactions-service"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "transactions-service"
+          + namespace        = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + role_ref {
+          + api_group = "rbac.authorization.k8s.io"
+          + kind      = "Role"
+          + name      = "transactions-service"
+        }
+
+      + subject {
+          + api_group = (known after apply)
+          + kind      = "ServiceAccount"
+          + name      = "transactions-service"
+          + namespace = "sa-p8-dev"
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_role_v1.cronjobs will be created
+  + resource "kubernetes_role_v1" "cronjobs" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app"                          = "cronjobs"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "cronjobs"
+          + namespace        = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + rule {
+          + api_groups = [
+              + "batch",
+            ]
+          + resources  = [
+              + "jobs",
+            ]
+          + verbs      = [
+              + "get",
+              + "list",
+            ]
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_role_v1.servicio["audit-service"] will be created
+  + resource "kubernetes_role_v1" "servicio" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app"                          = "audit-service"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "audit-service"
+          + namespace        = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + rule {
+          + api_groups     = [
+              + null,
+            ]
+          + resource_names = [
+              + "audit-service-config",
+            ]
+          + resources      = [
+              + "configmaps",
+            ]
+          + verbs          = [
+              + "get",
+            ]
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_role_v1.servicio["auth-api"] will be created
+  + resource "kubernetes_role_v1" "servicio" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app"                          = "auth-api"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "auth-api"
+          + namespace        = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + rule {
+          + api_groups     = [
+              + null,
+            ]
+          + resource_names = [
+              + "auth-api-config",
+            ]
+          + resources      = [
+              + "configmaps",
+            ]
+          + verbs          = [
+              + "get",
+            ]
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_role_v1.servicio["authz-service"] will be created
+  + resource "kubernetes_role_v1" "servicio" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app"                          = "authz-service"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "authz-service"
+          + namespace        = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + rule {
+          + api_groups     = [
+              + null,
+            ]
+          + resource_names = [
+              + "authz-service-config",
+            ]
+          + resources      = [
+              + "configmaps",
+            ]
+          + verbs          = [
+              + "get",
+            ]
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_role_v1.servicio["gateway"] will be created
+  + resource "kubernetes_role_v1" "servicio" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app"                          = "gateway"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "gateway"
+          + namespace        = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + rule {
+          + api_groups     = [
+              + null,
+            ]
+          + resource_names = [
+              + "gateway-declarative",
+            ]
+          + resources      = [
+              + "configmaps",
+            ]
+          + verbs          = [
+              + "get",
+            ]
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_role_v1.servicio["transactions-service"] will be created
+  + resource "kubernetes_role_v1" "servicio" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app"                          = "transactions-service"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "transactions-service"
+          + namespace        = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + rule {
+          + api_groups     = [
+              + null,
+            ]
+          + resource_names = [
+              + "transactions-service-config",
+            ]
+          + resources      = [
+              + "configmaps",
+            ]
+          + verbs          = [
+              + "get",
+            ]
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_service_account_v1.cronjobs will be created
+  + resource "kubernetes_service_account_v1" "cronjobs" {
+      + automount_service_account_token = false
+      + default_secret_name             = (known after apply)
+      + id                              = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app"                          = "cronjobs"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "cronjobs"
+          + namespace        = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_service_account_v1.servicio["audit-service"] will be created
+  + resource "kubernetes_service_account_v1" "servicio" {
+      + automount_service_account_token = false
+      + default_secret_name             = (known after apply)
+      + id                              = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app"                          = "audit-service"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "audit-service"
+          + namespace        = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_service_account_v1.servicio["auth-api"] will be created
+  + resource "kubernetes_service_account_v1" "servicio" {
+      + automount_service_account_token = false
+      + default_secret_name             = (known after apply)
+      + id                              = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app"                          = "auth-api"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "auth-api"
+          + namespace        = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_service_account_v1.servicio["authz-service"] will be created
+  + resource "kubernetes_service_account_v1" "servicio" {
+      + automount_service_account_token = false
+      + default_secret_name             = (known after apply)
+      + id                              = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app"                          = "authz-service"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "authz-service"
+          + namespace        = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_service_account_v1.servicio["gateway"] will be created
+  + resource "kubernetes_service_account_v1" "servicio" {
+      + automount_service_account_token = false
+      + default_secret_name             = (known after apply)
+      + id                              = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app"                          = "gateway"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "gateway"
+          + namespace        = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+  # module.ambiente["dev"].kubernetes_service_account_v1.servicio["transactions-service"] will be created
+  + resource "kubernetes_service_account_v1" "servicio" {
+      + automount_service_account_token = false
+      + default_secret_name             = (known after apply)
+      + id                              = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "ambiente"                     = "dev"
+              + "app"                          = "transactions-service"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "transactions-service"
+          + namespace        = "sa-p8-dev"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+  # module.ambiente["prod"].kubernetes_limit_range_v1.plataforma will be updated in-place
+  # (moved from kubernetes_limit_range_v1.plataforma)
+  ~ resource "kubernetes_limit_range_v1" "plataforma" {
+        id = "sa-p8/sa-platform"
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (3 unchanged elements hidden)
+            }
+            name             = "sa-platform"
+            # (6 unchanged attributes hidden)
+        }
+
+        # (1 unchanged block hidden)
+    }
+
+  # module.ambiente["prod"].kubernetes_namespace_v1.plataforma will be updated in-place
+  # (moved from kubernetes_namespace_v1.plataforma)
+  ~ resource "kubernetes_namespace_v1" "plataforma" {
+        id                               = "sa-p8"
+        # (1 unchanged attribute hidden)
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (3 unchanged elements hidden)
+            }
+            name             = "sa-p8"
+            # (5 unchanged attributes hidden)
+        }
+    }
+
+  # module.ambiente["prod"].kubernetes_resource_quota_v1.plataforma will be updated in-place
+  # (moved from kubernetes_resource_quota_v1.plataforma)
+  ~ resource "kubernetes_resource_quota_v1" "plataforma" {
+        id = "sa-p8/sa-platform"
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (3 unchanged elements hidden)
+            }
+            name             = "sa-platform"
+            # (6 unchanged attributes hidden)
+        }
+
+        # (1 unchanged block hidden)
+    }
+
+  # module.ambiente["prod"].kubernetes_role_binding_v1.cronjobs will be updated in-place
+  # (moved from kubernetes_role_binding_v1.cronjobs)
+  ~ resource "kubernetes_role_binding_v1" "cronjobs" {
+        id = "sa-p8/cronjobs"
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (4 unchanged elements hidden)
+            }
+            name             = "cronjobs"
+            # (6 unchanged attributes hidden)
+        }
+
+        # (2 unchanged blocks hidden)
+    }
+
+  # module.ambiente["prod"].kubernetes_role_binding_v1.servicio["audit-service"] will be updated in-place
+  # (moved from kubernetes_role_binding_v1.servicio["audit-service"])
+  ~ resource "kubernetes_role_binding_v1" "servicio" {
+        id = "sa-p8/audit-service"
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (4 unchanged elements hidden)
+            }
+            name             = "audit-service"
+            # (6 unchanged attributes hidden)
+        }
+
+        # (2 unchanged blocks hidden)
+    }
+
+  # module.ambiente["prod"].kubernetes_role_binding_v1.servicio["auth-api"] will be updated in-place
+  # (moved from kubernetes_role_binding_v1.servicio["auth-api"])
+  ~ resource "kubernetes_role_binding_v1" "servicio" {
+        id = "sa-p8/auth-api"
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (4 unchanged elements hidden)
+            }
+            name             = "auth-api"
+            # (6 unchanged attributes hidden)
+        }
+
+        # (2 unchanged blocks hidden)
+    }
+
+  # module.ambiente["prod"].kubernetes_role_binding_v1.servicio["authz-service"] will be updated in-place
+  # (moved from kubernetes_role_binding_v1.servicio["authz-service"])
+  ~ resource "kubernetes_role_binding_v1" "servicio" {
+        id = "sa-p8/authz-service"
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (4 unchanged elements hidden)
+            }
+            name             = "authz-service"
+            # (6 unchanged attributes hidden)
+        }
+
+        # (2 unchanged blocks hidden)
+    }
+
+  # module.ambiente["prod"].kubernetes_role_binding_v1.servicio["gateway"] will be updated in-place
+  # (moved from kubernetes_role_binding_v1.servicio["gateway"])
+  ~ resource "kubernetes_role_binding_v1" "servicio" {
+        id = "sa-p8/gateway"
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (4 unchanged elements hidden)
+            }
+            name             = "gateway"
+            # (6 unchanged attributes hidden)
+        }
+
+        # (2 unchanged blocks hidden)
+    }
+
+  # module.ambiente["prod"].kubernetes_role_binding_v1.servicio["transactions-service"] will be updated in-place
+  # (moved from kubernetes_role_binding_v1.servicio["transactions-service"])
+  ~ resource "kubernetes_role_binding_v1" "servicio" {
+        id = "sa-p8/transactions-service"
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (4 unchanged elements hidden)
+            }
+            name             = "transactions-service"
+            # (6 unchanged attributes hidden)
+        }
+
+        # (2 unchanged blocks hidden)
+    }
+
+  # module.ambiente["prod"].kubernetes_role_v1.cronjobs will be updated in-place
+  # (moved from kubernetes_role_v1.cronjobs)
+  ~ resource "kubernetes_role_v1" "cronjobs" {
+        id = "sa-p8/cronjobs"
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (4 unchanged elements hidden)
+            }
+            name             = "cronjobs"
+            # (6 unchanged attributes hidden)
+        }
+
+        # (1 unchanged block hidden)
+    }
+
+  # module.ambiente["prod"].kubernetes_role_v1.servicio["audit-service"] will be updated in-place
+  # (moved from kubernetes_role_v1.servicio["audit-service"])
+  ~ resource "kubernetes_role_v1" "servicio" {
+        id = "sa-p8/audit-service"
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (4 unchanged elements hidden)
+            }
+            name             = "audit-service"
+            # (6 unchanged attributes hidden)
+        }
+
+        # (1 unchanged block hidden)
+    }
+
+  # module.ambiente["prod"].kubernetes_role_v1.servicio["auth-api"] will be updated in-place
+  # (moved from kubernetes_role_v1.servicio["auth-api"])
+  ~ resource "kubernetes_role_v1" "servicio" {
+        id = "sa-p8/auth-api"
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (4 unchanged elements hidden)
+            }
+            name             = "auth-api"
+            # (6 unchanged attributes hidden)
+        }
+
+        # (1 unchanged block hidden)
+    }
+
+  # module.ambiente["prod"].kubernetes_role_v1.servicio["authz-service"] will be updated in-place
+  # (moved from kubernetes_role_v1.servicio["authz-service"])
+  ~ resource "kubernetes_role_v1" "servicio" {
+        id = "sa-p8/authz-service"
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (4 unchanged elements hidden)
+            }
+            name             = "authz-service"
+            # (6 unchanged attributes hidden)
+        }
+
+        # (1 unchanged block hidden)
+    }
+
+  # module.ambiente["prod"].kubernetes_role_v1.servicio["gateway"] will be updated in-place
+  # (moved from kubernetes_role_v1.servicio["gateway"])
+  ~ resource "kubernetes_role_v1" "servicio" {
+        id = "sa-p8/gateway"
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (4 unchanged elements hidden)
+            }
+            name             = "gateway"
+            # (6 unchanged attributes hidden)
+        }
+
+        # (1 unchanged block hidden)
+    }
+
+  # module.ambiente["prod"].kubernetes_role_v1.servicio["transactions-service"] will be updated in-place
+  # (moved from kubernetes_role_v1.servicio["transactions-service"])
+  ~ resource "kubernetes_role_v1" "servicio" {
+        id = "sa-p8/transactions-service"
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (4 unchanged elements hidden)
+            }
+            name             = "transactions-service"
+            # (6 unchanged attributes hidden)
+        }
+
+        # (1 unchanged block hidden)
+    }
+
+  # module.ambiente["prod"].kubernetes_service_account_v1.cronjobs will be updated in-place
+  # (moved from kubernetes_service_account_v1.cronjobs)
+  ~ resource "kubernetes_service_account_v1" "cronjobs" {
+        id                              = "sa-p8/cronjobs"
+        # (2 unchanged attributes hidden)
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (4 unchanged elements hidden)
+            }
+            name             = "cronjobs"
+            # (6 unchanged attributes hidden)
+        }
+    }
+
+  # module.ambiente["prod"].kubernetes_service_account_v1.servicio["audit-service"] will be updated in-place
+  # (moved from kubernetes_service_account_v1.servicio["audit-service"])
+  ~ resource "kubernetes_service_account_v1" "servicio" {
+        id                              = "sa-p8/audit-service"
+        # (2 unchanged attributes hidden)
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (4 unchanged elements hidden)
+            }
+            name             = "audit-service"
+            # (6 unchanged attributes hidden)
+        }
+    }
+
+  # module.ambiente["prod"].kubernetes_service_account_v1.servicio["auth-api"] will be updated in-place
+  # (moved from kubernetes_service_account_v1.servicio["auth-api"])
+  ~ resource "kubernetes_service_account_v1" "servicio" {
+        id                              = "sa-p8/auth-api"
+        # (2 unchanged attributes hidden)
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (4 unchanged elements hidden)
+            }
+            name             = "auth-api"
+            # (6 unchanged attributes hidden)
+        }
+    }
+
+  # module.ambiente["prod"].kubernetes_service_account_v1.servicio["authz-service"] will be updated in-place
+  # (moved from kubernetes_service_account_v1.servicio["authz-service"])
+  ~ resource "kubernetes_service_account_v1" "servicio" {
+        id                              = "sa-p8/authz-service"
+        # (2 unchanged attributes hidden)
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (4 unchanged elements hidden)
+            }
+            name             = "authz-service"
+            # (6 unchanged attributes hidden)
+        }
+    }
+
+  # module.ambiente["prod"].kubernetes_service_account_v1.servicio["gateway"] will be updated in-place
+  # (moved from kubernetes_service_account_v1.servicio["gateway"])
+  ~ resource "kubernetes_service_account_v1" "servicio" {
+        id                              = "sa-p8/gateway"
+        # (2 unchanged attributes hidden)
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (4 unchanged elements hidden)
+            }
+            name             = "gateway"
+            # (6 unchanged attributes hidden)
+        }
+    }
+
+  # module.ambiente["prod"].kubernetes_service_account_v1.servicio["transactions-service"] will be updated in-place
+  # (moved from kubernetes_service_account_v1.servicio["transactions-service"])
+  ~ resource "kubernetes_service_account_v1" "servicio" {
+        id                              = "sa-p8/transactions-service"
+        # (2 unchanged attributes hidden)
+
+      ~ metadata {
+          ~ labels           = {
+              + "ambiente"                     = "prod"
+                # (4 unchanged elements hidden)
+            }
+            name             = "transactions-service"
+            # (6 unchanged attributes hidden)
+        }
+    }
+
+Plan: 21 to add, 22 to change, 0 to destroy.
+
+Changes to Outputs:
+  + ambientes           = {
+      + dev  = "sa-p8-dev"
+      + prod = "sa-p8"
+    }
+  - namespace           = "sa-p8" -> null
+
+─────────────────────────────────────────────────────────────────────────────
+
+Saved the plan to: plan.tfplan
+
+To perform exactly these actions, run the following command to apply:
+    terraform apply "plan.tfplan"

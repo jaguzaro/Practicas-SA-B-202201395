@@ -10,7 +10,8 @@ FROM node:22-alpine
 WORKDIR /app
 ENV NODE_ENV=production
 COPY package*.json ./
-RUN npm install --omit=dev
+RUN npm install --omit=dev && npm cache clean --force \
+    && rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 COPY --from=build /app/dist ./dist
 EXPOSE 4001
 CMD ["node", "dist/server.js"]

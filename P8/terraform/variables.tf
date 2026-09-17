@@ -65,3 +65,21 @@ variable "limites" {
     max_memory             = "2Gi"
   }
 }
+
+variable "repositorio_gitops" {
+  description = "URL publica del repositorio de manifiestos que observa ArgoCD"
+  type        = string
+  default     = "https://github.com/jaguzaro/Practicas-SA-B-202201395-gitops.git"
+}
+
+variable "repositorio_codigo" {
+  description = "URL SSH del repositorio de codigo que contiene los charts"
+  type        = string
+  default     = "git@github.com:jaguzaro/Practicas-SA-B-202201395.git"
+}
+
+variable "llave_repositorio_codigo" {
+  description = "Ruta a la llave privada de solo lectura registrada como deploy key en el repositorio de codigo"
+  type        = string
+  default     = "~/.ssh/argocd-practicas-sa"
+}

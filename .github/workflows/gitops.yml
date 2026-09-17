@@ -1,0 +1,297 @@
+name: GitOps Plataforma
+run-name: ${{ github.ref_type == 'tag' && format('Version {0}', github.ref_name) || format('Integracion {0}', github.ref_name) }}
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+
+env:
+  REGISTRO: ghcr.io/${{ github.repository_owner }}
+  PUBLICAR: ${{ github.ref == 'refs/heads/main' || github.ref_type == 'tag' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [auth-api, authz-service, transactions-service]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup node version
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Dependencies install
+        run: npm i
+        working-directory: ./P5/services/${{ matrix.service }}
+
+      - name: Compile
+        run: npm run build
+        working-directory: ./P5/services/${{ matrix.service }}
+
+      - name: Upload compiled output
+        uses: actions/upload-artifact@v7
+        with:
+          name: dist-${{ matrix.service }}
+          path: ./P5/services/${{ matrix.service }}/dist
+
+  build_python:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup python version
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - name: Dependencies install
+        run: pip install -r requirements.txt
+        working-directory: ./P5/services/audit-service
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [auth-api, authz-service, transactions-service]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup node version
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Dependencies install
+        run: npm i
+        working-directory: ./P5/services/${{ matrix.service }}
+
+      - name: Download compiled output
+        uses: actions/download-artifact@v8
+        with:
+          name: dist-${{ matrix.service }}
+          path: ./P5/services/${{ matrix.service }}/dist
+
+      - name: Run tests
+        run: npm test
+        working-directory: ./P5/services/${{ matrix.service }}
+
+  test_python:
+    needs: build_python
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup python version
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - name: Dependencies install
+        run: pip install -r requirements.txt -r requirements-dev.txt
+        working-directory: ./P5/services/audit-service
+
+      - name: Run tests
+        run: pytest
+        working-directory: ./P5/services/audit-service
+
+  helm_lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup helm
+        uses: azure/setup-helm@v5
+
+      - name: Resolve chart dependencies
+        run: helm dependency build ./P8/charts/datos
+
+      - name: Lint every chart with every environment
+        run: |
+          for chart in P8/charts/*/; do
+            for valores in values-dev.yaml values-prod.yaml; do
+              helm lint "$chart" -f "$chart/$valores"
+            done
+          done
+
+  imagenes:
+    needs: [test, test_python, helm_lint]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: auth-api
+            context: ./P5/services/auth-api
+          - image: authz-service
+            context: ./P5/services/authz-service
+          - image: transactions-service
+            context: ./P5/services/transactions-service
+          - image: audit-service
+            context: ./P5/services/audit-service
+          - image: cronjobs
+            context: ./P5/scripts/cronjobs
+    env:
+      IMAGEN: ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Docker buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build image locally
+        uses: docker/build-push-action@v7
+        with:
+          context: ${{ matrix.context }}
+          load: true
+          push: false
+          tags: ${{ env.IMAGEN }}:${{ github.sha }}
+
+      - name: Scan for critical vulnerabilities
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ env.IMAGEN }}:${{ github.sha }}
+          scan-type: image
+          scanners: vuln
+          severity: CRITICAL
+          exit-code: '1'
+          format: table
+          output: trivy-${{ matrix.image }}.txt
+          cache: 'true'
+
+      - name: Show scan report
+        if: always()
+        run: cat trivy-${{ matrix.image }}.txt
+
+      - name: Upload scan report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: trivy-${{ matrix.image }}
+          path: trivy-${{ matrix.image }}.txt
+
+      - name: Generate SBOM
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ env.IMAGEN }}:${{ github.sha }}
+          scan-type: image
+          format: cyclonedx
+          output: sbom-${{ matrix.image }}.cdx.json
+          skip-setup-trivy: true
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v7
+        with:
+          name: sbom-${{ matrix.image }}
+          path: sbom-${{ matrix.image }}.cdx.json
+
+      - name: Login to GHCR
+        if: env.PUBLICAR == 'true'
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push image
+        if: env.PUBLICAR == 'true'
+        id: push
+        uses: docker/build-push-action@v7
+        with:
+          context: ${{ matrix.context }}
+          push: true
+          platforms: linux/amd64
+          tags: |
+            ${{ env.IMAGEN }}:${{ github.sha }}
+            ${{ github.ref_type == 'tag' && format('{0}:{1}', env.IMAGEN, github.ref_name) || '' }}
+
+      - name: Install cosign
+        if: env.PUBLICAR == 'true'
+        uses: sigstore/cosign-installer@v4
+
+      - name: Sign image
+        if: env.PUBLICAR == 'true'
+        run: cosign sign --yes ${{ env.IMAGEN }}@${{ steps.push.outputs.digest }}
+
+      - name: Verify signature
+        if: env.PUBLICAR == 'true'
+        run: |
+          cosign verify ${{ env.IMAGEN }}@${{ steps.push.outputs.digest }} \
+            --certificate-identity-regexp '^https://github.com/${{ github.repository }}/' \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+            --output text | tee cosign-verify-${{ matrix.image }}.txt
+
+      - name: Upload verification output
+        if: env.PUBLICAR == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: cosign-verify-${{ matrix.image }}
+          path: cosign-verify-${{ matrix.image }}.txt
+
+  actualizar_gitops:
+    needs: imagenes
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ github.ref_name }}
+    steps:
+      - name: Validate semantic version
+        run: echo "$VERSION" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v4
+
+      - name: Verify every image before deploying
+        run: |
+          for imagen in auth-api authz-service transactions-service audit-service cronjobs; do
+            cosign verify ${{ env.REGISTRO }}/$imagen:$VERSION \
+              --certificate-identity-regexp '^https://github.com/${{ github.repository }}/' \
+              --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+              --output text
+          done
+
+      - name: Checkout gitops repository
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ github.repository_owner }}/Practicas-SA-B-202201395-gitops
+          token: ${{ secrets.GITOPS_TOKEN }}
+          path: gitops
+
+      - name: Update image tags
+        run: |
+          for imagen in auth-api authz-service transactions-service audit-service cronjobs; do
+            sed -i "s/^  tag: .*/  tag: $VERSION/" gitops/values/$imagen.yaml
+          done
+          git -C gitops diff --stat
+
+      - name: Open pull request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GITOPS_TOKEN }}
+          path: gitops
+          branch: release/${{ env.VERSION }}
+          commit-message: "chore: deploy ${{ env.VERSION }}"
+          title: "Desplegar ${{ env.VERSION }}"
+          body: |
+            Actualiza las imagenes de la plataforma a la version ${{ env.VERSION }}.
+
+            Imagenes construidas, escaneadas, firmadas y verificadas en ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

@@ -33,3 +33,21 @@ resource "helm_release" "argo_rollouts" {
   wait       = true
   timeout    = 300
 }
+
+resource "kubernetes_namespace_v1" "sealed_secrets" {
+  metadata {
+    name   = "sealed-secrets"
+    labels = local.etiquetas
+  }
+}
+
+resource "helm_release" "sealed_secrets" {
+  name       = "sealed-secrets"
+  namespace  = kubernetes_namespace_v1.sealed_secrets.metadata[0].name
+  repository = "https://bitnami.github.io/sealed-secrets"
+  chart      = "sealed-secrets"
+  version    = "2.20.0"
+  values     = [file("${path.module}/values/sealed-secrets.yaml")]
+  wait       = true
+  timeout    = 300
+}

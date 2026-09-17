@@ -1,0 +1,107 @@
+replicaCount: 1
+
+image:
+  repository: kong
+  tag: "3.9"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8000
+
+logLevel: notice
+
+workerProcesses: 2
+
+routes:
+  - name: auth-api
+    upstream: auth-api
+    port: 4000
+    paths:
+      - /register
+      - /login
+      - /logout
+      - /me
+  - name: authz-service
+    upstream: authz-service
+    port: 4001
+    paths:
+      - /authorize
+  - name: transactions-service
+    upstream: transactions-service
+    port: 4002
+    paths:
+      - /transactions
+  - name: audit-service
+    upstream: audit-service
+    port: 4005
+    paths:
+      - /audit
+
+rollout:
+  revisionHistoryLimit: 3
+  progressDeadlineSeconds: 600
+  pasos:
+    - 20
+    - 50
+    - 80
+  esperaAntesDeAnalisis: 15s
+
+analysis:
+  image: grafana/k6:0.54.0
+  vus: 5
+  duracion: 20s
+  ttlSecondsAfterFinished: 900
+  umbrales:
+    tasaErrorMax: "0.01"
+    p95Ms: 500
+  rutas:
+    - method: GET
+      path: /me
+      status: 401
+    - method: GET
+      path: /transactions/batches
+      status: 401
+    - method: GET
+      path: /ruta-inexistente
+      status: 404
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 300m
+      memory: 256Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+
+podDisruptionBudget:
+  minAvailable: 1
+
+securityContext:
+  runAsUser: 1000
+
+probes:
+  startup:
+    periodSeconds: 5
+    failureThreshold: 30
+  readiness:
+    periodSeconds: 10
+    timeoutSeconds: 2
+    failureThreshold: 3
+  liveness:
+    periodSeconds: 20
+    timeoutSeconds: 3
+    failureThreshold: 3
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

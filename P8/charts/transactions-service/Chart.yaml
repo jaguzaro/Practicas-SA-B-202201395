@@ -1,0 +1,6 @@
+apiVersion: v2
+name: transactions-service
+description: Servicio de transacciones de la plataforma, desplegado como Rollout con estrategia canary
+type: application
+version: 2.0.0
+appVersion: "1.1.0"

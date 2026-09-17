@@ -1,0 +1,8 @@
+postgresql:
+  primary:
+    persistence:
+      size: 1Gi
+
+rabbitmq:
+  persistence:
+    size: 1Gi

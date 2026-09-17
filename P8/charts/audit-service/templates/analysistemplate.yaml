@@ -1,0 +1,69 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: {{ .Chart.Name }}-canary
+  labels:
+    app: {{ .Chart.Name }}
+    {{- include "servicio.labels" . | nindent 4 }}
+spec:
+  metrics:
+    - name: prueba-de-humo
+      count: 1
+      failureLimit: 0
+      provider:
+        job:
+          metadata:
+            labels:
+              app: {{ .Chart.Name }}-analisis
+          spec:
+            backoffLimit: 0
+            ttlSecondsAfterFinished: {{ .Values.analysis.ttlSecondsAfterFinished }}
+            template:
+              metadata:
+                labels:
+                  app: {{ .Chart.Name }}-analisis
+              spec:
+                restartPolicy: Never
+                automountServiceAccountToken: false
+                securityContext:
+                  runAsNonRoot: true
+                  runAsUser: 12345
+                  seccompProfile:
+                    type: RuntimeDefault
+                containers:
+                  - name: k6
+                    image: {{ .Values.analysis.image | quote }}
+                    args: ["run", "/scripts/humo.js"]
+                    env:
+                      - name: BASE_URL
+                        value: {{ printf "http://%s-canary:%v" .Chart.Name .Values.service.port | quote }}
+                      - name: RUTAS
+                        value: {{ .Values.analysis.rutas | toJson | quote }}
+                      - name: VUS
+                        value: {{ .Values.analysis.vus | quote }}
+                      - name: DURACION
+                        value: {{ .Values.analysis.duracion | quote }}
+                      - name: TASA_ERROR_MAX
+                        value: {{ .Values.analysis.umbrales.tasaErrorMax | quote }}
+                      - name: P95_MS
+                        value: {{ .Values.analysis.umbrales.p95Ms | quote }}
+                    securityContext:
+                      readOnlyRootFilesystem: true
+                      allowPrivilegeEscalation: false
+                      capabilities:
+                        drop:
+                          - ALL
+                    resources:
+                      {{- toYaml .Values.analysis.resources | nindent 22 }}
+                    volumeMounts:
+                      - name: scripts
+                        mountPath: /scripts
+                        readOnly: true
+                      - name: tmp
+                        mountPath: /tmp
+                volumes:
+                  - name: scripts
+                    configMap:
+                      name: {{ .Chart.Name }}-analisis
+                  - name: tmp
+                    emptyDir: {}

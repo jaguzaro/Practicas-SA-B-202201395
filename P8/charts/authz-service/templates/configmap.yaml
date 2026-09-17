@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-config
+  labels:
+    app: {{ .Chart.Name }}
+    {{- include "servicio.labels" . | nindent 4 }}
+data:
+  PORT: {{ .Values.service.port | quote }}
+  {{- if eq (.Values.logLevel | default "info") "debug" }}
+  LOG_LEVEL: "debug"
+  NODE_ENV: "development"
+  {{- else }}
+  LOG_LEVEL: {{ .Values.logLevel | default "info" | quote }}
+  NODE_ENV: "production"
+  {{- end }}
+  {{- range $key, $value := .Values.config }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}

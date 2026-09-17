@@ -1,0 +1,35 @@
+kubernetes_namespace_v1.argocd: Creating...
+kubernetes_namespace_v1.argo_rollouts: Creating...
+kubernetes_namespace_v1.argocd: Creation complete after 0s [id=argocd]
+kubernetes_namespace_v1.argo_rollouts: Creation complete after 0s [id=argo-rollouts]
+helm_release.argocd: Creating...
+helm_release.argo_rollouts: Creating...
+helm_release.argocd: Still creating... [00m10s elapsed]
+helm_release.argo_rollouts: Still creating... [00m10s elapsed]
+helm_release.argocd: Still creating... [00m20s elapsed]
+helm_release.argo_rollouts: Still creating... [00m20s elapsed]
+helm_release.argo_rollouts: Creation complete after 26s [id=argo-rollouts]
+helm_release.argocd: Still creating... [00m30s elapsed]
+helm_release.argocd: Still creating... [00m40s elapsed]
+helm_release.argocd: Still creating... [00m50s elapsed]
+helm_release.argocd: Still creating... [01m00s elapsed]
+helm_release.argocd: Still creating... [01m10s elapsed]
+helm_release.argocd: Still creating... [01m20s elapsed]
+helm_release.argocd: Still creating... [01m30s elapsed]
+helm_release.argocd: Still creating... [01m40s elapsed]
+helm_release.argocd: Still creating... [01m50s elapsed]
+helm_release.argocd: Creation complete after 1m52s [id=argocd]
+
+Apply complete! Resources: 4 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+cuentas_de_servicio = [
+  "audit-service",
+  "auth-api",
+  "authz-service",
+  "gateway",
+  "transactions-service",
+  "cronjobs",
+]
+namespace = "sa-p8"

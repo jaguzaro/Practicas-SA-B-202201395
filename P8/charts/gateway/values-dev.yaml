@@ -1,0 +1,24 @@
+replicaCount: 1
+
+logLevel: debug
+
+autoscaling:
+  enabled: false
+
+podDisruptionBudget:
+  minAvailable: 0
+
+rollout:
+  esperaAntesDeAnalisis: 5s
+
+analysis:
+  vus: 2
+  duracion: 10s
+
+resources:
+  requests:
+    cpu: 25m
+    memory: 128Mi
+  limits:
+    cpu: 300m
+    memory: 256Mi

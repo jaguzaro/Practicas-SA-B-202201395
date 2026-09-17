@@ -1,0 +1,24 @@
+postgresql:
+  primary:
+    persistence:
+      storageClass: standard-rwo
+      size: 5Gi
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 640Mi
+
+rabbitmq:
+  persistence:
+    storageClass: standard-rwo
+    size: 5Gi
+  resources:
+    requests:
+      cpu: 50m
+      memory: 320Mi
+    limits:
+      cpu: 500m
+      memory: 768Mi

@@ -1,0 +1,52 @@
+{{- range $nombre, $trabajo := .Values.trabajos }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ $nombre }}
+  labels:
+    app: {{ $nombre }}
+    {{- include "cronjobs.labels" $ | nindent 4 }}
+spec:
+  schedule: {{ $trabajo.schedule | quote }}
+  timeZone: {{ $.Values.timeZone | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: {{ $.Values.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ $.Values.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      backoffLimit: {{ $.Values.backoffLimit }}
+      ttlSecondsAfterFinished: {{ $.Values.ttlSecondsAfterFinished }}
+      template:
+        metadata:
+          labels:
+            app: {{ $nombre }}
+            {{- include "cronjobs.labels" $ | nindent 12 }}
+        spec:
+          restartPolicy: Never
+          serviceAccountName: cronjobs
+          automountServiceAccountToken: false
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: {{ $.Values.securityContext.runAsUser }}
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: {{ $nombre }}
+              image: {{ include "cronjobs.imagen" $ | quote }}
+              imagePullPolicy: {{ $.Values.image.pullPolicy | default "IfNotPresent" | quote }}
+              command: ["python", {{ $trabajo.script | quote }}]
+              securityContext:
+                readOnlyRootFilesystem: true
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+              envFrom:
+                - configMapRef:
+                    name: cronjobs-config
+                - secretRef:
+                    name: {{ $.Values.secret.name | default "cronjobs-secret" }}
+              resources:
+                {{- toYaml $.Values.resources | nindent 16 }}
+{{- end }}

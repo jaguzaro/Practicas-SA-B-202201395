@@ -1,0 +1,14 @@
+apiVersion: v2
+name: datos
+description: Base de datos y broker de mensajes de la plataforma, tomados de los charts de Bitnami con credenciales en Secrets externos
+type: application
+version: 2.0.0
+appVersion: "1.0.0"
+
+dependencies:
+  - name: postgresql
+    version: 18.8.13
+    repository: https://charts.bitnami.com/bitnami
+  - name: rabbitmq
+    version: 16.0.14
+    repository: https://charts.bitnami.com/bitnami

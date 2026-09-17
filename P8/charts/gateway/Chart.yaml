@@ -1,0 +1,6 @@
+apiVersion: v2
+name: gateway
+description: API Gateway de la plataforma basado en Kong en modo declarativo, desplegado como Rollout con estrategia canary
+type: application
+version: 2.0.0
+appVersion: "3.9"

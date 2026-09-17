@@ -1,0 +1,15 @@
+trabajos:
+  cronjob-registro:
+    schedule: "*/1 * * * *"
+    script: registrar_ejecucion.py
+  cronjob-resumen:
+    schedule: "*/5 * * * *"
+    script: publicar_resumen.py
+
+resources:
+  requests:
+    cpu: 25m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi

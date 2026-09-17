@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cronjobs-config
+  labels:
+    {{- include "cronjobs.labels" . | nindent 4 }}
+data:
+  CARNE: {{ required "Debe indicar carne" .Values.carne | quote }}
+  SUMMARY_QUEUE: {{ .Values.summaryQueue | quote }}

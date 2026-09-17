@@ -1,0 +1,95 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+    {{- include "servicio.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount | default 1 }}
+  {{- end }}
+  revisionHistoryLimit: {{ .Values.rollout.revisionHistoryLimit }}
+  progressDeadlineSeconds: {{ .Values.rollout.progressDeadlineSeconds }}
+  progressDeadlineAbort: true
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  strategy:
+    canary:
+      canaryService: {{ .Chart.Name }}-canary
+      stableService: {{ .Chart.Name }}
+      maxUnavailable: 0
+      maxSurge: 1
+      steps:
+        {{- range .Values.rollout.pasos }}
+        - setWeight: {{ . }}
+        - pause:
+            duration: {{ $.Values.rollout.esperaAntesDeAnalisis }}
+        - analysis:
+            templates:
+              - templateName: {{ $.Chart.Name }}-canary
+        {{- end }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+        app.kubernetes.io/version: {{ .Values.image.tag | quote }}
+        {{- include "servicio.labels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      serviceAccountName: {{ .Chart.Name }}
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.runAsUser }}
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ include "servicio.imagen" . | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" | quote }}
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Chart.Name }}-config
+            - secretRef:
+                name: {{ include "servicio.secreto" . }}
+          startupProbe:
+            httpGet:
+              path: {{ .Values.probes.path }}
+              port: http
+            periodSeconds: {{ .Values.probes.startup.periodSeconds }}
+            failureThreshold: {{ .Values.probes.startup.failureThreshold }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probes.path }}
+              port: http
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.probes.path }}
+              port: http
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}

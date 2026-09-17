@@ -1,0 +1,206 @@
+kubernetes_namespace_v1.plataforma: Refreshing state... [id=sa-p8]
+kubernetes_limit_range_v1.plataforma: Refreshing state... [id=sa-p8/sa-platform]
+kubernetes_role_v1.servicio["gateway"]: Refreshing state... [id=sa-p8/gateway]
+kubernetes_service_account_v1.cronjobs: Refreshing state... [id=sa-p8/cronjobs]
+kubernetes_role_v1.cronjobs: Refreshing state... [id=sa-p8/cronjobs]
+kubernetes_role_v1.servicio["audit-service"]: Refreshing state... [id=sa-p8/audit-service]
+kubernetes_role_v1.servicio["auth-api"]: Refreshing state... [id=sa-p8/auth-api]
+kubernetes_role_v1.servicio["authz-service"]: Refreshing state... [id=sa-p8/authz-service]
+kubernetes_resource_quota_v1.plataforma: Refreshing state... [id=sa-p8/sa-platform]
+kubernetes_role_v1.servicio["transactions-service"]: Refreshing state... [id=sa-p8/transactions-service]
+kubernetes_service_account_v1.servicio["gateway"]: Refreshing state... [id=sa-p8/gateway]
+kubernetes_service_account_v1.servicio["transactions-service"]: Refreshing state... [id=sa-p8/transactions-service]
+kubernetes_service_account_v1.servicio["audit-service"]: Refreshing state... [id=sa-p8/audit-service]
+kubernetes_service_account_v1.servicio["authz-service"]: Refreshing state... [id=sa-p8/authz-service]
+kubernetes_service_account_v1.servicio["auth-api"]: Refreshing state... [id=sa-p8/auth-api]
+kubernetes_role_binding_v1.cronjobs: Refreshing state... [id=sa-p8/cronjobs]
+kubernetes_role_binding_v1.servicio["gateway"]: Refreshing state... [id=sa-p8/gateway]
+kubernetes_role_binding_v1.servicio["audit-service"]: Refreshing state... [id=sa-p8/audit-service]
+kubernetes_role_binding_v1.servicio["auth-api"]: Refreshing state... [id=sa-p8/auth-api]
+kubernetes_role_binding_v1.servicio["transactions-service"]: Refreshing state... [id=sa-p8/transactions-service]
+kubernetes_role_binding_v1.servicio["authz-service"]: Refreshing state... [id=sa-p8/authz-service]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # helm_release.argo_rollouts will be created
+  + resource "helm_release" "argo_rollouts" {
+      + atomic                     = false
+      + chart                      = "argo-rollouts"
+      + cleanup_on_fail            = false
+      + create_namespace           = false
+      + dependency_update          = false
+      + disable_crd_hooks          = false
+      + disable_openapi_validation = false
+      + disable_webhooks           = false
+      + force_update               = false
+      + id                         = (known after apply)
+      + lint                       = false
+      + max_history                = 0
+      + metadata                   = (known after apply)
+      + name                       = "argo-rollouts"
+      + namespace                  = "argo-rollouts"
+      + pass_credentials           = false
+      + recreate_pods              = false
+      + render_subchart_notes      = true
+      + replace                    = false
+      + repository                 = "https://argoproj.github.io/argo-helm"
+      + reset_values               = false
+      + reuse_values               = false
+      + set_wo                     = (write-only attribute)
+      + skip_crds                  = false
+      + status                     = "deployed"
+      + take_ownership             = false
+      + timeout                    = 300
+      + upgrade_install            = false
+      + values                     = [
+          + <<-EOT
+                controller:
+                  resources:
+                    requests:
+                      cpu: 20m
+                      memory: 64Mi
+                    limits:
+                      memory: 256Mi
+                
+                dashboard:
+                  enabled: false
+            EOT,
+        ]
+      + verify                     = false
+      + version                    = "2.43.1"
+      + wait                       = true
+      + wait_for_jobs              = false
+    }
+
+  # helm_release.argocd will be created
+  + resource "helm_release" "argocd" {
+      + atomic                     = false
+      + chart                      = "argo-cd"
+      + cleanup_on_fail            = false
+      + create_namespace           = false
+      + dependency_update          = false
+      + disable_crd_hooks          = false
+      + disable_openapi_validation = false
+      + disable_webhooks           = false
+      + force_update               = false
+      + id                         = (known after apply)
+      + lint                       = false
+      + max_history                = 0
+      + metadata                   = (known after apply)
+      + name                       = "argocd"
+      + namespace                  = "argocd"
+      + pass_credentials           = false
+      + recreate_pods              = false
+      + render_subchart_notes      = true
+      + replace                    = false
+      + repository                 = "https://argoproj.github.io/argo-helm"
+      + reset_values               = false
+      + reuse_values               = false
+      + set_wo                     = (write-only attribute)
+      + skip_crds                  = false
+      + status                     = "deployed"
+      + take_ownership             = false
+      + timeout                    = 600
+      + upgrade_install            = false
+      + values                     = [
+          + <<-EOT
+                configs:
+                  params:
+                    server.insecure: true
+                
+                dex:
+                  enabled: false
+                
+                notifications:
+                  enabled: false
+                
+                applicationSet:
+                  enabled: false
+                
+                controller:
+                  resources:
+                    requests:
+                      cpu: 50m
+                      memory: 256Mi
+                    limits:
+                      memory: 768Mi
+                
+                server:
+                  resources:
+                    requests:
+                      cpu: 20m
+                      memory: 96Mi
+                    limits:
+                      memory: 256Mi
+                
+                repoServer:
+                  resources:
+                    requests:
+                      cpu: 20m
+                      memory: 128Mi
+                    limits:
+                      memory: 512Mi
+                
+                redis:
+                  resources:
+                    requests:
+                      cpu: 10m
+                      memory: 32Mi
+                    limits:
+                      memory: 128Mi
+            EOT,
+        ]
+      + verify                     = false
+      + version                    = "10.9.1"
+      + wait                       = true
+      + wait_for_jobs              = false
+    }
+
+  # kubernetes_namespace_v1.argo_rollouts will be created
+  + resource "kubernetes_namespace_v1" "argo_rollouts" {
+      + id                               = (known after apply)
+      + wait_for_default_service_account = false
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "argo-rollouts"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+  # kubernetes_namespace_v1.argocd will be created
+  + resource "kubernetes_namespace_v1" "argocd" {
+      + id                               = (known after apply)
+      + wait_for_default_service_account = false
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "argocd"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+Plan: 4 to add, 0 to change, 0 to destroy.
+
+─────────────────────────────────────────────────────────────────────────────
+
+Saved the plan to: plan.tfplan
+
+To perform exactly these actions, run the following command to apply:
+    terraform apply "plan.tfplan"

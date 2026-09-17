@@ -1,0 +1,628 @@
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # kubernetes_limit_range_v1.plataforma will be created
+  + resource "kubernetes_limit_range_v1" "plataforma" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "sa-platform"
+          + namespace        = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + limit {
+              + default         = {
+                  + "cpu"    = "300m"
+                  + "memory" = "256Mi"
+                }
+              + default_request = {
+                  + "cpu"    = "50m"
+                  + "memory" = "64Mi"
+                }
+              + max             = {
+                  + "cpu"    = "2"
+                  + "memory" = "2Gi"
+                }
+              + type            = "Container"
+            }
+        }
+    }
+
+  # kubernetes_namespace_v1.plataforma will be created
+  + resource "kubernetes_namespace_v1" "plataforma" {
+      + id                               = (known after apply)
+      + wait_for_default_service_account = false
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+  # kubernetes_resource_quota_v1.plataforma will be created
+  + resource "kubernetes_resource_quota_v1" "plataforma" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "sa-platform"
+          + namespace        = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + hard = {
+              + "limits.cpu"      = "32"
+              + "limits.memory"   = "24Gi"
+              + "pods"            = "60"
+              + "requests.cpu"    = "8"
+              + "requests.memory" = "10Gi"
+            }
+        }
+    }
+
+  # kubernetes_role_binding_v1.cronjobs will be created
+  + resource "kubernetes_role_binding_v1" "cronjobs" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app"                          = "cronjobs"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "cronjobs"
+          + namespace        = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + role_ref {
+          + api_group = "rbac.authorization.k8s.io"
+          + kind      = "Role"
+          + name      = "cronjobs"
+        }
+
+      + subject {
+          + api_group = (known after apply)
+          + kind      = "ServiceAccount"
+          + name      = "cronjobs"
+          + namespace = "sa-p8"
+        }
+    }
+
+  # kubernetes_role_binding_v1.servicio["audit-service"] will be created
+  + resource "kubernetes_role_binding_v1" "servicio" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app"                          = "audit-service"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "audit-service"
+          + namespace        = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + role_ref {
+          + api_group = "rbac.authorization.k8s.io"
+          + kind      = "Role"
+          + name      = "audit-service"
+        }
+
+      + subject {
+          + api_group = (known after apply)
+          + kind      = "ServiceAccount"
+          + name      = "audit-service"
+          + namespace = "sa-p8"
+        }
+    }
+
+  # kubernetes_role_binding_v1.servicio["auth-api"] will be created
+  + resource "kubernetes_role_binding_v1" "servicio" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app"                          = "auth-api"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "auth-api"
+          + namespace        = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + role_ref {
+          + api_group = "rbac.authorization.k8s.io"
+          + kind      = "Role"
+          + name      = "auth-api"
+        }
+
+      + subject {
+          + api_group = (known after apply)
+          + kind      = "ServiceAccount"
+          + name      = "auth-api"
+          + namespace = "sa-p8"
+        }
+    }
+
+  # kubernetes_role_binding_v1.servicio["authz-service"] will be created
+  + resource "kubernetes_role_binding_v1" "servicio" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app"                          = "authz-service"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "authz-service"
+          + namespace        = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + role_ref {
+          + api_group = "rbac.authorization.k8s.io"
+          + kind      = "Role"
+          + name      = "authz-service"
+        }
+
+      + subject {
+          + api_group = (known after apply)
+          + kind      = "ServiceAccount"
+          + name      = "authz-service"
+          + namespace = "sa-p8"
+        }
+    }
+
+  # kubernetes_role_binding_v1.servicio["gateway"] will be created
+  + resource "kubernetes_role_binding_v1" "servicio" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app"                          = "gateway"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "gateway"
+          + namespace        = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + role_ref {
+          + api_group = "rbac.authorization.k8s.io"
+          + kind      = "Role"
+          + name      = "gateway"
+        }
+
+      + subject {
+          + api_group = (known after apply)
+          + kind      = "ServiceAccount"
+          + name      = "gateway"
+          + namespace = "sa-p8"
+        }
+    }
+
+  # kubernetes_role_binding_v1.servicio["transactions-service"] will be created
+  + resource "kubernetes_role_binding_v1" "servicio" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app"                          = "transactions-service"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "transactions-service"
+          + namespace        = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + role_ref {
+          + api_group = "rbac.authorization.k8s.io"
+          + kind      = "Role"
+          + name      = "transactions-service"
+        }
+
+      + subject {
+          + api_group = (known after apply)
+          + kind      = "ServiceAccount"
+          + name      = "transactions-service"
+          + namespace = "sa-p8"
+        }
+    }
+
+  # kubernetes_role_v1.cronjobs will be created
+  + resource "kubernetes_role_v1" "cronjobs" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app"                          = "cronjobs"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "cronjobs"
+          + namespace        = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + rule {
+          + api_groups = [
+              + "batch",
+            ]
+          + resources  = [
+              + "jobs",
+            ]
+          + verbs      = [
+              + "get",
+              + "list",
+            ]
+        }
+    }
+
+  # kubernetes_role_v1.servicio["audit-service"] will be created
+  + resource "kubernetes_role_v1" "servicio" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app"                          = "audit-service"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "audit-service"
+          + namespace        = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + rule {
+          + api_groups     = [
+              + null,
+            ]
+          + resource_names = [
+              + "audit-service-config",
+            ]
+          + resources      = [
+              + "configmaps",
+            ]
+          + verbs          = [
+              + "get",
+            ]
+        }
+    }
+
+  # kubernetes_role_v1.servicio["auth-api"] will be created
+  + resource "kubernetes_role_v1" "servicio" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app"                          = "auth-api"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "auth-api"
+          + namespace        = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + rule {
+          + api_groups     = [
+              + null,
+            ]
+          + resource_names = [
+              + "auth-api-config",
+            ]
+          + resources      = [
+              + "configmaps",
+            ]
+          + verbs          = [
+              + "get",
+            ]
+        }
+    }
+
+  # kubernetes_role_v1.servicio["authz-service"] will be created
+  + resource "kubernetes_role_v1" "servicio" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app"                          = "authz-service"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "authz-service"
+          + namespace        = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + rule {
+          + api_groups     = [
+              + null,
+            ]
+          + resource_names = [
+              + "authz-service-config",
+            ]
+          + resources      = [
+              + "configmaps",
+            ]
+          + verbs          = [
+              + "get",
+            ]
+        }
+    }
+
+  # kubernetes_role_v1.servicio["gateway"] will be created
+  + resource "kubernetes_role_v1" "servicio" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app"                          = "gateway"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "gateway"
+          + namespace        = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + rule {
+          + api_groups     = [
+              + null,
+            ]
+          + resource_names = [
+              + "gateway-declarative",
+            ]
+          + resources      = [
+              + "configmaps",
+            ]
+          + verbs          = [
+              + "get",
+            ]
+        }
+    }
+
+  # kubernetes_role_v1.servicio["transactions-service"] will be created
+  + resource "kubernetes_role_v1" "servicio" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app"                          = "transactions-service"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "transactions-service"
+          + namespace        = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + rule {
+          + api_groups     = [
+              + null,
+            ]
+          + resource_names = [
+              + "transactions-service-config",
+            ]
+          + resources      = [
+              + "configmaps",
+            ]
+          + verbs          = [
+              + "get",
+            ]
+        }
+    }
+
+  # kubernetes_service_account_v1.cronjobs will be created
+  + resource "kubernetes_service_account_v1" "cronjobs" {
+      + automount_service_account_token = false
+      + default_secret_name             = (known after apply)
+      + id                              = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app"                          = "cronjobs"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "cronjobs"
+          + namespace        = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+  # kubernetes_service_account_v1.servicio["audit-service"] will be created
+  + resource "kubernetes_service_account_v1" "servicio" {
+      + automount_service_account_token = false
+      + default_secret_name             = (known after apply)
+      + id                              = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app"                          = "audit-service"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "audit-service"
+          + namespace        = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+  # kubernetes_service_account_v1.servicio["auth-api"] will be created
+  + resource "kubernetes_service_account_v1" "servicio" {
+      + automount_service_account_token = false
+      + default_secret_name             = (known after apply)
+      + id                              = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app"                          = "auth-api"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "auth-api"
+          + namespace        = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+  # kubernetes_service_account_v1.servicio["authz-service"] will be created
+  + resource "kubernetes_service_account_v1" "servicio" {
+      + automount_service_account_token = false
+      + default_secret_name             = (known after apply)
+      + id                              = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app"                          = "authz-service"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "authz-service"
+          + namespace        = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+  # kubernetes_service_account_v1.servicio["gateway"] will be created
+  + resource "kubernetes_service_account_v1" "servicio" {
+      + automount_service_account_token = false
+      + default_secret_name             = (known after apply)
+      + id                              = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app"                          = "gateway"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "gateway"
+          + namespace        = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+  # kubernetes_service_account_v1.servicio["transactions-service"] will be created
+  + resource "kubernetes_service_account_v1" "servicio" {
+      + automount_service_account_token = false
+      + default_secret_name             = (known after apply)
+      + id                              = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app"                          = "transactions-service"
+              + "app.kubernetes.io/managed-by" = "terraform"
+              + "app.kubernetes.io/part-of"    = "sa-platform"
+              + "practica"                     = "p8"
+            }
+          + name             = "transactions-service"
+          + namespace        = "sa-p8"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+Plan: 21 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + cuentas_de_servicio = [
+      + "audit-service",
+      + "auth-api",
+      + "authz-service",
+      + "gateway",
+      + "transactions-service",
+      + "cronjobs",
+    ]
+  + namespace           = "sa-p8"
+
+─────────────────────────────────────────────────────────────────────────────
+
+Saved the plan to: plan.tfplan
+
+To perform exactly these actions, run the following command to apply:
+    terraform apply "plan.tfplan"

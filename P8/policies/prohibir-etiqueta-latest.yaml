@@ -1,0 +1,44 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: prohibir-etiqueta-latest
+spec:
+  validationFailureAction: Enforce
+  background: false
+  rules:
+    - name: pods-con-version-explicita
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - sa-p8
+                - sa-p8-dev
+      validate:
+        message: "Toda imagen debe llevar una etiqueta de version explicita. La etiqueta latest esta prohibida."
+        pattern:
+          spec:
+            containers:
+              - image: "!*:latest & *:*"
+            =(initContainers):
+              - image: "!*:latest & *:*"
+    - name: rollouts-con-version-explicita
+      match:
+        any:
+          - resources:
+              kinds:
+                - argoproj.io/v1alpha1/Rollout
+              namespaces:
+                - sa-p8
+                - sa-p8-dev
+      validate:
+        message: "Toda imagen debe llevar una etiqueta de version explicita. La etiqueta latest esta prohibida."
+        pattern:
+          spec:
+            template:
+              spec:
+                containers:
+                  - image: "!*:latest & *:*"
+                =(initContainers):
+                  - image: "!*:latest & *:*"

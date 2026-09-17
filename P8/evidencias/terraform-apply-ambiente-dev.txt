@@ -1,0 +1,103 @@
+module.ambiente["dev"].kubernetes_namespace_v1.plataforma: Creating...
+module.ambiente["prod"].kubernetes_namespace_v1.plataforma: Modifying... [id=sa-p8]
+module.ambiente["prod"].kubernetes_namespace_v1.plataforma: Modifications complete after 1s [id=sa-p8]
+module.ambiente["dev"].kubernetes_namespace_v1.plataforma: Creation complete after 2s [id=sa-p8-dev]
+module.ambiente["dev"].kubernetes_limit_range_v1.plataforma: Creating...
+module.ambiente["dev"].kubernetes_resource_quota_v1.plataforma: Creating...
+module.ambiente["dev"].kubernetes_service_account_v1.cronjobs: Creating...
+module.ambiente["dev"].kubernetes_role_v1.cronjobs: Creating...
+module.ambiente["prod"].kubernetes_limit_range_v1.plataforma: Modifying... [id=sa-p8/sa-platform]
+module.ambiente["dev"].kubernetes_role_v1.servicio["authz-service"]: Creating...
+module.ambiente["prod"].kubernetes_resource_quota_v1.plataforma: Modifying... [id=sa-p8/sa-platform]
+module.ambiente["prod"].kubernetes_role_v1.cronjobs: Modifying... [id=sa-p8/cronjobs]
+module.ambiente["prod"].kubernetes_service_account_v1.cronjobs: Modifying... [id=sa-p8/cronjobs]
+module.ambiente["prod"].kubernetes_resource_quota_v1.plataforma: Modifications complete after 2s [id=sa-p8/sa-platform]
+module.ambiente["dev"].kubernetes_role_v1.cronjobs: Creation complete after 2s [id=sa-p8-dev/cronjobs]
+module.ambiente["dev"].kubernetes_role_v1.servicio["audit-service"]: Creating...
+module.ambiente["prod"].kubernetes_role_v1.servicio["audit-service"]: Modifying... [id=sa-p8/audit-service]
+module.ambiente["dev"].kubernetes_role_v1.servicio["authz-service"]: Creation complete after 2s [id=sa-p8-dev/authz-service]
+module.ambiente["prod"].kubernetes_role_v1.servicio["gateway"]: Modifying... [id=sa-p8/gateway]
+module.ambiente["prod"].kubernetes_role_v1.cronjobs: Modifications complete after 2s [id=sa-p8/cronjobs]
+module.ambiente["prod"].kubernetes_service_account_v1.cronjobs: Modifications complete after 2s [id=sa-p8/cronjobs]
+module.ambiente["dev"].kubernetes_limit_range_v1.plataforma: Creation complete after 2s [id=sa-p8-dev/sa-platform]
+module.ambiente["dev"].kubernetes_role_v1.servicio["auth-api"]: Creating...
+module.ambiente["prod"].kubernetes_role_v1.servicio["authz-service"]: Modifying... [id=sa-p8/authz-service]
+module.ambiente["prod"].kubernetes_role_v1.servicio["transactions-service"]: Modifying... [id=sa-p8/transactions-service]
+module.ambiente["prod"].kubernetes_limit_range_v1.plataforma: Modifications complete after 2s [id=sa-p8/sa-platform]
+module.ambiente["dev"].kubernetes_role_v1.servicio["gateway"]: Creating...
+module.ambiente["dev"].kubernetes_resource_quota_v1.plataforma: Creation complete after 2s [id=sa-p8-dev/sa-platform]
+module.ambiente["dev"].kubernetes_service_account_v1.cronjobs: Creation complete after 2s [id=sa-p8-dev/cronjobs]
+module.ambiente["prod"].kubernetes_service_account_v1.servicio["authz-service"]: Modifying... [id=sa-p8/authz-service]
+module.ambiente["prod"].kubernetes_role_v1.servicio["auth-api"]: Modifying... [id=sa-p8/auth-api]
+module.ambiente["prod"].kubernetes_role_v1.servicio["audit-service"]: Modifications complete after 4s [id=sa-p8/audit-service]
+module.ambiente["dev"].kubernetes_role_v1.servicio["audit-service"]: Creation complete after 4s [id=sa-p8-dev/audit-service]
+module.ambiente["prod"].kubernetes_role_v1.servicio["gateway"]: Modifications complete after 4s [id=sa-p8/gateway]
+module.ambiente["dev"].kubernetes_role_v1.servicio["auth-api"]: Creation complete after 4s [id=sa-p8-dev/auth-api]
+module.ambiente["dev"].kubernetes_service_account_v1.servicio["authz-service"]: Creating...
+module.ambiente["prod"].kubernetes_service_account_v1.servicio["auth-api"]: Modifying... [id=sa-p8/auth-api]
+module.ambiente["dev"].kubernetes_service_account_v1.servicio["transactions-service"]: Creating...
+module.ambiente["prod"].kubernetes_service_account_v1.servicio["audit-service"]: Modifying... [id=sa-p8/audit-service]
+kubernetes_manifest.aplicacion_raiz: Modifying...
+module.ambiente["prod"].kubernetes_role_v1.servicio["authz-service"]: Modifications complete after 4s [id=sa-p8/authz-service]
+module.ambiente["prod"].kubernetes_service_account_v1.servicio["transactions-service"]: Modifying... [id=sa-p8/transactions-service]
+module.ambiente["prod"].kubernetes_role_v1.servicio["transactions-service"]: Modifications complete after 4s [id=sa-p8/transactions-service]
+module.ambiente["dev"].kubernetes_role_v1.servicio["gateway"]: Creation complete after 4s [id=sa-p8-dev/gateway]
+module.ambiente["dev"].kubernetes_service_account_v1.servicio["gateway"]: Creating...
+module.ambiente["prod"].kubernetes_service_account_v1.servicio["gateway"]: Modifying... [id=sa-p8/gateway]
+module.ambiente["prod"].kubernetes_service_account_v1.servicio["authz-service"]: Modifications complete after 4s [id=sa-p8/authz-service]
+module.ambiente["dev"].kubernetes_service_account_v1.servicio["audit-service"]: Creating...
+module.ambiente["prod"].kubernetes_role_v1.servicio["auth-api"]: Modifications complete after 4s [id=sa-p8/auth-api]
+module.ambiente["dev"].kubernetes_role_v1.servicio["transactions-service"]: Creating...
+kubernetes_manifest.aplicacion_raiz: Modifications complete after 1s
+module.ambiente["dev"].kubernetes_service_account_v1.servicio["auth-api"]: Creating...
+module.ambiente["prod"].kubernetes_service_account_v1.servicio["auth-api"]: Modifications complete after 1s [id=sa-p8/auth-api]
+module.ambiente["dev"].kubernetes_role_binding_v1.cronjobs: Creating...
+module.ambiente["prod"].kubernetes_service_account_v1.servicio["audit-service"]: Modifications complete after 1s [id=sa-p8/audit-service]
+module.ambiente["prod"].kubernetes_service_account_v1.servicio["transactions-service"]: Modifications complete after 1s [id=sa-p8/transactions-service]
+module.ambiente["prod"].kubernetes_role_binding_v1.cronjobs: Modifying... [id=sa-p8/cronjobs]
+module.ambiente["prod"].kubernetes_service_account_v1.servicio["gateway"]: Modifications complete after 1s [id=sa-p8/gateway]
+module.ambiente["dev"].kubernetes_service_account_v1.servicio["authz-service"]: Creation complete after 1s [id=sa-p8-dev/authz-service]
+module.ambiente["dev"].kubernetes_service_account_v1.servicio["transactions-service"]: Creation complete after 1s [id=sa-p8-dev/transactions-service]
+module.ambiente["dev"].kubernetes_service_account_v1.servicio["audit-service"]: Creation complete after 1s [id=sa-p8-dev/audit-service]
+module.ambiente["dev"].kubernetes_service_account_v1.servicio["gateway"]: Creation complete after 1s [id=sa-p8-dev/gateway]
+module.ambiente["dev"].kubernetes_role_v1.servicio["transactions-service"]: Creation complete after 1s [id=sa-p8-dev/transactions-service]
+module.ambiente["prod"].kubernetes_role_binding_v1.cronjobs: Modifications complete after 1s [id=sa-p8/cronjobs]
+module.ambiente["dev"].kubernetes_service_account_v1.servicio["auth-api"]: Creation complete after 1s [id=sa-p8-dev/auth-api]
+module.ambiente["dev"].kubernetes_role_binding_v1.servicio["gateway"]: Creating...
+module.ambiente["dev"].kubernetes_role_binding_v1.servicio["auth-api"]: Creating...
+module.ambiente["dev"].kubernetes_role_binding_v1.servicio["transactions-service"]: Creating...
+module.ambiente["dev"].kubernetes_role_binding_v1.servicio["audit-service"]: Creating...
+module.ambiente["dev"].kubernetes_role_binding_v1.cronjobs: Creation complete after 1s [id=sa-p8-dev/cronjobs]
+module.ambiente["prod"].kubernetes_role_binding_v1.servicio["audit-service"]: Modifying... [id=sa-p8/audit-service]
+module.ambiente["prod"].kubernetes_role_binding_v1.servicio["gateway"]: Modifying... [id=sa-p8/gateway]
+module.ambiente["prod"].kubernetes_role_binding_v1.servicio["auth-api"]: Modifying... [id=sa-p8/auth-api]
+module.ambiente["prod"].kubernetes_role_binding_v1.servicio["transactions-service"]: Modifying... [id=sa-p8/transactions-service]
+module.ambiente["dev"].kubernetes_role_binding_v1.servicio["authz-service"]: Creating...
+module.ambiente["prod"].kubernetes_role_binding_v1.servicio["authz-service"]: Modifying... [id=sa-p8/authz-service]
+module.ambiente["dev"].kubernetes_role_binding_v1.servicio["gateway"]: Creation complete after 1s [id=sa-p8-dev/gateway]
+module.ambiente["dev"].kubernetes_role_binding_v1.servicio["audit-service"]: Creation complete after 1s [id=sa-p8-dev/audit-service]
+module.ambiente["dev"].kubernetes_role_binding_v1.servicio["transactions-service"]: Creation complete after 1s [id=sa-p8-dev/transactions-service]
+module.ambiente["prod"].kubernetes_role_binding_v1.servicio["auth-api"]: Modifications complete after 1s [id=sa-p8/auth-api]
+module.ambiente["prod"].kubernetes_role_binding_v1.servicio["authz-service"]: Modifications complete after 1s [id=sa-p8/authz-service]
+module.ambiente["prod"].kubernetes_role_binding_v1.servicio["transactions-service"]: Modifications complete after 1s [id=sa-p8/transactions-service]
+module.ambiente["prod"].kubernetes_role_binding_v1.servicio["gateway"]: Modifications complete after 1s [id=sa-p8/gateway]
+module.ambiente["prod"].kubernetes_role_binding_v1.servicio["audit-service"]: Modifications complete after 1s [id=sa-p8/audit-service]
+module.ambiente["dev"].kubernetes_role_binding_v1.servicio["auth-api"]: Creation complete after 1s [id=sa-p8-dev/auth-api]
+module.ambiente["dev"].kubernetes_role_binding_v1.servicio["authz-service"]: Creation complete after 1s [id=sa-p8-dev/authz-service]
+
+Apply complete! Resources: 21 added, 22 changed, 0 destroyed.
+
+Outputs:
+
+ambientes = {
+  "dev" = "sa-p8-dev"
+  "prod" = "sa-p8"
+}
+cuentas_de_servicio = [
+  "audit-service",
+  "auth-api",
+  "authz-service",
+  "gateway",
+  "transactions-service",
+  "cronjobs",
+]

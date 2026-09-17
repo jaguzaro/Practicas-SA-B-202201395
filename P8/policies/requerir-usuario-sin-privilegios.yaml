@@ -1,0 +1,56 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: requerir-usuario-sin-privilegios
+spec:
+  validationFailureAction: Enforce
+  background: false
+  rules:
+    - name: pods-sin-root
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - sa-p8
+                - sa-p8-dev
+      validate:
+        message: "Los contenedores deben ejecutarse como usuario sin privilegios, con runAsNonRoot en true a nivel de pod o de cada contenedor."
+        anyPattern:
+          - spec:
+              securityContext:
+                runAsNonRoot: true
+              containers:
+                - =(securityContext):
+                    =(runAsNonRoot): true
+          - spec:
+              containers:
+                - securityContext:
+                    runAsNonRoot: true
+    - name: rollouts-sin-root
+      match:
+        any:
+          - resources:
+              kinds:
+                - argoproj.io/v1alpha1/Rollout
+              namespaces:
+                - sa-p8
+                - sa-p8-dev
+      validate:
+        message: "Los contenedores deben ejecutarse como usuario sin privilegios, con runAsNonRoot en true a nivel de pod o de cada contenedor."
+        anyPattern:
+          - spec:
+              template:
+                spec:
+                  securityContext:
+                    runAsNonRoot: true
+                  containers:
+                    - =(securityContext):
+                        =(runAsNonRoot): true
+          - spec:
+              template:
+                spec:
+                  containers:
+                    - securityContext:
+                        runAsNonRoot: true

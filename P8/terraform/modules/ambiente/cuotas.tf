@@ -2,7 +2,7 @@ resource "kubernetes_resource_quota_v1" "plataforma" {
   metadata {
     name      = "sa-platform"
     namespace = kubernetes_namespace_v1.plataforma.metadata[0].name
-    labels    = local.etiquetas
+    labels    = var.etiquetas
   }
 
   spec {
@@ -20,7 +20,7 @@ resource "kubernetes_limit_range_v1" "plataforma" {
   metadata {
     name      = "sa-platform"
     namespace = kubernetes_namespace_v1.plataforma.metadata[0].name
-    labels    = local.etiquetas
+    labels    = var.etiquetas
   }
 
   spec {

@@ -1,0 +1,354 @@
+kubernetes_namespace_v1.plataforma: Refreshing state... [id=sa-p8]
+kubernetes_namespace_v1.argocd: Refreshing state... [id=argocd]
+kubernetes_namespace_v1.argo_rollouts: Refreshing state... [id=argo-rollouts]
+kubernetes_limit_range_v1.plataforma: Refreshing state... [id=sa-p8/sa-platform]
+kubernetes_resource_quota_v1.plataforma: Refreshing state... [id=sa-p8/sa-platform]
+kubernetes_service_account_v1.servicio["authz-service"]: Refreshing state... [id=sa-p8/authz-service]
+kubernetes_service_account_v1.servicio["audit-service"]: Refreshing state... [id=sa-p8/audit-service]
+kubernetes_role_v1.cronjobs: Refreshing state... [id=sa-p8/cronjobs]
+kubernetes_service_account_v1.servicio["gateway"]: Refreshing state... [id=sa-p8/gateway]
+kubernetes_service_account_v1.cronjobs: Refreshing state... [id=sa-p8/cronjobs]
+kubernetes_service_account_v1.servicio["auth-api"]: Refreshing state... [id=sa-p8/auth-api]
+helm_release.argo_rollouts: Refreshing state... [id=argo-rollouts]
+helm_release.argocd: Refreshing state... [id=argocd]
+kubernetes_role_v1.servicio["audit-service"]: Refreshing state... [id=sa-p8/audit-service]
+kubernetes_role_v1.servicio["auth-api"]: Refreshing state... [id=sa-p8/auth-api]
+kubernetes_service_account_v1.servicio["transactions-service"]: Refreshing state... [id=sa-p8/transactions-service]
+kubernetes_role_v1.servicio["authz-service"]: Refreshing state... [id=sa-p8/authz-service]
+kubernetes_role_v1.servicio["gateway"]: Refreshing state... [id=sa-p8/gateway]
+kubernetes_role_v1.servicio["transactions-service"]: Refreshing state... [id=sa-p8/transactions-service]
+kubernetes_role_binding_v1.cronjobs: Refreshing state... [id=sa-p8/cronjobs]
+kubernetes_role_binding_v1.servicio["transactions-service"]: Refreshing state... [id=sa-p8/transactions-service]
+kubernetes_role_binding_v1.servicio["authz-service"]: Refreshing state... [id=sa-p8/authz-service]
+kubernetes_role_binding_v1.servicio["gateway"]: Refreshing state... [id=sa-p8/gateway]
+kubernetes_role_binding_v1.servicio["auth-api"]: Refreshing state... [id=sa-p8/auth-api]
+kubernetes_role_binding_v1.servicio["audit-service"]: Refreshing state... [id=sa-p8/audit-service]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # kubernetes_manifest.aplicacion_raiz will be created
+  + resource "kubernetes_manifest" "aplicacion_raiz" {
+      + manifest = {
+          + apiVersion = "argoproj.io/v1alpha1"
+          + kind       = "Application"
+          + metadata   = {
+              + finalizers = [
+                  + "resources-finalizer.argocd.argoproj.io",
+                ]
+              + name       = "sa-p8"
+              + namespace  = "argocd"
+            }
+          + spec       = {
+              + destination = {
+                  + namespace = "argocd"
+                  + server    = "https://kubernetes.default.svc"
+                }
+              + project     = "default"
+              + source      = {
+                  + path           = "apps"
+                  + repoURL        = "https://github.com/jaguzaro/Practicas-SA-B-202201395-gitops.git"
+                  + targetRevision = "main"
+                }
+              + syncPolicy  = {
+                  + automated = {
+                      + prune    = true
+                      + selfHeal = true
+                    }
+                }
+            }
+        }
+      + object   = {
+          + apiVersion = "argoproj.io/v1alpha1"
+          + kind       = "Application"
+          + metadata   = {
+              + annotations                = (known after apply)
+              + creationTimestamp          = (known after apply)
+              + deletionGracePeriodSeconds = (known after apply)
+              + deletionTimestamp          = (known after apply)
+              + finalizers                 = [
+                  + "resources-finalizer.argocd.argoproj.io",
+                ]
+              + generateName               = (known after apply)
+              + generation                 = (known after apply)
+              + labels                     = (known after apply)
+              + managedFields              = (known after apply)
+              + name                       = "sa-p8"
+              + namespace                  = "argocd"
+              + ownerReferences            = (known after apply)
+              + resourceVersion            = (known after apply)
+              + selfLink                   = (known after apply)
+              + uid                        = (known after apply)
+            }
+          + operation  = {
+              + info        = (known after apply)
+              + initiatedBy = {
+                  + automated = (known after apply)
+                  + username  = (known after apply)
+                }
+              + retry       = {
+                  + backoff = {
+                      + duration    = (known after apply)
+                      + factor      = (known after apply)
+                      + maxDuration = (known after apply)
+                    }
+                  + limit   = (known after apply)
+                  + refresh = (known after apply)
+                }
+              + sync        = {
+                  + autoHealAttemptsCount = (known after apply)
+                  + dryRun                = (known after apply)
+                  + manifests             = (known after apply)
+                  + prune                 = (known after apply)
+                  + resources             = (known after apply)
+                  + revision              = (known after apply)
+                  + revisions             = (known after apply)
+                  + source                = {
+                      + chart          = (known after apply)
+                      + directory      = {
+                          + exclude = (known after apply)
+                          + include = (known after apply)
+                          + jsonnet = {
+                              + extVars = (known after apply)
+                              + libs    = (known after apply)
+                              + tlas    = (known after apply)
+                            }
+                          + recurse = (known after apply)
+                        }
+                      + helm           = {
+                          + apiVersions             = (known after apply)
+                          + fileParameters          = (known after apply)
+                          + ignoreMissingValueFiles = (known after apply)
+                          + kubeVersion             = (known after apply)
+                          + namespace               = (known after apply)
+                          + parameters              = (known after apply)
+                          + passCredentials         = (known after apply)
+                          + releaseName             = (known after apply)
+                          + skipCrds                = (known after apply)
+                          + skipSchemaValidation    = (known after apply)
+                          + skipTests               = (known after apply)
+                          + valueFiles              = (known after apply)
+                          + values                  = (known after apply)
+                          + valuesObject            = (known after apply)
+                          + version                 = (known after apply)
+                        }
+                      + kustomize      = {
+                          + apiVersions               = (known after apply)
+                          + commonAnnotations         = (known after apply)
+                          + commonAnnotationsEnvsubst = (known after apply)
+                          + commonLabels              = (known after apply)
+                          + components                = (known after apply)
+                          + forceCommonAnnotations    = (known after apply)
+                          + forceCommonLabels         = (known after apply)
+                          + ignoreMissingComponents   = (known after apply)
+                          + images                    = (known after apply)
+                          + kubeVersion               = (known after apply)
+                          + labelIncludeTemplates     = (known after apply)
+                          + labelWithoutSelector      = (known after apply)
+                          + namePrefix                = (known after apply)
+                          + nameSuffix                = (known after apply)
+                          + namespace                 = (known after apply)
+                          + patches                   = (known after apply)
+                          + replicas                  = (known after apply)
+                          + version                   = (known after apply)
+                        }
+                      + name           = (known after apply)
+                      + path           = (known after apply)
+                      + plugin         = {
+                          + env        = (known after apply)
+                          + name       = (known after apply)
+                          + parameters = (known after apply)
+                        }
+                      + ref            = (known after apply)
+                      + repoURL        = (known after apply)
+                      + tagPrefix      = (known after apply)
+                      + targetRevision = (known after apply)
+                    }
+                  + sources               = (known after apply)
+                  + syncOptions           = (known after apply)
+                  + syncStrategy          = {
+                      + apply = {
+                          + force = (known after apply)
+                        }
+                      + hook  = {
+                          + force = (known after apply)
+                        }
+                    }
+                }
+            }
+          + spec       = {
+              + destination          = {
+                  + name      = (known after apply)
+                  + namespace = "argocd"
+                  + server    = "https://kubernetes.default.svc"
+                }
+              + ignoreDifferences    = (known after apply)
+              + info                 = (known after apply)
+              + project              = "default"
+              + revisionHistoryLimit = (known after apply)
+              + source               = {
+                  + chart          = (known after apply)
+                  + directory      = {
+                      + exclude = (known after apply)
+                      + include = (known after apply)
+                      + jsonnet = {
+                          + extVars = (known after apply)
+                          + libs    = (known after apply)
+                          + tlas    = (known after apply)
+                        }
+                      + recurse = (known after apply)
+                    }
+                  + helm           = {
+                      + apiVersions             = (known after apply)
+                      + fileParameters          = (known after apply)
+                      + ignoreMissingValueFiles = (known after apply)
+                      + kubeVersion             = (known after apply)
+                      + namespace               = (known after apply)
+                      + parameters              = (known after apply)
+                      + passCredentials         = (known after apply)
+                      + releaseName             = (known after apply)
+                      + skipCrds                = (known after apply)
+                      + skipSchemaValidation    = (known after apply)
+                      + skipTests               = (known after apply)
+                      + valueFiles              = (known after apply)
+                      + values                  = (known after apply)
+                      + valuesObject            = (known after apply)
+                      + version                 = (known after apply)
+                    }
+                  + kustomize      = {
+                      + apiVersions               = (known after apply)
+                      + commonAnnotations         = (known after apply)
+                      + commonAnnotationsEnvsubst = (known after apply)
+                      + commonLabels              = (known after apply)
+                      + components                = (known after apply)
+                      + forceCommonAnnotations    = (known after apply)
+                      + forceCommonLabels         = (known after apply)
+                      + ignoreMissingComponents   = (known after apply)
+                      + images                    = (known after apply)
+                      + kubeVersion               = (known after apply)
+                      + labelIncludeTemplates     = (known after apply)
+                      + labelWithoutSelector      = (known after apply)
+                      + namePrefix                = (known after apply)
+                      + nameSuffix                = (known after apply)
+                      + namespace                 = (known after apply)
+                      + patches                   = (known after apply)
+                      + replicas                  = (known after apply)
+                      + version                   = (known after apply)
+                    }
+                  + name           = (known after apply)
+                  + path           = "apps"
+                  + plugin         = {
+                      + env        = (known after apply)
+                      + name       = (known after apply)
+                      + parameters = (known after apply)
+                    }
+                  + ref            = (known after apply)
+                  + repoURL        = "https://github.com/jaguzaro/Practicas-SA-B-202201395-gitops.git"
+                  + tagPrefix      = (known after apply)
+                  + targetRevision = "main"
+                }
+              + sourceHydrator       = {
+                  + drySource  = {
+                      + directory      = {
+                          + exclude = (known after apply)
+                          + include = (known after apply)
+                          + jsonnet = {
+                              + extVars = (known after apply)
+                              + libs    = (known after apply)
+                              + tlas    = (known after apply)
+                            }
+                          + recurse = (known after apply)
+                        }
+                      + helm           = {
+                          + apiVersions             = (known after apply)
+                          + fileParameters          = (known after apply)
+                          + ignoreMissingValueFiles = (known after apply)
+                          + kubeVersion             = (known after apply)
+                          + namespace               = (known after apply)
+                          + parameters              = (known after apply)
+                          + passCredentials         = (known after apply)
+                          + releaseName             = (known after apply)
+                          + skipCrds                = (known after apply)
+                          + skipSchemaValidation    = (known after apply)
+                          + skipTests               = (known after apply)
+                          + valueFiles              = (known after apply)
+                          + values                  = (known after apply)
+                          + valuesObject            = (known after apply)
+                          + version                 = (known after apply)
+                        }
+                      + kustomize      = {
+                          + apiVersions               = (known after apply)
+                          + commonAnnotations         = (known after apply)
+                          + commonAnnotationsEnvsubst = (known after apply)
+                          + commonLabels              = (known after apply)
+                          + components                = (known after apply)
+                          + forceCommonAnnotations    = (known after apply)
+                          + forceCommonLabels         = (known after apply)
+                          + ignoreMissingComponents   = (known after apply)
+                          + images                    = (known after apply)
+                          + kubeVersion               = (known after apply)
+                          + labelIncludeTemplates     = (known after apply)
+                          + labelWithoutSelector      = (known after apply)
+                          + namePrefix                = (known after apply)
+                          + nameSuffix                = (known after apply)
+                          + namespace                 = (known after apply)
+                          + patches                   = (known after apply)
+                          + replicas                  = (known after apply)
+                          + version                   = (known after apply)
+                        }
+                      + path           = (known after apply)
+                      + plugin         = {
+                          + env        = (known after apply)
+                          + name       = (known after apply)
+                          + parameters = (known after apply)
+                        }
+                      + repoURL        = (known after apply)
+                      + targetRevision = (known after apply)
+                    }
+                  + hydrateTo  = {
+                      + targetBranch = (known after apply)
+                    }
+                  + syncSource = {
+                      + path         = (known after apply)
+                      + repoURL      = (known after apply)
+                      + targetBranch = (known after apply)
+                    }
+                }
+              + sources              = (known after apply)
+              + syncPolicy           = {
+                  + automated                = {
+                      + allowEmpty = (known after apply)
+                      + enabled    = (known after apply)
+                      + prune      = true
+                      + selfHeal   = true
+                    }
+                  + managedNamespaceMetadata = {
+                      + annotations = (known after apply)
+                      + labels      = (known after apply)
+                    }
+                  + retry                    = {
+                      + backoff = {
+                          + duration    = (known after apply)
+                          + factor      = (known after apply)
+                          + maxDuration = (known after apply)
+                        }
+                      + limit   = (known after apply)
+                      + refresh = (known after apply)
+                    }
+                  + syncOptions              = (known after apply)
+                }
+            }
+        }
+    }
+
+Plan: 1 to add, 0 to change, 0 to destroy.
+
+─────────────────────────────────────────────────────────────────────────────
+
+Saved the plan to: plan.tfplan
+
+To perform exactly these actions, run the following command to apply:
+    terraform apply "plan.tfplan"

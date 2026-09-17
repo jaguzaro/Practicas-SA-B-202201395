@@ -1,0 +1,16 @@
+kubernetes_manifest.aplicacion_raiz: Creating...
+kubernetes_manifest.aplicacion_raiz: Creation complete after 1s
+
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+cuentas_de_servicio = [
+  "audit-service",
+  "auth-api",
+  "authz-service",
+  "gateway",
+  "transactions-service",
+  "cronjobs",
+]
+namespace = "sa-p8"

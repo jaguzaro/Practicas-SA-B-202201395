@@ -1,0 +1,45 @@
+Despliegue rechazado por politica de admision
+
+Cambio en el repositorio gitops: values/dev/authz-service.yaml elimina resources.limits
+
+=== Estado de la Application authz-service-dev en ArgoCD
+SYNC        HEALTH    OPERACION   REVISION_GITOPS
+OutOfSync   Healthy   Running     125307b5e9919f378ffb7f5c85d576be78cc7d96
+
+=== Mensaje de la operacion de sincronizacion
+one or more synchronization tasks completed unsuccessfully, reason: error when patching "/dev/shm/1968048947": admission webhook "validate.kyverno.svc-fail" denied the request: 
+
+resource Rollout/sa-p8-dev/authz-service was blocked due to the following policies 
+
+requerir-limites-de-recursos:
+  rollouts-con-limites: 'validation error: Todo contenedor debe declarar limites de CPU y de memoria. rule rollouts-con-limites failed at path /spec/template/spec/containers/0/resources/limits/'. Retrying attempt #5 at 3:46AM.
+
+=== Rollout vigente en el cluster, intacto
+NAME            FASE      IMAGEN                                              LIMITES
+authz-service   Healthy   ghcr.io/jaguzaro/authz-service:v1.0.1-dev.c288db3   map[cpu:200m memory:192Mi]
+
+=== Las mismas politicas ante manifiestos directos, con --dry-run=server
+
+--- malo-latest.yaml
+Error from server: error when creating "/private/tmp/claude-501/-Users-joelguzaro-Documents-GitHub-Practicas-SA-B-202201395/2f21154a-5e9d-4541-9f56-2e9b1c289f3e/scratchpad/malo-latest.yaml": admission webhook "validate.kyverno.svc-fail" denied the request: 
+
+resource Deployment/sa-p8-dev/prueba-latest was blocked due to the following policies 
+
+prohibir-etiqueta-latest:
+  autogen-pods-con-version-explicita: 'validation error: Toda imagen debe llevar una etiqueta de version explicita. La etiqueta latest esta prohibida. rule autogen-pods-con-version-explicita failed at path /spec/template/spec/containers/0/image/'
+
+--- malo-sin-limites.yaml
+Error from server: error when creating "/private/tmp/claude-501/-Users-joelguzaro-Documents-GitHub-Practicas-SA-B-202201395/2f21154a-5e9d-4541-9f56-2e9b1c289f3e/scratchpad/malo-sin-limites.yaml": admission webhook "validate.kyverno.svc-fail" denied the request: 
+
+resource Rollout/sa-p8-dev/prueba-sin-limites was blocked due to the following policies 
+
+requerir-limites-de-recursos:
+  rollouts-con-limites: 'validation error: Todo contenedor debe declarar limites de CPU y de memoria. rule rollouts-con-limites failed at path /spec/template/spec/containers/0/resources/'
+
+--- malo-root.yaml
+Error from server: error when creating "/private/tmp/claude-501/-Users-joelguzaro-Documents-GitHub-Practicas-SA-B-202201395/2f21154a-5e9d-4541-9f56-2e9b1c289f3e/scratchpad/malo-root.yaml": admission webhook "validate.kyverno.svc-fail" denied the request: 
+
+resource Pod/sa-p8-dev/prueba-root was blocked due to the following policies 
+
+requerir-usuario-sin-privilegios:
+  pods-sin-root: 'validation error: Los contenedores deben ejecutarse como usuario sin privilegios, con runAsNonRoot en true a nivel de pod o de cada contenedor. rule pods-sin-root[0] failed at path /spec/securityContext/runAsNonRoot/ rule pods-sin-root[1] failed at path /spec/containers/0/securityContext/'

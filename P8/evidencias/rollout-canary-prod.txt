@@ -1,0 +1,319 @@
+Rollout transactions-service en sa-p8, promocion de v1.0.0 a v1.1.0
+
+=== 18:27:09 Progressing paso=0
+Name:            transactions-service
+Namespace:       sa-p8
+Status:          ◌ Progressing
+Message:         more replicas need to be updated
+Strategy:        Canary
+  Step:          0/9
+  SetWeight:     20
+  ActualWeight:  0
+Images:          ghcr.io/jaguzaro/transactions-service:v1.0.0 (stable)
+                 ghcr.io/jaguzaro/transactions-service:v1.1.0 (canary)
+Replicas:
+  Desired:       2
+  Current:       3
+  Updated:       1
+  Ready:         2
+  Available:     2
+NAME                                              KIND        STATUS               AGE  INFO
+⟳ transactions-service                            Rollout     ◌ Progressing        10h  
+├──# revision:2                                                                         
+│  └──⧉ transactions-service-5b76bc9949           ReplicaSet  ◌ Progressing        6s   canary
+│     └──□ transactions-service-5b76bc9949-vcv88  Pod         ◌ ContainerCreating  6s   ready:0/1
+└──# revision:1                                                                         
+   └──⧉ transactions-service-6d8679bb55           ReplicaSet  ✔ Healthy            10h  stable
+      ├──□ transactions-service-6d8679bb55-4v2tz  Pod         ✔ Running            9h   ready:1/1
+      └──□ transactions-service-6d8679bb55-85p7n  Pod         ✔ Running            9h   ready:1/1
+
+=== 18:27:19 Paused paso=1
+Name:            transactions-service
+Namespace:       sa-p8
+Status:          ॥ Paused
+Message:         CanaryPauseStep
+Strategy:        Canary
+  Step:          1/9
+  SetWeight:     20
+  ActualWeight:  33
+Images:          ghcr.io/jaguzaro/transactions-service:v1.0.0 (stable)
+                 ghcr.io/jaguzaro/transactions-service:v1.1.0 (canary)
+Replicas:
+  Desired:       2
+  Current:       3
+  Updated:       1
+  Ready:         3
+  Available:     3
+NAME                                              KIND        STATUS     AGE  INFO
+⟳ transactions-service                            Rollout     ॥ Paused   10h  
+├──# revision:2                                                               
+│  └──⧉ transactions-service-5b76bc9949           ReplicaSet  ✔ Healthy  16s  canary
+│     └──□ transactions-service-5b76bc9949-vcv88  Pod         ✔ Running  16s  ready:1/1
+└──# revision:1                                                               
+   └──⧉ transactions-service-6d8679bb55           ReplicaSet  ✔ Healthy  10h  stable
+      ├──□ transactions-service-6d8679bb55-4v2tz  Pod         ✔ Running  9h   ready:1/1
+      └──□ transactions-service-6d8679bb55-85p7n  Pod         ✔ Running  9h   ready:1/1
+
+=== 18:27:30 Progressing paso=2
+Name:            transactions-service
+Namespace:       sa-p8
+Status:          ◌ Progressing
+Message:         more replicas need to be updated
+Strategy:        Canary
+  Step:          2/9
+  SetWeight:     20
+  ActualWeight:  33
+Images:          ghcr.io/jaguzaro/transactions-service:v1.0.0 (stable)
+                 ghcr.io/jaguzaro/transactions-service:v1.1.0 (canary)
+Replicas:
+  Desired:       2
+  Current:       3
+  Updated:       1
+  Ready:         3
+  Available:     3
+NAME                                                              KIND         STATUS         AGE  INFO
+⟳ transactions-service                                            Rollout      ◌ Progressing  10h  
+├──# revision:2                                                                                    
+│  ├──⧉ transactions-service-5b76bc9949                           ReplicaSet   ✔ Healthy      27s  canary
+│  │  └──□ transactions-service-5b76bc9949-vcv88                  Pod          ✔ Running      27s  ready:1/1
+│  └──α transactions-service-5b76bc9949-2-2                       AnalysisRun  ◌ Running      1s   
+│     └──⊞ 42e9e07f-e575-4014-984f-3b564134d5a2.prueba-de-humo.1  Job          ◌ Running      1s   
+└──# revision:1                                                                                    
+   └──⧉ transactions-service-6d8679bb55                           ReplicaSet   ✔ Healthy      10h  stable
+      ├──□ transactions-service-6d8679bb55-4v2tz                  Pod          ✔ Running      9h   ready:1/1
+      └──□ transactions-service-6d8679bb55-85p7n                  Pod          ✔ Running      9h   ready:1/1
+
+=== 18:28:00 Progressing paso=3
+Name:            transactions-service
+Namespace:       sa-p8
+Status:          ◌ Progressing
+Message:         more replicas need to be updated
+Strategy:        Canary
+  Step:          3/9
+  SetWeight:     50
+  ActualWeight:  25
+Images:          ghcr.io/jaguzaro/transactions-service:v1.0.0 (stable)
+                 ghcr.io/jaguzaro/transactions-service:v1.1.0 (canary)
+Replicas:
+  Desired:       4
+  Current:       5
+  Updated:       2
+  Ready:         4
+  Available:     4
+NAME                                                              KIND         STATUS               AGE  INFO
+⟳ transactions-service                                            Rollout      ◌ Progressing        10h  
+├──# revision:2                                                                                          
+│  ├──⧉ transactions-service-5b76bc9949                           ReplicaSet   ◌ Progressing        57s  canary
+│  │  ├──□ transactions-service-5b76bc9949-vcv88                  Pod          ✔ Running            57s  ready:1/1
+│  │  └──□ transactions-service-5b76bc9949-8zhjz                  Pod          ◌ ContainerCreating  1s   ready:0/1
+│  └──α transactions-service-5b76bc9949-2-2                       AnalysisRun  ✔ Successful         31s  ✔ 1
+│     └──⊞ 42e9e07f-e575-4014-984f-3b564134d5a2.prueba-de-humo.1  Job          ✔ Successful         31s  
+└──# revision:1                                                                                          
+   └──⧉ transactions-service-6d8679bb55                           ReplicaSet   ✔ Healthy            10h  stable
+      ├──□ transactions-service-6d8679bb55-4v2tz                  Pod          ✔ Running            9h   ready:1/1
+      ├──□ transactions-service-6d8679bb55-85p7n                  Pod          ✔ Running            9h   ready:1/1
+      ├──□ transactions-service-6d8679bb55-bwp9s                  Pod          ✔ Running            8s   ready:1/1
+      └──□ transactions-service-6d8679bb55-nppz9                  Pod          ◌ Terminating        8s   ready:0/1
+
+=== 18:28:11 Paused paso=4
+Name:            transactions-service
+Namespace:       sa-p8
+Status:          ॥ Paused
+Message:         CanaryPauseStep
+Strategy:        Canary
+  Step:          4/9
+  SetWeight:     50
+  ActualWeight:  50
+Images:          ghcr.io/jaguzaro/transactions-service:v1.0.0 (stable)
+                 ghcr.io/jaguzaro/transactions-service:v1.1.0 (canary)
+Replicas:
+  Desired:       4
+  Current:       4
+  Updated:       2
+  Ready:         4
+  Available:     4
+NAME                                                              KIND         STATUS         AGE  INFO
+⟳ transactions-service                                            Rollout      ॥ Paused       10h  
+├──# revision:2                                                                                    
+│  ├──⧉ transactions-service-5b76bc9949                           ReplicaSet   ✔ Healthy      68s  canary
+│  │  ├──□ transactions-service-5b76bc9949-vcv88                  Pod          ✔ Running      68s  ready:1/1
+│  │  └──□ transactions-service-5b76bc9949-8zhjz                  Pod          ✔ Running      12s  ready:1/1
+│  └──α transactions-service-5b76bc9949-2-2                       AnalysisRun  ✔ Successful   42s  ✔ 1
+│     └──⊞ 42e9e07f-e575-4014-984f-3b564134d5a2.prueba-de-humo.1  Job          ✔ Successful   42s  
+└──# revision:1                                                                                    
+   └──⧉ transactions-service-6d8679bb55                           ReplicaSet   ✔ Healthy      10h  stable
+      ├──□ transactions-service-6d8679bb55-4v2tz                  Pod          ✔ Running      9h   ready:1/1
+      ├──□ transactions-service-6d8679bb55-85p7n                  Pod          ✔ Running      9h   ready:1/1
+      ├──□ transactions-service-6d8679bb55-bwp9s                  Pod          ◌ Terminating  19s  ready:1/1
+      └──□ transactions-service-6d8679bb55-nppz9                  Pod          ◌ Terminating  19s  ready:0/1
+
+=== 18:28:22 Progressing paso=5
+Name:            transactions-service
+Namespace:       sa-p8
+Status:          ◌ Progressing
+Message:         more replicas need to be updated
+Strategy:        Canary
+  Step:          5/9
+  SetWeight:     50
+  ActualWeight:  50
+Images:          ghcr.io/jaguzaro/transactions-service:v1.0.0 (stable)
+                 ghcr.io/jaguzaro/transactions-service:v1.1.0 (canary)
+Replicas:
+  Desired:       4
+  Current:       4
+  Updated:       2
+  Ready:         4
+  Available:     4
+NAME                                                              KIND         STATUS         AGE  INFO
+⟳ transactions-service                                            Rollout      ◌ Progressing  10h  
+├──# revision:2                                                                                    
+│  ├──⧉ transactions-service-5b76bc9949                           ReplicaSet   ✔ Healthy      78s  canary
+│  │  ├──□ transactions-service-5b76bc9949-vcv88                  Pod          ✔ Running      78s  ready:1/1
+│  │  └──□ transactions-service-5b76bc9949-8zhjz                  Pod          ✔ Running      22s  ready:1/1
+│  ├──α transactions-service-5b76bc9949-2-2                       AnalysisRun  ✔ Successful   52s  ✔ 1
+│  │  └──⊞ 42e9e07f-e575-4014-984f-3b564134d5a2.prueba-de-humo.1  Job          ✔ Successful   52s  
+│  └──α transactions-service-5b76bc9949-2-5                       AnalysisRun  ◌ Running      1s   
+│     └──⊞ 538808a7-100b-40a0-a980-b69cfb4e712a.prueba-de-humo.1  Job          ◌ Running      1s   
+└──# revision:1                                                                                    
+   └──⧉ transactions-service-6d8679bb55                           ReplicaSet   ✔ Healthy      10h  stable
+      ├──□ transactions-service-6d8679bb55-4v2tz                  Pod          ✔ Running      9h   ready:1/1
+      ├──□ transactions-service-6d8679bb55-85p7n                  Pod          ✔ Running      9h   ready:1/1
+      ├──□ transactions-service-6d8679bb55-bwp9s                  Pod          ◌ Terminating  29s  ready:1/1
+      └──□ transactions-service-6d8679bb55-nppz9                  Pod          ◌ Terminating  29s  ready:0/1
+
+=== 18:29:00 Progressing paso=6
+Name:            transactions-service
+Namespace:       sa-p8
+Status:          ◌ Progressing
+Message:         more replicas need to be updated
+Strategy:        Canary
+  Step:          6/9
+  SetWeight:     80
+  ActualWeight:  50
+Images:          ghcr.io/jaguzaro/transactions-service:v1.0.0 (stable)
+                 ghcr.io/jaguzaro/transactions-service:v1.1.0 (canary)
+Replicas:
+  Desired:       4
+  Current:       5
+  Updated:       3
+  Ready:         4
+  Available:     4
+NAME                                                              KIND         STATUS               AGE   INFO
+⟳ transactions-service                                            Rollout      ◌ Progressing        10h   
+├──# revision:2                                                                                           
+│  ├──⧉ transactions-service-5b76bc9949                           ReplicaSet   ◌ Progressing        117s  canary
+│  │  ├──□ transactions-service-5b76bc9949-vcv88                  Pod          ✔ Running            117s  ready:1/1
+│  │  ├──□ transactions-service-5b76bc9949-8zhjz                  Pod          ✔ Running            61s   ready:1/1
+│  │  └──□ transactions-service-5b76bc9949-d6gk9                  Pod          ◌ ContainerCreating  3s    ready:0/1
+│  ├──α transactions-service-5b76bc9949-2-2                       AnalysisRun  ✔ Successful         91s   ✔ 1
+│  │  └──⊞ 42e9e07f-e575-4014-984f-3b564134d5a2.prueba-de-humo.1  Job          ✔ Successful         91s   
+│  └──α transactions-service-5b76bc9949-2-5                       AnalysisRun  ✔ Successful         40s   ✔ 1
+│     └──⊞ 538808a7-100b-40a0-a980-b69cfb4e712a.prueba-de-humo.1  Job          ✔ Successful         40s   
+└──# revision:1                                                                                           
+   └──⧉ transactions-service-6d8679bb55                           ReplicaSet   ✔ Healthy            10h   stable
+      ├──□ transactions-service-6d8679bb55-4v2tz                  Pod          ✔ Running            9h    ready:1/1
+      └──□ transactions-service-6d8679bb55-85p7n                  Pod          ✔ Running            9h    ready:1/1
+
+=== 18:29:33  paso=8
+Name:            transactions-service
+Namespace:       sa-p8
+Status:          ◌ Progressing
+Message:         old replicas are pending termination
+Strategy:        Canary
+  Step:          8/9
+  SetWeight:     80
+  ActualWeight:  80
+Images:          ghcr.io/jaguzaro/transactions-service:v1.0.0 (stable)
+                 ghcr.io/jaguzaro/transactions-service:v1.1.0 (canary)
+Replicas:
+  Desired:       4
+  Current:       5
+  Updated:       4
+  Ready:         5
+  Available:     5
+NAME                                                              KIND         STATUS         AGE    INFO
+⟳ transactions-service                                            Rollout      ◌ Progressing  10h    
+├──# revision:2                                                                                      
+│  ├──⧉ transactions-service-5b76bc9949                           ReplicaSet   ✔ Healthy      2m30s  canary
+│  │  ├──□ transactions-service-5b76bc9949-vcv88                  Pod          ✔ Running      2m30s  ready:1/1
+│  │  ├──□ transactions-service-5b76bc9949-8zhjz                  Pod          ✔ Running      94s    ready:1/1
+│  │  ├──□ transactions-service-5b76bc9949-d6gk9                  Pod          ✔ Running      36s    ready:1/1
+│  │  └──□ transactions-service-5b76bc9949-6ldk8                  Pod          ✔ Running      30s    ready:1/1
+│  ├──α transactions-service-5b76bc9949-2-2                       AnalysisRun  ✔ Successful   2m4s   ✔ 1
+│  │  └──⊞ 42e9e07f-e575-4014-984f-3b564134d5a2.prueba-de-humo.1  Job          ✔ Successful   2m4s   
+│  ├──α transactions-service-5b76bc9949-2-5                       AnalysisRun  ✔ Successful   73s    ✔ 1
+│  │  └──⊞ 538808a7-100b-40a0-a980-b69cfb4e712a.prueba-de-humo.1  Job          ✔ Successful   73s    
+│  └──α transactions-service-5b76bc9949-2-8                       AnalysisRun  ◌ Running      9s     
+│     └──⊞ 80b9dd4a-67ed-490c-bf23-53fc025fae87.prueba-de-humo.1  Job          ◌ Running      9s     
+└──# revision:1                                                                                      
+   └──⧉ transactions-service-6d8679bb55                           ReplicaSet   ✔ Healthy      10h    stable
+      ├──□ transactions-service-6d8679bb55-4v2tz                  Pod          ✔ Running      9h     ready:1/1
+      └──□ transactions-service-6d8679bb55-85p7n                  Pod          ◌ Terminating  9h     ready:1/1
+
+=== 18:29:39 Progressing paso=8
+Name:            transactions-service
+Namespace:       sa-p8
+Status:          ◌ Progressing
+Message:         old replicas are pending termination
+Strategy:        Canary
+  Step:          8/9
+  SetWeight:     80
+  ActualWeight:  80
+Images:          ghcr.io/jaguzaro/transactions-service:v1.0.0 (stable)
+                 ghcr.io/jaguzaro/transactions-service:v1.1.0 (canary)
+Replicas:
+  Desired:       4
+  Current:       5
+  Updated:       4
+  Ready:         5
+  Available:     5
+NAME                                                              KIND         STATUS         AGE    INFO
+⟳ transactions-service                                            Rollout      ◌ Progressing  10h    
+├──# revision:2                                                                                      
+│  ├──⧉ transactions-service-5b76bc9949                           ReplicaSet   ✔ Healthy      2m35s  canary
+│  │  ├──□ transactions-service-5b76bc9949-vcv88                  Pod          ✔ Running      2m35s  ready:1/1
+│  │  ├──□ transactions-service-5b76bc9949-8zhjz                  Pod          ✔ Running      99s    ready:1/1
+│  │  ├──□ transactions-service-5b76bc9949-d6gk9                  Pod          ✔ Running      41s    ready:1/1
+│  │  └──□ transactions-service-5b76bc9949-6ldk8                  Pod          ✔ Running      35s    ready:1/1
+│  ├──α transactions-service-5b76bc9949-2-2                       AnalysisRun  ✔ Successful   2m9s   ✔ 1
+│  │  └──⊞ 42e9e07f-e575-4014-984f-3b564134d5a2.prueba-de-humo.1  Job          ✔ Successful   2m9s   
+│  ├──α transactions-service-5b76bc9949-2-5                       AnalysisRun  ✔ Successful   78s    ✔ 1
+│  │  └──⊞ 538808a7-100b-40a0-a980-b69cfb4e712a.prueba-de-humo.1  Job          ✔ Successful   78s    
+│  └──α transactions-service-5b76bc9949-2-8                       AnalysisRun  ◌ Running      14s    
+│     └──⊞ 80b9dd4a-67ed-490c-bf23-53fc025fae87.prueba-de-humo.1  Job          ◌ Running      14s    
+└──# revision:1                                                                                      
+   └──⧉ transactions-service-6d8679bb55                           ReplicaSet   ✔ Healthy      10h    stable
+      └──□ transactions-service-6d8679bb55-4v2tz                  Pod          ✔ Running      9h     ready:1/1
+
+=== 18:29:59 Healthy paso=9
+Name:            transactions-service
+Namespace:       sa-p8
+Status:          ✔ Healthy
+Strategy:        Canary
+  Step:          9/9
+  SetWeight:     100
+  ActualWeight:  100
+Images:          ghcr.io/jaguzaro/transactions-service:v1.1.0 (stable)
+Replicas:
+  Desired:       4
+  Current:       4
+  Updated:       4
+  Ready:         4
+  Available:     4
+NAME                                                              KIND         STATUS         AGE    INFO
+⟳ transactions-service                                            Rollout      ✔ Healthy      10h    
+├──# revision:2                                                                                      
+│  ├──⧉ transactions-service-5b76bc9949                           ReplicaSet   ✔ Healthy      2m56s  stable
+│  │  ├──□ transactions-service-5b76bc9949-vcv88                  Pod          ✔ Running      2m56s  ready:1/1
+│  │  ├──□ transactions-service-5b76bc9949-8zhjz                  Pod          ✔ Running      2m     ready:1/1
+│  │  ├──□ transactions-service-5b76bc9949-d6gk9                  Pod          ✔ Running      62s    ready:1/1
+│  │  └──□ transactions-service-5b76bc9949-6ldk8                  Pod          ✔ Running      56s    ready:1/1
+│  ├──α transactions-service-5b76bc9949-2-2                       AnalysisRun  ✔ Successful   2m30s  ✔ 1
+│  │  └──⊞ 42e9e07f-e575-4014-984f-3b564134d5a2.prueba-de-humo.1  Job          ✔ Successful   2m30s  
+│  ├──α transactions-service-5b76bc9949-2-5                       AnalysisRun  ✔ Successful   99s    ✔ 1
+│  │  └──⊞ 538808a7-100b-40a0-a980-b69cfb4e712a.prueba-de-humo.1  Job          ✔ Successful   99s    
+│  └──α transactions-service-5b76bc9949-2-8                       AnalysisRun  ✔ Successful   35s    ✔ 1
+│     └──⊞ 80b9dd4a-67ed-490c-bf23-53fc025fae87.prueba-de-humo.1  Job          ✔ Successful   35s    
+└──# revision:1                                                                                      
+   └──⧉ transactions-service-6d8679bb55                           ReplicaSet   • ScaledDown   10h    
+      └──□ transactions-service-6d8679bb55-4v2tz                  Pod          ◌ Terminating  9h     ready:1/1

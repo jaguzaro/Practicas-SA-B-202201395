@@ -1,0 +1,263 @@
+Rollout auth-api en sa-p8-dev, promocion a v1.0.1-dev.c288db3
+
+=== 18:15:56 Progressing paso=0
+Name:            auth-api
+Namespace:       sa-p8-dev
+Status:          ◌ Progressing
+Message:         old replicas are pending termination
+Strategy:        Canary
+  Step:          0/9
+  SetWeight:     20
+  ActualWeight:  0
+Images:          ghcr.io/jaguzaro/auth-api:v1.0.0 (stable)
+                 ghcr.io/jaguzaro/auth-api:v1.0.1-dev.c288db3 (canary)
+Replicas:
+  Desired:       1
+  Current:       2
+  Updated:       1
+  Ready:         1
+  Available:     1
+NAME                                                              KIND         STATUS               AGE  INFO
+⟳ auth-api                                                        Rollout      ◌ Progressing        8h   
+├──# revision:3                                                                                          
+│  └──⧉ auth-api-6ddc9d5977                                       ReplicaSet   ◌ Progressing        5s   canary
+│     └──□ auth-api-6ddc9d5977-h77dg                              Pod          ◌ ContainerCreating  5s   ready:0/1
+├──# revision:2                                                                                          
+│  ├──⧉ auth-api-5f77b48c79                                       ReplicaSet   • ScaledDown         28m  
+│  └──α auth-api-5f77b48c79-2-2                                   AnalysisRun  ✖ Failed             28m  ✖ 1
+│     └──⊞ 5179b1a6-f009-41b4-b408-bebcdf650eba.prueba-de-humo.1  Job          ✖ Failed             28m  
+└──# revision:1                                                                                          
+   └──⧉ auth-api-86798bc6cf                                       ReplicaSet   ✔ Healthy            8h   stable
+      └──□ auth-api-86798bc6cf-fr6fp                              Pod          ✔ Running            8h   ready:1/1,restarts:21
+
+=== 18:16:12 Paused paso=1
+Name:            auth-api
+Namespace:       sa-p8-dev
+Status:          ॥ Paused
+Message:         CanaryPauseStep
+Strategy:        Canary
+  Step:          1/9
+  SetWeight:     20
+  ActualWeight:  50
+Images:          ghcr.io/jaguzaro/auth-api:v1.0.0 (stable)
+                 ghcr.io/jaguzaro/auth-api:v1.0.1-dev.c288db3 (canary)
+Replicas:
+  Desired:       1
+  Current:       2
+  Updated:       1
+  Ready:         2
+  Available:     2
+NAME                                                              KIND         STATUS        AGE  INFO
+⟳ auth-api                                                        Rollout      ॥ Paused      8h   
+├──# revision:3                                                                                   
+│  └──⧉ auth-api-6ddc9d5977                                       ReplicaSet   ✔ Healthy     21s  canary
+│     └──□ auth-api-6ddc9d5977-h77dg                              Pod          ✔ Running     21s  ready:1/1
+├──# revision:2                                                                                   
+│  ├──⧉ auth-api-5f77b48c79                                       ReplicaSet   • ScaledDown  28m  
+│  └──α auth-api-5f77b48c79-2-2                                   AnalysisRun  ✖ Failed      28m  ✖ 1
+│     └──⊞ 5179b1a6-f009-41b4-b408-bebcdf650eba.prueba-de-humo.1  Job          ✖ Failed      28m  
+└──# revision:1                                                                                   
+   └──⧉ auth-api-86798bc6cf                                       ReplicaSet   ✔ Healthy     8h   stable
+      └──□ auth-api-86798bc6cf-fr6fp                              Pod          ✔ Running     8h   ready:1/1,restarts:21
+
+=== 18:16:17 Progressing paso=2
+Name:            auth-api
+Namespace:       sa-p8-dev
+Status:          ◌ Progressing
+Message:         old replicas are pending termination
+Strategy:        Canary
+  Step:          2/9
+  SetWeight:     20
+  ActualWeight:  50
+Images:          ghcr.io/jaguzaro/auth-api:v1.0.0 (stable)
+                 ghcr.io/jaguzaro/auth-api:v1.0.1-dev.c288db3 (canary)
+Replicas:
+  Desired:       1
+  Current:       2
+  Updated:       1
+  Ready:         2
+  Available:     2
+NAME                                                              KIND         STATUS         AGE  INFO
+⟳ auth-api                                                        Rollout      ◌ Progressing  8h   
+├──# revision:3                                                                                    
+│  ├──⧉ auth-api-6ddc9d5977                                       ReplicaSet   ✔ Healthy      26s  canary
+│  │  └──□ auth-api-6ddc9d5977-h77dg                              Pod          ✔ Running      26s  ready:1/1
+│  └──α auth-api-6ddc9d5977-3-2                                   AnalysisRun  ◌ Running      4s   
+│     └──⊞ 1dbcbe30-9fea-4775-bc0f-bc155e655d63.prueba-de-humo.1  Job          ◌ Running      4s   
+├──# revision:2                                                                                    
+│  ├──⧉ auth-api-5f77b48c79                                       ReplicaSet   • ScaledDown   29m  
+│  └──α auth-api-5f77b48c79-2-2                                   AnalysisRun  ✖ Failed       28m  ✖ 1
+│     └──⊞ 5179b1a6-f009-41b4-b408-bebcdf650eba.prueba-de-humo.1  Job          ✖ Failed       28m  
+└──# revision:1                                                                                    
+   └──⧉ auth-api-86798bc6cf                                       ReplicaSet   ✔ Healthy      8h   stable
+      └──□ auth-api-86798bc6cf-fr6fp                              Pod          ✔ Running      8h   ready:1/1,restarts:21
+
+=== 18:16:33 Paused paso=4
+Name:            auth-api
+Namespace:       sa-p8-dev
+Status:          ॥ Paused
+Message:         CanaryPauseStep
+Strategy:        Canary
+  Step:          4/9
+  SetWeight:     50
+  ActualWeight:  50
+Images:          ghcr.io/jaguzaro/auth-api:v1.0.0 (stable)
+                 ghcr.io/jaguzaro/auth-api:v1.0.1-dev.c288db3 (canary)
+Replicas:
+  Desired:       1
+  Current:       2
+  Updated:       1
+  Ready:         2
+  Available:     2
+NAME                                                              KIND         STATUS        AGE  INFO
+⟳ auth-api                                                        Rollout      ॥ Paused      8h   
+├──# revision:3                                                                                   
+│  ├──⧉ auth-api-6ddc9d5977                                       ReplicaSet   ✔ Healthy     42s  canary
+│  │  └──□ auth-api-6ddc9d5977-h77dg                              Pod          ✔ Running     42s  ready:1/1
+│  └──α auth-api-6ddc9d5977-3-2                                   AnalysisRun  ✔ Successful  20s  ✔ 1
+│     └──⊞ 1dbcbe30-9fea-4775-bc0f-bc155e655d63.prueba-de-humo.1  Job          ✔ Successful  20s  
+├──# revision:2                                                                                   
+│  ├──⧉ auth-api-5f77b48c79                                       ReplicaSet   • ScaledDown  29m  
+│  └──α auth-api-5f77b48c79-2-2                                   AnalysisRun  ✖ Failed      28m  ✖ 1
+│     └──⊞ 5179b1a6-f009-41b4-b408-bebcdf650eba.prueba-de-humo.1  Job          ✖ Failed      28m  
+└──# revision:1                                                                                   
+   └──⧉ auth-api-86798bc6cf                                       ReplicaSet   ✔ Healthy     8h   stable
+      └──□ auth-api-86798bc6cf-fr6fp                              Pod          ✔ Running     8h   ready:1/1,restarts:21
+
+=== 18:16:39 Progressing paso=5
+Name:            auth-api
+Namespace:       sa-p8-dev
+Status:          ◌ Progressing
+Message:         old replicas are pending termination
+Strategy:        Canary
+  Step:          5/9
+  SetWeight:     50
+  ActualWeight:  50
+Images:          ghcr.io/jaguzaro/auth-api:v1.0.0 (stable)
+                 ghcr.io/jaguzaro/auth-api:v1.0.1-dev.c288db3 (canary)
+Replicas:
+  Desired:       1
+  Current:       2
+  Updated:       1
+  Ready:         2
+  Available:     2
+NAME                                                              KIND         STATUS         AGE  INFO
+⟳ auth-api                                                        Rollout      ◌ Progressing  8h   
+├──# revision:3                                                                                    
+│  ├──⧉ auth-api-6ddc9d5977                                       ReplicaSet   ✔ Healthy      47s  canary
+│  │  └──□ auth-api-6ddc9d5977-h77dg                              Pod          ✔ Running      47s  ready:1/1
+│  ├──α auth-api-6ddc9d5977-3-2                                   AnalysisRun  ✔ Successful   25s  ✔ 1
+│  │  └──⊞ 1dbcbe30-9fea-4775-bc0f-bc155e655d63.prueba-de-humo.1  Job          ✔ Successful   25s  
+│  └──α auth-api-6ddc9d5977-3-5                                   AnalysisRun  ◌ Running      2s   
+│     └──⊞ cf19b59d-9533-4f65-b9e4-36e750eb949e.prueba-de-humo.1  Job          ◌ Running      2s   
+├──# revision:2                                                                                    
+│  ├──⧉ auth-api-5f77b48c79                                       ReplicaSet   • ScaledDown   29m  
+│  └──α auth-api-5f77b48c79-2-2                                   AnalysisRun  ✖ Failed       29m  ✖ 1
+│     └──⊞ 5179b1a6-f009-41b4-b408-bebcdf650eba.prueba-de-humo.1  Job          ✖ Failed       29m  
+└──# revision:1                                                                                    
+   └──⧉ auth-api-86798bc6cf                                       ReplicaSet   ✔ Healthy      8h   stable
+      └──□ auth-api-86798bc6cf-fr6fp                              Pod          ✔ Running      8h   ready:1/1,restarts:21
+
+=== 18:16:59 Paused paso=7
+Name:            auth-api
+Namespace:       sa-p8-dev
+Status:          ॥ Paused
+Message:         CanaryPauseStep
+Strategy:        Canary
+  Step:          7/9
+  SetWeight:     80
+  ActualWeight:  50
+Images:          ghcr.io/jaguzaro/auth-api:v1.0.0 (stable)
+                 ghcr.io/jaguzaro/auth-api:v1.0.1-dev.c288db3 (canary)
+Replicas:
+  Desired:       1
+  Current:       2
+  Updated:       1
+  Ready:         2
+  Available:     2
+NAME                                                              KIND         STATUS        AGE  INFO
+⟳ auth-api                                                        Rollout      ॥ Paused      8h   
+├──# revision:3                                                                                   
+│  ├──⧉ auth-api-6ddc9d5977                                       ReplicaSet   ✔ Healthy     68s  canary
+│  │  └──□ auth-api-6ddc9d5977-h77dg                              Pod          ✔ Running     68s  ready:1/1
+│  ├──α auth-api-6ddc9d5977-3-2                                   AnalysisRun  ✔ Successful  46s  ✔ 1
+│  │  └──⊞ 1dbcbe30-9fea-4775-bc0f-bc155e655d63.prueba-de-humo.1  Job          ✔ Successful  46s  
+│  └──α auth-api-6ddc9d5977-3-5                                   AnalysisRun  ✔ Successful  23s  ✔ 1
+│     └──⊞ cf19b59d-9533-4f65-b9e4-36e750eb949e.prueba-de-humo.1  Job          ✔ Successful  23s  
+├──# revision:2                                                                                   
+│  ├──⧉ auth-api-5f77b48c79                                       ReplicaSet   • ScaledDown  29m  
+│  └──α auth-api-5f77b48c79-2-2                                   AnalysisRun  ✖ Failed      29m  ✖ 1
+│     └──⊞ 5179b1a6-f009-41b4-b408-bebcdf650eba.prueba-de-humo.1  Job          ✖ Failed      29m  
+└──# revision:1                                                                                   
+   └──⧉ auth-api-86798bc6cf                                       ReplicaSet   ✔ Healthy     8h   stable
+      └──□ auth-api-86798bc6cf-fr6fp                              Pod          ✔ Running     8h   ready:1/1,restarts:21
+
+=== 18:17:05 Progressing paso=8
+Name:            auth-api
+Namespace:       sa-p8-dev
+Status:          ◌ Progressing
+Message:         old replicas are pending termination
+Strategy:        Canary
+  Step:          8/9
+  SetWeight:     80
+  ActualWeight:  50
+Images:          ghcr.io/jaguzaro/auth-api:v1.0.0 (stable)
+                 ghcr.io/jaguzaro/auth-api:v1.0.1-dev.c288db3 (canary)
+Replicas:
+  Desired:       1
+  Current:       2
+  Updated:       1
+  Ready:         2
+  Available:     2
+NAME                                                              KIND         STATUS         AGE  INFO
+⟳ auth-api                                                        Rollout      ◌ Progressing  8h   
+├──# revision:3                                                                                    
+│  ├──⧉ auth-api-6ddc9d5977                                       ReplicaSet   ✔ Healthy      74s  canary
+│  │  └──□ auth-api-6ddc9d5977-h77dg                              Pod          ✔ Running      74s  ready:1/1
+│  ├──α auth-api-6ddc9d5977-3-2                                   AnalysisRun  ✔ Successful   52s  ✔ 1
+│  │  └──⊞ 1dbcbe30-9fea-4775-bc0f-bc155e655d63.prueba-de-humo.1  Job          ✔ Successful   52s  
+│  ├──α auth-api-6ddc9d5977-3-5                                   AnalysisRun  ✔ Successful   29s  ✔ 1
+│  │  └──⊞ cf19b59d-9533-4f65-b9e4-36e750eb949e.prueba-de-humo.1  Job          ✔ Successful   29s  
+│  └──α auth-api-6ddc9d5977-3-8                                   AnalysisRun  ◌ Running      6s   
+│     └──⊞ 150ef98f-55a5-419b-8282-597176cc89ec.prueba-de-humo.1  Job          ◌ Running      6s   
+├──# revision:2                                                                                    
+│  ├──⧉ auth-api-5f77b48c79                                       ReplicaSet   • ScaledDown   29m  
+│  └──α auth-api-5f77b48c79-2-2                                   AnalysisRun  ✖ Failed       29m  ✖ 1
+│     └──⊞ 5179b1a6-f009-41b4-b408-bebcdf650eba.prueba-de-humo.1  Job          ✖ Failed       29m  
+└──# revision:1                                                                                    
+   └──⧉ auth-api-86798bc6cf                                       ReplicaSet   ✔ Healthy      8h   stable
+      └──□ auth-api-86798bc6cf-fr6fp                              Pod          ✔ Running      8h   ready:1/1,restarts:21
+
+=== 18:17:20 Healthy paso=9
+Name:            auth-api
+Namespace:       sa-p8-dev
+Status:          ✔ Healthy
+Strategy:        Canary
+  Step:          9/9
+  SetWeight:     100
+  ActualWeight:  100
+Images:          ghcr.io/jaguzaro/auth-api:v1.0.1-dev.c288db3 (stable)
+Replicas:
+  Desired:       1
+  Current:       1
+  Updated:       1
+  Ready:         1
+  Available:     1
+NAME                                                              KIND         STATUS         AGE  INFO
+⟳ auth-api                                                        Rollout      ✔ Healthy      8h   
+├──# revision:3                                                                                    
+│  ├──⧉ auth-api-6ddc9d5977                                       ReplicaSet   ✔ Healthy      89s  stable
+│  │  └──□ auth-api-6ddc9d5977-h77dg                              Pod          ✔ Running      89s  ready:1/1
+│  ├──α auth-api-6ddc9d5977-3-2                                   AnalysisRun  ✔ Successful   67s  ✔ 1
+│  │  └──⊞ 1dbcbe30-9fea-4775-bc0f-bc155e655d63.prueba-de-humo.1  Job          ✔ Successful   67s  
+│  ├──α auth-api-6ddc9d5977-3-5                                   AnalysisRun  ✔ Successful   44s  ✔ 1
+│  │  └──⊞ cf19b59d-9533-4f65-b9e4-36e750eb949e.prueba-de-humo.1  Job          ✔ Successful   44s  
+│  └──α auth-api-6ddc9d5977-3-8                                   AnalysisRun  ✔ Successful   21s  ✔ 1
+│     └──⊞ 150ef98f-55a5-419b-8282-597176cc89ec.prueba-de-humo.1  Job          ✔ Successful   21s  
+├──# revision:2                                                                                    
+│  ├──⧉ auth-api-5f77b48c79                                       ReplicaSet   • ScaledDown   30m  
+│  └──α auth-api-5f77b48c79-2-2                                   AnalysisRun  ✖ Failed       29m  ✖ 1
+│     └──⊞ 5179b1a6-f009-41b4-b408-bebcdf650eba.prueba-de-humo.1  Job          ✖ Failed       29m  
+└──# revision:1                                                                                    
+   └──⧉ auth-api-86798bc6cf                                       ReplicaSet   • ScaledDown   8h   
+      └──□ auth-api-86798bc6cf-fr6fp                              Pod          ◌ Terminating  8h   ready:1/1,restarts:21

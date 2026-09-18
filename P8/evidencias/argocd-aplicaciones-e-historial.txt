@@ -1,0 +1,49 @@
+Estado de las aplicaciones de ArgoCD
+
+NAME                             CLUSTER                         NAMESPACE  PROJECT  STATUS  HEALTH   SYNCPOLICY  CONDITIONS  REPO                                                             PATH                            TARGET
+argocd/audit-service             https://kubernetes.default.svc  sa-p8      default  Synced  Healthy  Auto-Prune  <none>      git@github.com:jaguzaro/Practicas-SA-B-202201395.git             P8/charts/audit-service         main
+argocd/audit-service-dev         https://kubernetes.default.svc  sa-p8-dev  default  Synced  Healthy  Auto-Prune  <none>      git@github.com:jaguzaro/Practicas-SA-B-202201395.git             P8/charts/audit-service         main
+argocd/auth-api                  https://kubernetes.default.svc  sa-p8      default  Synced  Healthy  Auto-Prune  <none>      git@github.com:jaguzaro/Practicas-SA-B-202201395.git             P8/charts/auth-api              main
+argocd/auth-api-dev              https://kubernetes.default.svc  sa-p8-dev  default  Synced  Healthy  Auto-Prune  <none>      git@github.com:jaguzaro/Practicas-SA-B-202201395.git             P8/charts/auth-api              main
+argocd/authz-service             https://kubernetes.default.svc  sa-p8      default  Synced  Healthy  Auto-Prune  <none>      git@github.com:jaguzaro/Practicas-SA-B-202201395.git             P8/charts/authz-service         main
+argocd/authz-service-dev         https://kubernetes.default.svc  sa-p8-dev  default  Synced  Healthy  Auto-Prune  <none>      git@github.com:jaguzaro/Practicas-SA-B-202201395.git             P8/charts/authz-service         main
+argocd/cronjobs                  https://kubernetes.default.svc  sa-p8      default  Synced  Healthy  Auto-Prune  <none>      git@github.com:jaguzaro/Practicas-SA-B-202201395.git             P8/charts/cronjobs              main
+argocd/cronjobs-dev              https://kubernetes.default.svc  sa-p8-dev  default  Synced  Healthy  Auto-Prune  <none>      git@github.com:jaguzaro/Practicas-SA-B-202201395.git             P8/charts/cronjobs              main
+argocd/datos                     https://kubernetes.default.svc  sa-p8      default  Synced  Healthy  Auto-Prune  <none>      git@github.com:jaguzaro/Practicas-SA-B-202201395.git             P8/charts/datos                 main
+argocd/datos-dev                 https://kubernetes.default.svc  sa-p8-dev  default  Synced  Healthy  Auto-Prune  <none>      git@github.com:jaguzaro/Practicas-SA-B-202201395.git             P8/charts/datos                 main
+argocd/gateway                   https://kubernetes.default.svc  sa-p8      default  Synced  Healthy  Auto-Prune  <none>      git@github.com:jaguzaro/Practicas-SA-B-202201395.git             P8/charts/gateway               main
+argocd/gateway-dev               https://kubernetes.default.svc  sa-p8-dev  default  Synced  Healthy  Auto-Prune  <none>      git@github.com:jaguzaro/Practicas-SA-B-202201395.git             P8/charts/gateway               main
+argocd/politicas                 https://kubernetes.default.svc  kyverno    default  Synced  Healthy  Auto-Prune  <none>      git@github.com:jaguzaro/Practicas-SA-B-202201395.git             P8/policies                     main
+argocd/sa-p8                     https://kubernetes.default.svc  argocd     default  Synced  Healthy  Auto-Prune  <none>      https://github.com/jaguzaro/Practicas-SA-B-202201395-gitops.git  apps                            main
+argocd/secretos                  https://kubernetes.default.svc  sa-p8      default  Synced  Healthy  Auto-Prune  <none>      https://github.com/jaguzaro/Practicas-SA-B-202201395-gitops.git  secretos/prod                   main
+argocd/secretos-dev              https://kubernetes.default.svc  sa-p8-dev  default  Synced  Healthy  Auto-Prune  <none>      https://github.com/jaguzaro/Practicas-SA-B-202201395-gitops.git  secretos/dev                    main
+argocd/transactions-service      https://kubernetes.default.svc  sa-p8      default  Synced  Healthy  Auto-Prune  <none>      git@github.com:jaguzaro/Practicas-SA-B-202201395.git             P8/charts/transactions-service  main
+argocd/transactions-service-dev  https://kubernetes.default.svc  sa-p8-dev  default  Synced  Healthy  Auto-Prune  <none>      git@github.com:jaguzaro/Practicas-SA-B-202201395.git             P8/charts/transactions-service  main
+
+Historial de sincronizaciones de transactions-service en produccion
+
+SOURCE  git@github.com:jaguzaro/Practicas-SA-B-202201395.git
+ID      DATE                           REVISION
+0       2026-09-17 08:27:04 -0600 CST  main (da7cdac)
+1       2026-09-17 18:27:32 -0600 CST  main (c288db3)
+
+SOURCE  https://github.com/jaguzaro/Practicas-SA-B-202201395-gitops.git
+ID      DATE                           REVISION
+0       2026-09-17 08:27:04 -0600 CST  main (172b108)
+1       2026-09-17 18:27:32 -0600 CST  main (6f71230)
+
+Historial de sincronizaciones de auth-api-dev en desarrollo
+
+SOURCE  git@github.com:jaguzaro/Practicas-SA-B-202201395.git
+ID      DATE                           REVISION
+0       2026-09-17 10:09:29 -0600 CST  main (da7cdac)
+1       2026-09-17 17:49:20 -0600 CST  main (d08862e)
+2       2026-09-17 18:12:06 -0600 CST  main (c288db3)
+3       2026-09-17 18:15:52 -0600 CST  main (c288db3)
+
+SOURCE  https://github.com/jaguzaro/Practicas-SA-B-202201395-gitops.git
+ID      DATE                           REVISION
+0       2026-09-17 10:09:29 -0600 CST  main (7e33693)
+1       2026-09-17 17:49:20 -0600 CST  main (d36c5f2)
+2       2026-09-17 18:12:06 -0600 CST  main (d36c5f2)
+3       2026-09-17 18:15:52 -0600 CST  main (a3a257b)

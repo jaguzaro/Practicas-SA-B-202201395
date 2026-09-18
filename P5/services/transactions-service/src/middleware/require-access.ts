@@ -8,8 +8,11 @@ export interface AuthenticatedRequest extends Request {
 }
 
 function extractToken(req: Request): string | null {
-  const [scheme, token] = (req.headers.authorization as string).split(" ");
-  return scheme === "Bearer" && token ? token : null;
+  const header = req.headers.authorization;
+  if (typeof header === "string" && header.startsWith("Bearer ")) {
+    return header.slice("Bearer ".length);
+  }
+  return null;
 }
 
 export function requireAccess(tokenVerifier: TokenVerifier, client: AuthorizationClient, route: string) {

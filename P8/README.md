@@ -10,13 +10,13 @@ La plataforma de microservicios se opera ahora bajo un modelo declarativo en el 
 |---|---|
 | Repositorio GitOps | https://github.com/jaguzaro/Practicas-SA-B-202201395-gitops |
 | Aplicacion en ArgoCD | sa-p8 en el namespace argocd. Es la aplicacion raiz y agrupa a auth-api, authz-service, transactions-service, audit-service, gateway, cronjobs, datos y secretos desplegadas en sa-p8, a sus equivalentes con sufijo dev desplegadas en sa-p8-dev, y a politicas |
-| Ejecucion exitosa del pipeline | PENDIENTE_RUN_V110 |
-| Reversion automatica | Run PENDIENTE_RUN_V121 y Rollout transactions-service en el namespace sa-p8, con la secuencia completa en evidencias/rollout-revertido-prod.txt y el pull request que la disparo en https://github.com/jaguzaro/Practicas-SA-B-202201395-gitops/pull/8 |
+| Ejecucion exitosa del pipeline | https://github.com/jaguzaro/Practicas-SA-B-202201395/actions/runs/35290923866 |
+| Reversion automatica | Run https://github.com/jaguzaro/Practicas-SA-B-202201395/actions/runs/35312439394 y Rollout transactions-service en el namespace sa-p8, con la secuencia completa en evidencias/rollout-revertido-prod.txt y el pull request que la disparo en https://github.com/jaguzaro/Practicas-SA-B-202201395-gitops/pull/8 |
 | Despliegue rechazado por politica | https://github.com/jaguzaro/Practicas-SA-B-202201395-gitops/pull/5 con el rechazo registrado en evidencias/despliegue-rechazado-por-kyverno.txt |
-| Bloqueo por vulnerabilidad critica | PENDIENTE_PR_TRIVY |
+| Bloqueo por vulnerabilidad critica | https://github.com/jaguzaro/Practicas-SA-B-202201395/pull/5 con el reporte del escaneo en evidencias/trivy-authz-service.txt |
 | Imagen firmada | ghcr.io/jaguzaro/auth-api:v1.2.1 |
 | Reporte de prueba de carga | Requisito anulado por el auxiliar. La salida de k6 de cada analisis del canary esta en evidencias/rollout-canary-prod.txt |
-| Video demostrativo | PENDIENTE_VIDEO |
+| Video demostrativo | https://drive.google.com/file/d/1_TvtuLIUCv2TQXYZXZcTBFPgpv6Nhz7s/view con el minutaje en la seccion Video |
 
 ## Diagrama del flujo
 
@@ -124,7 +124,17 @@ La carpeta evidencias contiene la salida de cada plan y apply de Terraform, la l
 
 ## Video
 
-PENDIENTE_VIDEO
+https://drive.google.com/file/d/1_TvtuLIUCv2TQXYZXZcTBFPgpv6Nhz7s/view
+
+0:00 Terraform, el modulo de ambiente, el plan sin cambios y los dos namespaces
+0:40 Charts, el Rollout con sus pasos y los valores por ambiente
+1:20 Repositorio GitOps y ArgoCD, las aplicaciones y el historial de sincronizaciones
+2:35 Pipeline, escaneo, SBOM, firma, verificacion y el pull request automatico
+4:10 Pull request bloqueado por vulnerabilidad critica
+4:50 Politicas de admision y el despliegue rechazado por Kyverno
+5:45 Canary exitoso con sus tres analisis
+6:25 Fallo inducido, reversion automatica, trafico sin errores e informe de incidente
+8:20 Sealed Secrets y cierre
 
 ## Preguntas teoricas
 

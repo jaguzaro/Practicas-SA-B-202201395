@@ -47,7 +47,7 @@ analysis:
       path: /login
       status: 401
       body:
-        email: canary@sa.local
+        correo: canary@sa.local
         password: incorrecta
   resources:
     requests:

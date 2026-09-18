@@ -1,0 +1,187 @@
+Rollout transactions-service en sa-p8, intento de promocion de v1.2.0 a v1.2.1 con fallo inducido
+
+=== 22:38:20 Progressing paso=0
+Name:            transactions-service
+Namespace:       sa-p8
+Status:          ◌ Progressing
+Message:         more replicas need to be updated
+Strategy:        Canary
+  Step:          0/9
+  SetWeight:     20
+  ActualWeight:  0
+Images:          ghcr.io/jaguzaro/transactions-service:v1.2.0 (stable)
+                 ghcr.io/jaguzaro/transactions-service:v1.2.1 (canary)
+Replicas:
+  Desired:       2
+  Current:       3
+  Updated:       1
+  Ready:         2
+  Available:     2
+NAME                                                              KIND         STATUS               AGE    INFO
+⟳ transactions-service                                            Rollout      ◌ Progressing        14h    
+├──# revision:4                                                                                            
+│  └──⧉ transactions-service-58bdc9c8d5                           ReplicaSet   ◌ Progressing        3s     canary
+│     └──□ transactions-service-58bdc9c8d5-g9c7w                  Pod          ◌ ContainerCreating  2s     ready:0/1
+├──# revision:3                                                                                            
+│  ├──⧉ transactions-service-64744888dc                           ReplicaSet   ✔ Healthy            27m    stable
+│  │  ├──□ transactions-service-64744888dc-nx7mv                  Pod          ✔ Running            26m    ready:1/1
+│  │  └──□ transactions-service-64744888dc-prljx                  Pod          ✔ Running            25m    ready:1/1
+│  ├──α transactions-service-64744888dc-3-2                       AnalysisRun  ✔ Successful         27m    ✔ 1
+│  │  └──⊞ f3c5fb5f-022f-4ac1-b817-8076fcd42ff0.prueba-de-humo.1  Job          ✔ Successful         27m    
+│  ├──α transactions-service-64744888dc-3-5                       AnalysisRun  ✔ Successful         26m    ✔ 1
+│  │  └──⊞ bb7b5f1a-85ca-4199-9ae7-5122c9ec1f5a.prueba-de-humo.1  Job          ✔ Successful         26m    
+│  └──α transactions-service-64744888dc-3-8                       AnalysisRun  ✔ Successful         25m    ✔ 1
+│     └──⊞ 7ce7486d-a6f9-48b8-9a45-bc85c7a08f6c.prueba-de-humo.1  Job          ✔ Successful         25m    
+├──# revision:2                                                                                            
+│  ├──⧉ transactions-service-5b76bc9949                           ReplicaSet   • ScaledDown         4h11m  
+│  ├──α transactions-service-5b76bc9949-2-5                       AnalysisRun  ✔ Successful         4h10m  ✔ 1
+│  │  └──⊞ 538808a7-100b-40a0-a980-b69cfb4e712a.prueba-de-humo.1  Job          ✔ Successful         4h10m  
+│  └──α transactions-service-5b76bc9949-2-8                       AnalysisRun  ✔ Successful         4h8m   ✔ 1
+│     └──⊞ 80b9dd4a-67ed-490c-bf23-53fc025fae87.prueba-de-humo.1  Job          ✔ Successful         4h8m   
+└──# revision:1                                                                                            
+   └──⧉ transactions-service-6d8679bb55                           ReplicaSet   • ScaledDown         14h    
+
+=== 22:38:37 Paused paso=1
+Name:            transactions-service
+Namespace:       sa-p8
+Status:          ॥ Paused
+Message:         CanaryPauseStep
+Strategy:        Canary
+  Step:          1/9
+  SetWeight:     20
+  ActualWeight:  33
+Images:          ghcr.io/jaguzaro/transactions-service:v1.2.0 (stable)
+                 ghcr.io/jaguzaro/transactions-service:v1.2.1 (canary)
+Replicas:
+  Desired:       2
+  Current:       3
+  Updated:       1
+  Ready:         3
+  Available:     3
+NAME                                                              KIND         STATUS        AGE    INFO
+⟳ transactions-service                                            Rollout      ॥ Paused      14h    
+├──# revision:4                                                                                     
+│  └──⧉ transactions-service-58bdc9c8d5                           ReplicaSet   ✔ Healthy     20s    canary
+│     └──□ transactions-service-58bdc9c8d5-g9c7w                  Pod          ✔ Running     19s    ready:1/1
+├──# revision:3                                                                                     
+│  ├──⧉ transactions-service-64744888dc                           ReplicaSet   ✔ Healthy     28m    stable
+│  │  ├──□ transactions-service-64744888dc-nx7mv                  Pod          ✔ Running     27m    ready:1/1
+│  │  └──□ transactions-service-64744888dc-prljx                  Pod          ✔ Running     26m    ready:1/1
+│  ├──α transactions-service-64744888dc-3-2                       AnalysisRun  ✔ Successful  27m    ✔ 1
+│  │  └──⊞ f3c5fb5f-022f-4ac1-b817-8076fcd42ff0.prueba-de-humo.1  Job          ✔ Successful  27m    
+│  ├──α transactions-service-64744888dc-3-5                       AnalysisRun  ✔ Successful  26m    ✔ 1
+│  │  └──⊞ bb7b5f1a-85ca-4199-9ae7-5122c9ec1f5a.prueba-de-humo.1  Job          ✔ Successful  26m    
+│  └──α transactions-service-64744888dc-3-8                       AnalysisRun  ✔ Successful  25m    ✔ 1
+│     └──⊞ 7ce7486d-a6f9-48b8-9a45-bc85c7a08f6c.prueba-de-humo.1  Job          ✔ Successful  25m    
+├──# revision:2                                                                                     
+│  ├──⧉ transactions-service-5b76bc9949                           ReplicaSet   • ScaledDown  4h11m  
+│  ├──α transactions-service-5b76bc9949-2-5                       AnalysisRun  ✔ Successful  4h10m  ✔ 1
+│  │  └──⊞ 538808a7-100b-40a0-a980-b69cfb4e712a.prueba-de-humo.1  Job          ✔ Successful  4h10m  
+│  └──α transactions-service-5b76bc9949-2-8                       AnalysisRun  ✔ Successful  4h9m   ✔ 1
+│     └──⊞ 80b9dd4a-67ed-490c-bf23-53fc025fae87.prueba-de-humo.1  Job          ✔ Successful  4h9m   
+└──# revision:1                                                                                     
+   └──⧉ transactions-service-6d8679bb55                           ReplicaSet   • ScaledDown  14h    
+
+=== 22:38:53 Progressing paso=2
+Name:            transactions-service
+Namespace:       sa-p8
+Status:          ◌ Progressing
+Message:         more replicas need to be updated
+Strategy:        Canary
+  Step:          2/9
+  SetWeight:     20
+  ActualWeight:  33
+Images:          ghcr.io/jaguzaro/transactions-service:v1.2.0 (stable)
+                 ghcr.io/jaguzaro/transactions-service:v1.2.1 (canary)
+Replicas:
+  Desired:       2
+  Current:       3
+  Updated:       1
+  Ready:         3
+  Available:     3
+NAME                                                              KIND         STATUS         AGE    INFO
+⟳ transactions-service                                            Rollout      ◌ Progressing  14h    
+├──# revision:4                                                                                      
+│  ├──⧉ transactions-service-58bdc9c8d5                           ReplicaSet   ✔ Healthy      36s    canary
+│  │  └──□ transactions-service-58bdc9c8d5-g9c7w                  Pod          ✔ Running      35s    ready:1/1
+│  └──α transactions-service-58bdc9c8d5-4-2                       AnalysisRun  ◌ Running      4s     
+│     └──⊞ e275e6e4-a11c-44fb-a075-0827c35b0115.prueba-de-humo.1  Job          ◌ Running      4s     
+├──# revision:3                                                                                      
+│  ├──⧉ transactions-service-64744888dc                           ReplicaSet   ✔ Healthy      28m    stable
+│  │  ├──□ transactions-service-64744888dc-nx7mv                  Pod          ✔ Running      27m    ready:1/1
+│  │  └──□ transactions-service-64744888dc-prljx                  Pod          ✔ Running      26m    ready:1/1
+│  ├──α transactions-service-64744888dc-3-2                       AnalysisRun  ✔ Successful   27m    ✔ 1
+│  │  └──⊞ f3c5fb5f-022f-4ac1-b817-8076fcd42ff0.prueba-de-humo.1  Job          ✔ Successful   27m    
+│  ├──α transactions-service-64744888dc-3-5                       AnalysisRun  ✔ Successful   27m    ✔ 1
+│  │  └──⊞ bb7b5f1a-85ca-4199-9ae7-5122c9ec1f5a.prueba-de-humo.1  Job          ✔ Successful   27m    
+│  └──α transactions-service-64744888dc-3-8                       AnalysisRun  ✔ Successful   26m    ✔ 1
+│     └──⊞ 7ce7486d-a6f9-48b8-9a45-bc85c7a08f6c.prueba-de-humo.1  Job          ✔ Successful   26m    
+├──# revision:2                                                                                      
+│  ├──⧉ transactions-service-5b76bc9949                           ReplicaSet   • ScaledDown   4h11m  
+│  ├──α transactions-service-5b76bc9949-2-5                       AnalysisRun  ✔ Successful   4h10m  ✔ 1
+│  │  └──⊞ 538808a7-100b-40a0-a980-b69cfb4e712a.prueba-de-humo.1  Job          ✔ Successful   4h10m  
+│  └──α transactions-service-5b76bc9949-2-8                       AnalysisRun  ✔ Successful   4h9m   ✔ 1
+│     └──⊞ 80b9dd4a-67ed-490c-bf23-53fc025fae87.prueba-de-humo.1  Job          ✔ Successful   4h9m   
+└──# revision:1                                                                                      
+   └──⧉ transactions-service-6d8679bb55                           ReplicaSet   • ScaledDown   14h    
+
+=== 22:39:22 Degraded paso=0
+Name:            transactions-service
+Namespace:       sa-p8
+Status:          ✖ Degraded
+Message:         RolloutAborted: Rollout aborted update to revision 4: Step-based analysis phase error/failed: Metric "prueba-de-humo" assessed Failed due to failed (1) > failureLimit (0)
+Strategy:        Canary
+  Step:          0/9
+  SetWeight:     0
+  ActualWeight:  0
+Images:          ghcr.io/jaguzaro/transactions-service:v1.2.0 (stable)
+Replicas:
+  Desired:       4
+  Current:       4
+  Updated:       0
+  Ready:         4
+  Available:     4
+NAME                                                              KIND         STATUS         AGE    INFO
+⟳ transactions-service                                            Rollout      ✖ Degraded     14h    
+├──# revision:4                                                                                      
+│  ├──⧉ transactions-service-58bdc9c8d5                           ReplicaSet   • ScaledDown   64s    canary
+│  │  └──□ transactions-service-58bdc9c8d5-g9c7w                  Pod          ◌ Terminating  63s    ready:1/1
+│  └──α transactions-service-58bdc9c8d5-4-2                       AnalysisRun  ✖ Failed       32s    ✖ 1
+│     └──⊞ e275e6e4-a11c-44fb-a075-0827c35b0115.prueba-de-humo.1  Job          ✖ Failed       32s    
+├──# revision:3                                                                                      
+│  ├──⧉ transactions-service-64744888dc                           ReplicaSet   ✔ Healthy      28m    stable
+│  │  ├──□ transactions-service-64744888dc-nx7mv                  Pod          ✔ Running      27m    ready:1/1
+│  │  ├──□ transactions-service-64744888dc-prljx                  Pod          ✔ Running      26m    ready:1/1
+│  │  ├──□ transactions-service-64744888dc-t4l5b                  Pod          ✔ Running      13s    ready:1/1
+│  │  └──□ transactions-service-64744888dc-xc4vn                  Pod          ✔ Running      13s    ready:1/1
+│  ├──α transactions-service-64744888dc-3-2                       AnalysisRun  ✔ Successful   28m    ✔ 1
+│  │  └──⊞ f3c5fb5f-022f-4ac1-b817-8076fcd42ff0.prueba-de-humo.1  Job          ✔ Successful   28m    
+│  ├──α transactions-service-64744888dc-3-5                       AnalysisRun  ✔ Successful   27m    ✔ 1
+│  │  └──⊞ bb7b5f1a-85ca-4199-9ae7-5122c9ec1f5a.prueba-de-humo.1  Job          ✔ Successful   27m    
+│  └──α transactions-service-64744888dc-3-8                       AnalysisRun  ✔ Successful   26m    ✔ 1
+│     └──⊞ 7ce7486d-a6f9-48b8-9a45-bc85c7a08f6c.prueba-de-humo.1  Job          ✔ Successful   26m    
+├──# revision:2                                                                                      
+│  ├──⧉ transactions-service-5b76bc9949                           ReplicaSet   • ScaledDown   4h12m  
+│  ├──α transactions-service-5b76bc9949-2-5                       AnalysisRun  ✔ Successful   4h11m  ✔ 1
+│  │  └──⊞ 538808a7-100b-40a0-a980-b69cfb4e712a.prueba-de-humo.1  Job          ✔ Successful   4h11m  
+│  └──α transactions-service-5b76bc9949-2-8                       AnalysisRun  ✔ Successful   4h9m   ✔ 1
+│     └──⊞ 80b9dd4a-67ed-490c-bf23-53fc025fae87.prueba-de-humo.1  Job          ✔ Successful   4h9m   
+└──# revision:1                                                                                      
+   └──⧉ transactions-service-6d8679bb55                           ReplicaSet   • ScaledDown   14h    
+
+=== Salida de k6 del analisis que detecto el fallo
+     scenarios: (100.00%) 1 scenario, 5 max VUs, 50s max duration (incl. graceful stop):
+              * default: 5 looping VUs for 20s (gracefulStop: 30s)
+     ✓ GET /health responde 200
+     ✗ GET /transactions/batches responde 401
+      ↳  0% — ✓ 0 / ✗ 766
+     ✗ POST /transactions/batches responde 401
+      ↳  0% — ✓ 0 / ✗ 766
+   ✗ checks.........................: 33.33% 766 out of 2298
+   ✓ http_req_duration..............: avg=42.76ms  min=3.34ms  med=32.27ms  max=723.09ms p(90)=76.56ms  p(95)=107.02ms
+   ✗ http_req_failed................: 66.66% 1532 out of 2298
+default ✓ [ 100% ] 5 VUs  20s
+time="2026-09-18T04:39:12Z" level=error msg="thresholds on metrics 'checks, http_req_failed' have been crossed"
+
+=== Error registrado por el contenedor canary ante peticiones sin cabecera Authorization
+TypeError: Cannot read properties of undefined (reading 'split')

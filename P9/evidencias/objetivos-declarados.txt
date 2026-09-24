@@ -1,0 +1,36 @@
+Objetivos de recuperacion declarados antes de ejecutar la prueba de desastre
+
+Fecha de declaracion: 2026-09-24
+
+Objetivo de tiempo de recuperacion, RTO: 45 minutos
+
+Se compromete a que, desde la perdida total del entorno hasta tener la plataforma
+sirviendo peticiones con sus datos restaurados, no pasen mas de 45 minutos.
+La cifra sale de sumar lo que cada etapa tarda de forma observada y agregar
+margen. La creacion del cluster en Google tarda alrededor de diez minutos y no
+depende de nosotros. La instalacion de ArgoCD y la sincronizacion de las
+veintidos aplicaciones tarda alrededor de diez minutos mas, limitada por la
+descarga de imagenes y por el arranque en cadena de base de datos, broker y
+servicios. La restauracion del volumen de la base se midio en algo mas de un
+minuto. El resto es margen para que una persona que no conoce el sistema pueda
+ejecutar el procedimiento leyendo el runbook, verificar cada paso y reaccionar
+si algo falla.
+
+Objetivo de punto de recuperacion, RPO: 6 horas
+
+Se acepta perder como maximo las escrituras de las ultimas seis horas, que es el
+intervalo del calendario de respaldos mas frecuente. La plataforma registra
+ejecuciones programadas y eventos de auditoria, informacion valiosa para
+trazabilidad pero que no representa dinero ni compromisos con terceros, de modo
+que un intervalo de seis horas es proporcionado al costo de respaldar con mas
+frecuencia. Un sistema con transacciones reales exigiria replicacion continua y
+un RPO de minutos o segundos, lo que implicaria una replica de la base en otra
+zona y un costo varias veces mayor.
+
+Como se mediran
+
+El RTO se mide desde la marca de tiempo en que se ordena la destruccion del
+entorno hasta la marca en que la plataforma responde una peticion de negocio
+por el gateway con los datos ya restaurados. El RPO se mide contando las filas
+de la tabla de ejecuciones programadas presentes antes del desastre y las
+presentes despues de la restauracion, y comparando sus marcas de tiempo.

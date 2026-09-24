@@ -1,0 +1,45 @@
+Prueba de restauracion de datos
+
+2026-09-24T05:24:49Z  se crea el respaldo restauracion-052449
+2026-09-24T05:27:59Z  respaldo restauracion-052449 completado a las 2026-09-24T05:27:58Z
+2026-09-24T05:28:00Z  filas en el momento del respaldo: 35
+2026-09-24T05:28:00Z  se deja correr la plataforma para que acumule datos posteriores al respaldo
+2026-09-24T05:33:03Z  filas justo antes del desastre: 38, ultima escritura 2026-09-24 05:32:06.436968+00
+2026-09-24T05:33:03Z  DESASTRE: se elimina la base de datos y su volumen
+2026-09-24T05:33:36Z  volumen eliminado, no queda dato alguno
+2026-09-24T05:33:36Z  se solicita la restauracion restauracion-053336 desde restauracion-052449
+2026-09-24T05:34:29Z  restauracion terminada con estado Completed
+2026-09-24T05:34:29Z  se espera a que la base vuelva a aceptar conexiones
+2026-09-24T05:34:42Z  filas recuperadas: 35
+2026-09-24T05:34:42Z  se devuelve la sincronizacion automatica a ArgoCD
+
+Contenido recuperado, primeras y ultimas filas
+ id |   carne   |         ejecutado_en          
+----+-----------+-------------------------------
+  1 | 202201395 | 2026-09-24 04:18:19.706812+00
+  2 | 202201395 | 2026-09-24 04:20:08.609829+00
+  3 | 202201395 | 2026-09-24 04:22:06.666735+00
+(3 rows)
+
+ id |   carne   |         ejecutado_en          
+----+-----------+-------------------------------
+ 66 | 202201395 | 2026-09-24 05:26:05.882613+00
+ 65 | 202201395 | 2026-09-24 05:24:07.850722+00
+ 64 | 202201395 | 2026-09-24 05:22:07.901288+00
+(3 rows)
+
+
+Otras tablas del mismo volumen
+       service        | count 
+----------------------+-------
+ cronjob-resumen      |     7
+ transactions-service |     1
+(2 rows)
+
+
+Medicion
+  filas al momento del respaldo      35
+  filas justo antes del desastre     38
+  filas recuperadas                  35
+  filas perdidas                     3
+  tiempo de recuperacion de datos    64 segundos

@@ -1,0 +1,33 @@
+Configuracion de respaldos y su verificacion
+
+Ubicacion de almacenamiento, externa al cluster
+NAME        PROVIDER   BUCKET/PREFIX                    PHASE       LAST VALIDATED                  ACCESS MODE   DEFAULT
+respaldos   gcp        softwareavanz-respaldos/velero   Available   2026-09-23 23:41:37 -0600 CST   ReadWrite     true
+
+Calendarios declarados
+NOMBRE                 ESTADO    CALENDARIO    RETENCION   NAMESPACES                         VOLUMENES
+velero-cadaseishoras   Enabled   0 */6 * * *   72h         [sa-p8]                            true
+velero-diario          Enabled   0 6 * * *     168h        [sa-p8 sa-p8-dev sealed-secrets]   true
+
+Respaldos existentes, el disparado desde el calendario hereda su retencion de 72 horas
+NAME                   STATUS      ERRORS   WARNINGS   CREATED                         EXPIRES   STORAGE LOCATION   QUEUE POSITION   SELECTOR
+desde-calendario       Completed   0        0          2026-09-23 23:39:04 -0600 CST   2d        respaldos                           <none>
+inicial-sa-p8          Completed   0        0          2026-09-23 22:55:04 -0600 CST   29d       respaldos                           <none>
+restauracion-052449    Completed   0        0          2026-09-23 23:24:50 -0600 CST   29d       respaldos                           <none>
+verificacion-inicial   Deleting    0        0          <nil>                           29d       respaldos                           <none>
+
+Volumenes persistentes incluidos en el ultimo respaldo
+postgres-0                              dshm        Completed   2153904
+postgres-0                              data        Completed   79885593
+rabbitmq-0                              empty-dir   Completed   24368406
+postgres-0                              empty-dir   Completed   30976
+rabbitmq-0                              data        Completed   196732
+
+Contenido en el almacenamiento de objetos
+gs://softwareavanz-respaldos/velero/backups/desde-calendario/
+gs://softwareavanz-respaldos/velero/backups/inicial-sa-p8/
+gs://softwareavanz-respaldos/velero/backups/restauracion-052449/
+
+Velero se autentica suplantando una cuenta de Google, sin ninguna llave descargada
+velero-respaldos@softwareavanz.iam.gserviceaccount.com
+VELERO_SCRATCH_DIR VELERO_NAMESPACE LD_LIBRARY_PATH

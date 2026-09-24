@@ -3,10 +3,11 @@ logLevel: notice
 service:
   type: LoadBalancer
   port: 8000
+  trafficPolicy: Local
 
 autoscaling:
   enabled: true
-  minReplicas: 2
+  minReplicas: 3
   maxReplicas: 4
 
 podDisruptionBudget:

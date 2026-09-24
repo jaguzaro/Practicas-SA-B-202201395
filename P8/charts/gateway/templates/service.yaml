@@ -7,6 +7,9 @@ metadata:
     {{- include "servicio.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type | default "ClusterIP" }}
+  {{- if .Values.service.trafficPolicy }}
+  externalTrafficPolicy: {{ .Values.service.trafficPolicy }}
+  {{- end }}
   selector:
     app: {{ .Chart.Name }}
   ports:

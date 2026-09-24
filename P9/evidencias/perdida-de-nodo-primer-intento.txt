@@ -1,0 +1,62 @@
+Prueba de perdida de nodo
+
+Se drena gke-sa-p9-principal-6d36372e-9hrk mientras el gateway recibe una peticion por segundo
+
+Reparto de replicas antes del drenaje
+audit-service-646cff9b47-5n2ng          gke-sa-p9-principal-6d36372e-9kx4   true
+audit-service-646cff9b47-tq99l          gke-sa-p9-principal-6d36372e-9hrk   true
+auth-api-66d9d45d68-48svw               gke-sa-p9-principal-6d36372e-9hrk   true
+auth-api-66d9d45d68-nl8gj               gke-sa-p9-principal-6d36372e-9kx4   true
+authz-service-5cfc9bb47-vzhr7           gke-sa-p9-principal-6d36372e-9hrk   true
+authz-service-5cfc9bb47-w8lxq           gke-sa-p9-principal-6d36372e-9kx4   true
+gateway-69f5bfffcb-5kct2                gke-sa-p9-principal-6d36372e-9hrk   true
+gateway-69f5bfffcb-lzmpm                gke-sa-p9-principal-6d36372e-9kx4   true
+postgres-0                              gke-sa-p9-principal-6d36372e-fn41   true
+rabbitmq-0                              gke-sa-p9-principal-6d36372e-9hrk   true
+transactions-service-6cb9d46974-2c2tr   gke-sa-p9-principal-6d36372e-9hrk   true
+transactions-service-6cb9d46974-4n9z8   gke-sa-p9-principal-6d36372e-fn41   true
+
+2026-09-24T05:01:28Z  se acordona y drena el nodo
+05:01:30 respuesta inesperada 000
+05:01:39 respuesta inesperada 000
+05:01:45 respuesta inesperada 000
+05:02:01 respuesta inesperada 000
+pod/rabbitmq-0 evicted
+pod/transactions-service-6cb9d46974-2c2tr evicted
+pod/authz-service-5cfc9bb47-vzhr7 evicted
+pod/gateway-69f5bfffcb-5kct2 evicted
+node/gke-sa-p9-principal-6d36372e-9hrk drained
+2026-09-24T05:02:05Z  drenaje terminado
+
+Reparto de replicas con el nodo fuera de servicio
+audit-service-646cff9b47-5n2ng          gke-sa-p9-principal-6d36372e-9kx4   true
+audit-service-646cff9b47-5x258          gke-sa-p9-principal-6d36372e-fn41   true
+auth-api-66d9d45d68-7fjjv               gke-sa-p9-principal-6d36372e-fn41   false
+auth-api-66d9d45d68-nl8gj               gke-sa-p9-principal-6d36372e-9kx4   true
+authz-service-5cfc9bb47-w8lxq           gke-sa-p9-principal-6d36372e-9kx4   true
+authz-service-5cfc9bb47-z5hkv           gke-sa-p9-principal-6d36372e-fn41   true
+gateway-69f5bfffcb-lzmpm                gke-sa-p9-principal-6d36372e-9kx4   true
+gateway-69f5bfffcb-rn4p8                gke-sa-p9-principal-6d36372e-fn41   false
+postgres-0                              gke-sa-p9-principal-6d36372e-fn41   true
+rabbitmq-0                              gke-sa-p9-principal-6d36372e-fn41   false
+transactions-service-6cb9d46974-4n9z8   gke-sa-p9-principal-6d36372e-fn41   true
+transactions-service-6cb9d46974-vqdl5   gke-sa-p9-principal-6d36372e-9kx4   false
+
+Presupuestos de interrupcion
+audit-service          1     N/A   1     45m
+auth-api               1     N/A   0     44m
+authz-service          1     N/A   1     45m
+gateway                1     N/A   0     45m
+postgres               N/A   1     1     45m
+rabbitmq               N/A   1     0     45m
+transactions-service   1     N/A   0     45m
+05:02:07 respuesta inesperada 000
+05:02:21 respuesta inesperada 000
+05:02:27 respuesta inesperada 000
+05:02:55 respuesta inesperada 000
+05:03:17 respuesta inesperada 000
+
+Trafico durante la prueba: 215 peticiones, 206 con el codigo esperado, 9 con otro
+
+2026-09-24T05:06:24Z  se reincorpora el nodo
+node/gke-sa-p9-principal-6d36372e-9hrk uncordoned

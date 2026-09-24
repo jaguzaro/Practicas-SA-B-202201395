@@ -4,3 +4,28 @@
 2026-09-24T04:14:36Z  cluster disponible, se obtienen credenciales
 2026-09-24T04:14:37Z  namespaces, cuotas, RBAC, llave de secretos, ArgoCD y aplicacion raiz
 2026-09-24T04:16:06Z  esperando a que ArgoCD sincronice la plataforma completa
+2026-09-24T04:46:12Z  tiempo agotado con 21 de 22 aplicaciones sanas
+2026-09-24T04:46:12Z  fin del bootstrap
+APP                        SYNC        HEALTH
+argo-rollouts              Synced      Healthy
+audit-service              Synced      Healthy
+audit-service-dev          Synced      Healthy
+auth-api                   Synced      Healthy
+auth-api-dev               Synced      Healthy
+authz-service              Synced      Healthy
+authz-service-dev          Synced      Healthy
+cronjobs                   Synced      Healthy
+cronjobs-dev               Synced      Healthy
+datos                      Synced      Healthy
+datos-dev                  Synced      Healthy
+gateway                    Synced      Healthy
+gateway-dev                Synced      Healthy
+kyverno                    OutOfSync   Healthy
+plataforma                 Synced      Healthy
+politicas                  Synced      Healthy
+sealed-secrets             Synced      Healthy
+secretos                   Synced      Healthy
+secretos-dev               Synced      Healthy
+transactions-service       Synced      Healthy
+transactions-service-dev   Synced      Healthy
+velero                     Synced      Healthy

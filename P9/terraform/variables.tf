@@ -96,6 +96,12 @@ variable "zona" {
   default     = "us-central1-a"
 }
 
+variable "region" {
+  description = "Region donde vive la salida a internet de los nodos"
+  type        = string
+  default     = "us-central1"
+}
+
 variable "cluster" {
   description = "Nombre del cluster de Kubernetes"
   type        = string

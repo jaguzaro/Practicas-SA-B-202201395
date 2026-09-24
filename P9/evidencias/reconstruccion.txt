@@ -1,0 +1,6 @@
+2026-09-24T04:14:29Z  inicio del bootstrap contra el proyecto softwareavanz
+2026-09-24T04:14:30Z  terraform init contra el estado remoto
+2026-09-24T04:14:31Z  creacion del cluster y su grupo de nodos
+2026-09-24T04:14:36Z  cluster disponible, se obtienen credenciales
+2026-09-24T04:14:37Z  namespaces, cuotas, RBAC, llave de secretos, ArgoCD y aplicacion raiz
+2026-09-24T04:16:06Z  esperando a que ArgoCD sincronice la plataforma completa

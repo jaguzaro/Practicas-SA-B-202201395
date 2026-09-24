@@ -1,3 +1,19 @@
+resource "google_compute_router" "salida" {
+  name    = "${var.cluster}-router"
+  region  = var.region
+  network = "default"
+  project = var.proyecto
+}
+
+resource "google_compute_router_nat" "salida" {
+  name                               = "${var.cluster}-nat"
+  router                             = google_compute_router.salida.name
+  region                             = var.region
+  project                            = var.proyecto
+  nat_ip_allocate_option             = "AUTO_ONLY"
+  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+}
+
 resource "google_container_cluster" "plataforma" {
   name     = var.cluster
   location = var.zona
@@ -9,6 +25,16 @@ resource "google_container_cluster" "plataforma" {
 
   workload_identity_config {
     workload_pool = "${var.proyecto}.svc.id.goog"
+  }
+
+  networking_mode = "VPC_NATIVE"
+
+  ip_allocation_policy {}
+
+  private_cluster_config {
+    enable_private_nodes    = true
+    enable_private_endpoint = false
+    master_ipv4_cidr_block  = "172.16.0.0/28"
   }
 
   logging_service    = "none"
@@ -37,6 +63,8 @@ resource "google_container_node_pool" "principal" {
     auto_upgrade = false
   }
 
+  depends_on = [google_compute_router_nat.salida]
+
   node_config {
     machine_type = var.nodos.tipo
     disk_size_gb = var.nodos.discoGb
@@ -51,6 +79,8 @@ resource "google_container_node_pool" "principal" {
       mode = "GKE_METADATA"
     }
 
-    labels = local.etiquetas
+    labels = {
+      practica = "p9"
+    }
   }
 }

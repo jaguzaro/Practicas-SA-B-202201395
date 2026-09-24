@@ -1,0 +1,44 @@
+configs:
+  params:
+    server.insecure: true
+
+dex:
+  enabled: false
+
+notifications:
+  enabled: false
+
+applicationSet:
+  replicas: 0
+
+controller:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      memory: 768Mi
+
+server:
+  resources:
+    requests:
+      cpu: 20m
+      memory: 96Mi
+    limits:
+      memory: 256Mi
+
+repoServer:
+  resources:
+    requests:
+      cpu: 20m
+      memory: 256Mi
+    limits:
+      memory: 1Gi
+
+redis:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 128Mi

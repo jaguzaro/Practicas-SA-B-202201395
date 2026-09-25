@@ -16,7 +16,7 @@ La plataforma que se entrego en la practica anterior se desplegaba de forma cont
 | Reconstruccion cronometrada | P9/evidencias/reconstruccion.txt |
 | Restauracion de datos | P9/evidencias/restauracion-de-datos.txt |
 | Prueba de perdida de nodo | P9/evidencias/perdida-de-nodo.txt |
-| RTO y RPO declarados | PENDIENTE_OBJETIVOS |
+| RTO y RPO declarados | Declarados 45 minutos de RTO y 6 horas de RPO en evidencias/objetivos-declarados.txt, medidos 1 hora 42 minutos y 5 minutos de escrituras perdidas en evidencias/desastre-total.txt |
 | Video demostrativo | PENDIENTE_VIDEO |
 
 ## Diagrama del bootstrap
@@ -74,7 +74,7 @@ La creacion del cluster se hace en dos aplicaciones de Terraform en lugar de una
 
 El estado vive en un bucket de Cloud Storage con versionado activado, de modo que cada aplicacion conserva la version anterior y una corrupcion se revierte. El bloqueo lo provee el propio almacenamiento mediante una escritura condicional del archivo de bloqueo, que solo tiene exito si el archivo no existe, por lo que una segunda ejecucion simultanea falla al intentar tomarlo e informa quien lo tiene, desde cuando y que operacion esta ejecutando. No hace falta una base de datos aparte como ocurre con otros proveedores.
 
-En el repositorio no hay ningun archivo de estado ni credenciales. Lo unico que se versiona es el archivo de bloqueo de versiones de los proveedores, que garantiza que cualquiera obtenga exactamente las mismas versiones.
+En el repositorio no hay ningun archivo de estado ni credenciales. Lo unico que se versiona es el archivo de bloqueo de versiones de los proveedores, que garantiza que cualquiera obtenga exactamente las mismas versiones. La prueba del bloqueo, con dos ejecuciones compitiendo por el estado, esta en evidencias/terraform-bloqueo-estado.txt.
 
 ## Respaldos
 
@@ -82,19 +82,19 @@ Velero escribe a un bucket de Cloud Storage externo al cluster que respalda, baj
 
 Los volumenes se respaldan por sistema de archivos y no mediante instantaneas de disco. Una instantanea es mas rapida pero queda atada a la infraestructura de discos de la nube, mientras que el respaldo por sistema de archivos deja el contenido como objetos en el bucket y se puede restaurar sobre un cluster distinto, con otra clase de almacenamiento o incluso en otra region. Para una practica cuyo objetivo es sobrevivir a la destruccion del entorno, esa portabilidad importa mas que la velocidad.
 
-La autenticacion no usa ninguna llave descargada. El pod de Velero suplanta una cuenta de Google mediante federacion de identidades, y esa cuenta es la unica con permiso de escritura sobre el bucket. Ademas de ser mas seguro, es el unico camino posible porque la organizacion prohibe crear llaves de cuenta de servicio.
+La autenticacion no usa ninguna llave descargada. El pod de Velero suplanta una cuenta de Google mediante federacion de identidades, y esa cuenta es la unica con permiso de escritura sobre el bucket. Ademas de ser mas seguro, es el unico camino posible porque la organizacion prohibe crear llaves de cuenta de servicio. La configuracion completa, con los calendarios, la retencion aplicada y los volumenes incluidos, esta en evidencias/respaldos.txt.
 
 ## Continuidad de los secretos
 
 El repositorio de manifiestos es publico y contiene catorce secretos cifrados. La llave que los descifra la genera el controlador dentro del cluster, de modo que perder el cluster convertiria ese repositorio en contenido ilegible para siempre. Por eso la llave se exporto y vive en el bucket de respaldos, fuera del cluster.
 
-Durante el arranque, Terraform lee esa llave del almacenamiento y la crea como Secret con la etiqueta que el controlador busca, antes de que el controlador exista. Cuando ArgoCD lo instala, este encuentra una llave activa y la adopta en lugar de generar una nueva. La prueba de que funciona es doble, en el namespace hay una sola llave y es la restaurada, y el certificado que contiene coincide byte a byte con el que se publico en el repositorio de manifiestos para cifrar los secretos. Sobre esa base, los catorce secretos se descifraron en un cluster que nunca vio la llave original.
+Durante el arranque, Terraform lee esa llave del almacenamiento y la crea como Secret con la etiqueta que el controlador busca, antes de que el controlador exista. Cuando ArgoCD lo instala, este encuentra una llave activa y la adopta en lugar de generar una nueva. La prueba de que funciona es doble, en el namespace hay una sola llave y es la restaurada, y el certificado que contiene coincide byte a byte con el que se publico en el repositorio de manifiestos para cifrar los secretos. Sobre esa base, los catorce secretos se descifraron en un cluster que nunca vio la llave original. La comprobacion esta en evidencias/continuidad-de-secretos.txt.
 
 ## Resiliencia ante perdida de nodo
 
 Cada microservicio corre con al menos dos replicas, un presupuesto de interrupcion que exige mantener una disponible y una regla de anti afinidad que prefiere colocar las replicas en nodos distintos. La regla es preferida y no obligatoria de forma deliberada, porque con tres nodos y anti afinidad obligatoria el pod adicional que crea la entrega progresiva durante una promocion no tendria donde ir y el flujo de la entrega anterior dejaria de funcionar.
 
-La prueba consistio en drenar un nodo mientras el gateway recibia una peticion por segundo, y se ejecuto tres veces porque las dos primeras revelaron algo que no se esperaba. Con dos replicas de gateway y trafico repartido entre todos los nodos, nueve de doscientas quince peticiones fallaron. Al subir a tres replicas, una por nodo, y cambiar la politica para que el balanceador envie solo a nodos con pod propio, el resultado empeoro a quince fallos de ciento ochenta y una, porque esa politica hace que el balanceador siga enviando al nodo drenado hasta acumular suficientes comprobaciones fallidas, y mientras tanto el trafico cae en un nodo que ya no tiene a quien entregarselo.
+La prueba consistio en drenar un nodo mientras el gateway recibia una peticion por segundo, y se ejecuto tres veces porque las dos primeras revelaron algo que no se esperaba. Con dos replicas de gateway y trafico repartido entre todos los nodos, nueve de doscientas quince peticiones fallaron. Al subir a tres replicas, una por nodo, y cambiar la politica para que el balanceador envie solo a nodos con pod propio, el resultado empeoro a quince fallos de ciento ochenta y una, porque esa politica hace que el balanceador siga enviando al nodo drenado hasta acumular suficientes comprobaciones fallidas, y mientras tanto el trafico cae en un nodo que ya no tiene a quien entregarselo. Las tres mediciones estan en evidencias/perdida-de-nodo.txt.
 
 Lo que corrigio el problema no fue una configuracion sino un procedimiento. Retirando primero el gateway del nodo, esperando setenta y cinco segundos a que el balanceador lo note y drenando despues, los fallos bajaron a cinco de doscientas setenta y cinco, concentrados en una ventana de veintisiete segundos durante la expulsion de los pods. Ese orden quedo documentado en el runbook, porque es conocimiento que no sirve de nada si vive solo en la cabeza de quien hizo la prueba.
 
@@ -108,7 +108,11 @@ Un detalle del procedimiento merece mencion. Hubo que retirarle temporalmente la
 
 ## Prueba de recuperacion cronometrada
 
-PENDIENTE_DR
+El entorno completo se destruyo con Terraform y se reconstruyo desde el punto de entrada unico, con el cronometro corriendo. A las 20:34 no quedaba plano de control, nodos, volumenes ni balanceador, y a las 22:11 el gateway respondia una peticion de negocio con los datos restaurados desde el respaldo. Una hora y 42 minutos frente a los 45 minutos comprometidos.
+
+La brecha tiene una causa concreta y util. A los treinta minutos de la reconstruccion el controlador de ArgoCD empezo a morir por agotamiento de memoria, porque su limite estaba dimensionado para un sistema con menos aplicaciones y en un arranque en frio las veintidos reconcilian a la vez contra un cluster vacio. Mientras se reiniciaba en bucle ninguna sincronizacion progresaba, y el sintoma visible era enganoso, los Rollout se quejaban de que faltaba su plantilla de analisis cuando lo que faltaba era quien terminara de aplicarla. Es un defecto que solo se manifiesta en una reconstruccion total y que, de no haberse hecho esta prueba, habria aparecido durante un desastre real. El limite ya esta corregido en el codigo.
+
+De la perdida de datos, el respaldo tenia 88 filas y antes del desastre habia 91, de modo que se perdieron las tres escritas en los cinco minutos intermedios, muy por debajo de las seis horas admitidas. El contenido recuperado se verifico fila por fila con el carne del estudiante y sus marcas de tiempo. El analisis completo, con los seis campos que pide la plantilla, esta en informe-dr.md.
 
 ## Documentacion
 

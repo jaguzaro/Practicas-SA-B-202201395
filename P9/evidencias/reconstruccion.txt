@@ -1,31 +1,35 @@
-2026-09-24T04:14:29Z  inicio del bootstrap contra el proyecto softwareavanz
-2026-09-24T04:14:30Z  terraform init contra el estado remoto
-2026-09-24T04:14:31Z  creacion del cluster y su grupo de nodos
-2026-09-24T04:14:36Z  cluster disponible, se obtienen credenciales
-2026-09-24T04:14:37Z  namespaces, cuotas, RBAC, llave de secretos, ArgoCD y aplicacion raiz
-2026-09-24T04:16:06Z  esperando a que ArgoCD sincronice la plataforma completa
-2026-09-24T04:46:12Z  tiempo agotado con 21 de 22 aplicaciones sanas
-2026-09-24T04:46:12Z  fin del bootstrap
+2026-09-24T20:34:27Z  inicio del bootstrap contra el proyecto softwareavanz
+2026-09-24T20:34:28Z  terraform init contra el estado remoto
+2026-09-24T20:34:30Z  creacion del cluster y su grupo de nodos
+2026-09-24T20:43:10Z  cluster disponible, se obtienen credenciales
+2026-09-24T20:43:11Z  namespaces, cuotas, RBAC, llave de secretos, ArgoCD y aplicacion raiz
+2026-09-24T20:44:52Z  esperando a que ArgoCD sincronice la plataforma completa
+2026-09-24T21:14:53Z  tiempo agotado con 15 de 22 aplicaciones sanas
+2026-09-24T21:14:53Z  10 de 22 aplicaciones estan sincronizadas con el repositorio
+2026-09-24T21:14:53Z  se espera a que el gateway reciba direccion publica
+2026-09-24T21:14:54Z  gateway disponible en 35.255.218.43
+2026-09-24T21:14:54Z  la plataforma responde a una peticion de negocio con codigo 000000
+2026-09-24T21:14:54Z  fin del bootstrap
 APP                        SYNC        HEALTH
 argo-rollouts              Synced      Healthy
-audit-service              Synced      Healthy
-audit-service-dev          Synced      Healthy
-auth-api                   Synced      Healthy
-auth-api-dev               Synced      Healthy
-authz-service              Synced      Healthy
-authz-service-dev          Synced      Healthy
+audit-service              OutOfSync   Degraded
+audit-service-dev          OutOfSync   Degraded
+auth-api                   OutOfSync   Degraded
+auth-api-dev               OutOfSync   Healthy
+authz-service              OutOfSync   Degraded
+authz-service-dev          OutOfSync   Healthy
 cronjobs                   Synced      Healthy
 cronjobs-dev               Synced      Healthy
 datos                      Synced      Healthy
 datos-dev                  Synced      Healthy
-gateway                    Synced      Healthy
-gateway-dev                Synced      Healthy
+gateway                    OutOfSync   Degraded
+gateway-dev                OutOfSync   Healthy
 kyverno                    OutOfSync   Healthy
-plataforma                 Synced      Healthy
-politicas                  Synced      Healthy
+plataforma                 OutOfSync   Healthy
+politicas                  OutOfSync   Missing
 sealed-secrets             Synced      Healthy
 secretos                   Synced      Healthy
 secretos-dev               Synced      Healthy
-transactions-service       Synced      Healthy
-transactions-service-dev   Synced      Healthy
+transactions-service       OutOfSync   Degraded
+transactions-service-dev   OutOfSync   Healthy
 velero                     Synced      Healthy

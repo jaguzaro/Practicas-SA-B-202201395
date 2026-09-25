@@ -1,5 +1,22 @@
 Prueba de perdida de nodo
 
+La prueba se ejecuto tres veces. Se drena un nodo mientras el gateway recibe una peticion por segundo y se cuenta cuantas responden el codigo esperado.
+
+Primera ejecucion, dos replicas de gateway y trafico repartido entre todos los nodos
+Trafico durante la prueba: 215 peticiones, 206 con el codigo esperado, 9 con otro
+  respuestas fallidas: 9
+
+Segunda ejecucion, tres replicas y trafico solo hacia nodos con pod propio, drenaje abrupto
+Trafico durante la prueba: 181 peticiones, 166 con el codigo esperado, 15 con otro
+  el resultado empeora porque el balanceador sigue enviando al nodo drenado hasta acumular comprobaciones fallidas
+
+Tercera ejecucion, misma configuracion y drenaje por procedimiento
+Trafico durante la prueba: 275 peticiones, 270 con el codigo esperado, 5 con otro
+
+Detalle de la tercera ejecucion
+
+Prueba de perdida de nodo
+
 Se drena gke-sa-p9-principal-6d36372e-9hrk mientras el gateway recibe una peticion por segundo
 
 Reparto de replicas antes del drenaje

@@ -14,10 +14,10 @@ applicationSet:
 controller:
   resources:
     requests:
-      cpu: 50m
-      memory: 256Mi
-    limits:
+      cpu: 100m
       memory: 768Mi
+    limits:
+      memory: 2Gi
 
 server:
   resources:

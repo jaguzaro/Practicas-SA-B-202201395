@@ -1,0 +1,87 @@
+Prueba de recuperacion ante desastre total
+
+Situacion previa al desastre
+2026-09-24T17:27:27Z  se toma el respaldo desastre-20260924-1727
+2026-09-24T17:31:16Z  respaldo completado, incluye los volumenes por sistema de archivos
+2026-09-24T17:31:21Z  filas registradas en el momento del respaldo: 88
+2026-09-24T17:36:28Z  filas justo antes del desastre: 91, ultima escritura 2026-09-24 17:36:07
+
+Destruccion
+2026-09-24T20:29:22Z  se ordena la destruccion del entorno con terraform destroy
+2026-09-24T20:34:18Z  cluster destruido, no queda plano de control, nodos, volumenes ni balanceador
+NAME       STATUS
+bank-usac  RUNNING
+
+Reconstruccion desde el punto de entrada unico
+2026-09-24T20:34:27Z  inicio del bootstrap contra el proyecto softwareavanz
+2026-09-24T20:34:28Z  terraform init contra el estado remoto
+2026-09-24T20:34:30Z  creacion del cluster y su grupo de nodos
+2026-09-24T20:43:10Z  cluster disponible, se obtienen credenciales
+2026-09-24T20:43:11Z  namespaces, cuotas, RBAC, llave de secretos, ArgoCD y aplicacion raiz
+2026-09-24T20:44:52Z  esperando a que ArgoCD sincronice la plataforma completa
+2026-09-24T21:14:53Z  tiempo agotado con 15 de 22 aplicaciones sanas
+2026-09-24T21:14:53Z  10 de 22 aplicaciones estan sincronizadas con el repositorio
+2026-09-24T21:14:53Z  se espera a que el gateway reciba direccion publica
+2026-09-24T21:14:54Z  gateway disponible en 35.255.218.43
+2026-09-24T21:14:54Z  la plataforma responde a una peticion de negocio con codigo 000000
+2026-09-24T21:14:54Z  fin del bootstrap
+APP                        SYNC        HEALTH
+argo-rollouts              Synced      Healthy
+audit-service              OutOfSync   Degraded
+audit-service-dev          OutOfSync   Degraded
+auth-api                   OutOfSync   Degraded
+auth-api-dev               OutOfSync   Healthy
+authz-service              OutOfSync   Degraded
+authz-service-dev          OutOfSync   Healthy
+cronjobs                   Synced      Healthy
+cronjobs-dev               Synced      Healthy
+datos                      Synced      Healthy
+datos-dev                  Synced      Healthy
+gateway                    OutOfSync   Degraded
+gateway-dev                OutOfSync   Healthy
+kyverno                    OutOfSync   Healthy
+plataforma                 OutOfSync   Healthy
+politicas                  OutOfSync   Missing
+sealed-secrets             Synced      Healthy
+secretos                   Synced      Healthy
+secretos-dev               Synced      Healthy
+transactions-service       OutOfSync   Degraded
+transactions-service-dev   OutOfSync   Healthy
+velero                     Synced      Healthy
+
+Incidencia durante la reconstruccion
+2026-09-24T21:15:00Z  el controlador de ArgoCD entra en OOMKilled de forma repetida
+                      con 22 aplicaciones reconciliando a la vez, el limite de 768Mi resulto insuficiente
+2026-09-24T21:35:00Z  se eleva el limite a 2Gi en el codigo de Terraform y se aplica
+2026-09-24T21:40:00Z  las 22 aplicaciones quedan Synced y Healthy
+
+Restauracion de los datos
+2026-09-24T21:42:51Z  se inicia la restauracion desde desastre-20260924-1727
+2026-09-24T21:43:33Z  Velero recrea el volumen y lo llena desde el almacenamiento de objetos
+2026-09-24T22:11:42Z  el gateway responde una peticion de negocio con los datos ya restaurados
+
+Verificacion del contenido recuperado
+ id |   carne   |         ejecutado_en          
+----+-----------+-------------------------------
+  1 | 202201395 | 2026-09-24 04:18:19.706812+00
+  2 | 202201395 | 2026-09-24 04:20:08.609829+00
+  3 | 202201395 | 2026-09-24 04:22:06.666735+00
+(3 rows)
+
+ filas_recuperadas 
+-------------------
+                87
+(1 row)
+
+Secretos descifrados con la llave restaurada desde el almacenamiento externo
+  secretos sellados sincronizados: 14
+  aplicaciones: 1 OutOfSync Healthy 21 Synced Healthy
+
+Medicion
+  destruccion ordenada               2026-09-24T20:29:22Z
+  servicio restablecido              2026-09-24T22:11:42Z
+  tiempo de recuperacion real        1 hora 42 minutos
+  filas al momento del respaldo      88
+  filas justo antes del desastre     91
+  filas recuperadas                  88
+  filas perdidas                     3

@@ -40,15 +40,30 @@ fin=$(( $(date +%s) + 1800 ))
 while :; do
   total=$(kubectl get applications -n argocd --no-headers 2>/dev/null | wc -l | tr -d ' ')
   sanas=$(kubectl get applications -n argocd --no-headers \
-            -o custom-columns='S:.status.sync.status,H:.status.health.status' 2>/dev/null \
-          | grep -c 'Synced *Healthy' || true)
+            -o custom-columns='H:.status.health.status' 2>/dev/null | grep -c 'Healthy' || true)
   if [ "$total" -gt 0 ] && [ "$total" = "$sanas" ]; then
-    marca "las $total aplicaciones estan Synced y Healthy"
+    marca "las $total aplicaciones estan Healthy"
     break
   fi
   [ "$(date +%s)" -gt "$fin" ] && { marca "tiempo agotado con $sanas de $total aplicaciones sanas"; break; }
   sleep 20
 done
+
+sincronizadas=$(kubectl get applications -n argocd --no-headers \
+                  -o custom-columns='S:.status.sync.status' 2>/dev/null | grep -c 'Synced' || true)
+marca "$sincronizadas de $total aplicaciones estan sincronizadas con el repositorio"
+
+marca "se espera a que el gateway reciba direccion publica"
+espera=$(( $(date +%s) + 300 ))
+until IP=$(kubectl -n sa-p8 get svc gateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null); [ -n "$IP" ]; do
+  [ "$(date +%s)" -gt "$espera" ] && break
+  sleep 10
+done
+if [ -n "${IP:-}" ]; then
+  marca "gateway disponible en $IP"
+  codigo=$(curl -s -o /dev/null -w '%{http_code}' -m 10 "http://$IP:8000/transactions/batches" || echo 000)
+  marca "la plataforma responde a una peticion de negocio con codigo $codigo"
+fi
 
 marca "fin del bootstrap"
 echo

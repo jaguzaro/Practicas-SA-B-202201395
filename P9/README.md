@@ -7,8 +7,8 @@ La plataforma que se entrego en la practica anterior se desplegaba de forma cont
 ## Tabla de enlaces
 
 | Item | Enlace o dato |
-|---|---|
-| Repositorio GitOps | https://github.com/jaguzaro/Practicas-SA-B-202201395-gitops |
+| --- | --- |
+| Repositorio GitOps | <https://github.com/jaguzaro/Practicas-SA-B-202201395-gitops> |
 | Aplicacion raiz en ArgoCD | plataforma, en el namespace argocd |
 | Punto de entrada del bootstrap | P9/bootstrap.sh |
 | Backend remoto de Terraform | Cloud Storage de Google, bucket softwareavanz-terraform-estado con prefijo practica9, versionado y con bloqueo nativo |
@@ -17,7 +17,7 @@ La plataforma que se entrego en la practica anterior se desplegaba de forma cont
 | Restauracion de datos | P9/evidencias/restauracion-de-datos.txt |
 | Prueba de perdida de nodo | P9/evidencias/perdida-de-nodo.txt |
 | RTO y RPO declarados | Declarados 45 minutos de RTO y 6 horas de RPO en evidencias/objetivos-declarados.txt, medidos 1 hora 42 minutos y 5 minutos de escrituras perdidas en evidencias/desastre-total.txt |
-| Video demostrativo | PENDIENTE_VIDEO |
+| Video demostrativo | <https://drive.google.com/drive/folders/1Hjqo2IHasX-f175W1FRpp_1Syr6e57XX?usp=sharing> |
 
 ## Diagrama del bootstrap
 

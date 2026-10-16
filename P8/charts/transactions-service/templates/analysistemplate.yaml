@@ -42,6 +42,7 @@ spec:
               ),
               0.001
             )
+            or on() vector(0)
 
     - name: latencia-p95
       initialDelay: {{ .Values.analisis.esperaInicial }}
@@ -62,3 +63,4 @@ spec:
                 }[{{ .Values.analisis.ventana }}])
               )
             )
+            or on() vector(0)

@@ -28,5 +28,8 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.1.2",
     "typescript": "^7.0.2"
+  },
+  "overrides": {
+    "proxy-addr": "2.0.8"
   }
 }

@@ -1,3 +1,4 @@
+import { cabecerasDeContexto } from "../telemetria/http.js";
 import type { AuthorizationClient, AuthorizationDecision } from "./authorization-client.js";
 import { withRetry } from "./retry.js";
 
@@ -15,7 +16,7 @@ export class HttpAuthorizationClient implements AuthorizationClient {
       async () => {
         const response = await fetch(`${this.baseUrl}/authorize`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...cabecerasDeContexto() },
           body: JSON.stringify({ token, route }),
           signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
         });

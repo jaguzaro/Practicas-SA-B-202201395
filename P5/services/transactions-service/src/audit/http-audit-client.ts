@@ -1,3 +1,4 @@
+import { cabecerasDeContexto } from "../telemetria/http.js";
 import type { AuditClient, AuditEvent } from "./audit-client.js";
 
 const REQUEST_TIMEOUT_MS = 2000;
@@ -12,7 +13,7 @@ export class HttpAuditClient implements AuditClient {
     try {
       await fetch(`${this.baseUrl}/audit/events`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...cabecerasDeContexto() },
         body: JSON.stringify({
           correlation_id: event.correlationId,
           service: this.serviceName,

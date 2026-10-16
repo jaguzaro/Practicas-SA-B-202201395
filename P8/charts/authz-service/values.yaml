@@ -16,6 +16,22 @@ secret:
 
 config: {}
 
+telemetria:
+  destinoTrazas: http://otel-collector.observabilidad:4318
+  puertoMetricas: 9464
+  podMonitor: true
+
+analisis:
+  prometheus: http://prometheus-kube-prometheus-prometheus.observabilidad:9090
+  esperaInicial: 60s
+  intervalo: 30s
+  mediciones: 3
+  fallosTolerados: 0
+  ventana: 2m
+  umbrales:
+    tasaErrorMax: "0.02"
+    p95Segundos: "0.5"
+
 rollout:
   revisionHistoryLimit: 3
   progressDeadlineSeconds: 600
@@ -25,35 +41,6 @@ rollout:
     - 80
   esperaAntesDeAnalisis: 15s
 
-analysis:
-  image: grafana/k6:0.54.0
-  vus: 5
-  duracion: 20s
-  ttlSecondsAfterFinished: 900
-  umbrales:
-    tasaErrorMax: "0.01"
-    p95Ms: 500
-  rutas:
-    - method: GET
-      path: /health
-      status: 200
-    - method: POST
-      path: /authorize
-      status: 400
-      body: {}
-    - method: POST
-      path: /authorize
-      status: 200
-      body:
-        token: invalido
-        route: transactions
-  resources:
-    requests:
-      cpu: 50m
-      memory: 64Mi
-    limits:
-      cpu: 300m
-      memory: 256Mi
 
 autoscaling:
   enabled: true

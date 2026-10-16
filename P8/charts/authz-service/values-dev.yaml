@@ -11,9 +11,11 @@ podDisruptionBudget:
 rollout:
   esperaAntesDeAnalisis: 5s
 
-analysis:
-  vus: 2
-  duracion: 10s
+analisis:
+  esperaInicial: 30s
+  intervalo: 20s
+  mediciones: 2
+  ventana: 1m
 
 resources:
   requests:

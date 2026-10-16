@@ -1,4 +1,6 @@
 import express from "express";
+import { instrumentarHttp } from "./telemetria/http.js";
+import { crearRegistrador } from "./telemetria/registro.js";
 import { env } from "./config/env.js";
 import { pool } from "./db/pool.js";
 import { JwtTokenVerifier } from "./auth/jwt-token-verifier.js";
@@ -13,8 +15,11 @@ import { HttpAuditClient } from "./audit/http-audit-client.js";
 import { BrokerAuditClient } from "./audit/broker-audit-client.js";
 import { AccountFormatRule, AmountLimitRule, DistinctAccountsRule, PositiveAmountRule } from "./validation/rules.js";
 
+const registrador = crearRegistrador("transactions-service");
+
 export function createApp() {
   const app = express();
+  app.use(instrumentarHttp("transactions-service", registrador));
   app.use(express.json());
 
   const validator = new TransactionValidator([

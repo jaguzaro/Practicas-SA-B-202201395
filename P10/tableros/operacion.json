@@ -1,0 +1,195 @@
+{
+  "title": "Operacion de la plataforma",
+  "uid": "operacion-sa-p8",
+  "timezone": "browser",
+  "refresh": "30s",
+  "time": { "from": "now-1h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "servicio",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "query": "label_values(http_server_requests_total{namespace=\"sa-p8\"}, servicio)",
+        "includeAll": true,
+        "multi": true,
+        "current": { "text": "All", "value": "$__all" }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "row",
+      "title": "Cumplimiento de los objetivos de servicio",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 }
+    },
+    {
+      "type": "stat",
+      "title": "Presupuesto de disponibilidad consumido",
+      "description": "Proporcion del presupuesto mensual de error ya gastada. Por encima de uno el objetivo esta incumplido.",
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{ "expr": "slo:disponibilidad:presupuesto_consumido", "refId": "A" }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "orange", "value": 0.5 },
+            { "color": "red", "value": 1 }
+          ] }
+        }
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Presupuesto de latencia consumido",
+      "description": "Lo mismo para el objetivo de latencia del registro de lotes.",
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{ "expr": "slo:latencia:presupuesto_consumido", "refId": "A" }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "orange", "value": 0.5 },
+            { "color": "red", "value": 1 }
+          ] }
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Velocidad de consumo del presupuesto",
+      "description": "Cuantas veces mas rapido de lo sostenible se consume el presupuesto. Por encima de catorce la alerta critica dispara.",
+      "gridPos": { "h": 5, "w": 12, "x": 12, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "expr": "slo:disponibilidad:quema1h", "legendFormat": "disponibilidad 1h", "refId": "A" },
+        { "expr": "slo:latencia:quema1h", "legendFormat": "latencia 1h", "refId": "B" }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "Latencia",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 6 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Percentil 95 por servicio",
+      "description": "Responde a que tan lento se siente el sistema para los usuarios mas desafortunados.",
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 7 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{
+        "expr": "histogram_quantile(0.95, sum by (servicio, le) (rate(http_server_duration_seconds_bucket{namespace=\"sa-p8\", servicio=~\"$servicio\"}[5m])))",
+        "legendFormat": "{{servicio}}",
+        "refId": "A"
+      }],
+      "fieldConfig": { "defaults": { "unit": "s" } }
+    },
+    {
+      "type": "timeseries",
+      "title": "Percentil 95 por version desplegada",
+      "description": "Responde a si la version candidata de un canary es mas lenta que la estable.",
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 7 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{
+        "expr": "histogram_quantile(0.95, sum by (version_pod, le) (rate(http_server_duration_seconds_bucket{namespace=\"sa-p8\", servicio=~\"$servicio\"}[2m])))",
+        "legendFormat": "{{version_pod}}",
+        "refId": "A"
+      }],
+      "fieldConfig": { "defaults": { "unit": "s" } }
+    },
+    {
+      "type": "row",
+      "title": "Trafico",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Peticiones por segundo por servicio",
+      "description": "Responde a cuanta carga esta recibiendo cada servicio ahora mismo.",
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 15 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{
+        "expr": "sum by (servicio) (rate(http_server_requests_total{namespace=\"sa-p8\", servicio=~\"$servicio\"}[5m]))",
+        "legendFormat": "{{servicio}}",
+        "refId": "A"
+      }],
+      "fieldConfig": { "defaults": { "unit": "reqps" } }
+    },
+    {
+      "type": "timeseries",
+      "title": "Actividad de negocio",
+      "description": "Responde a si el sistema esta haciendo el trabajo para el que existe, en terminos que entiende alguien que no es ingeniero.",
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 15 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "expr": "sum(rate(lotes_creados_total{namespace=\"sa-p8\"}[5m])) * 60", "legendFormat": "lotes por minuto", "refId": "A" },
+        { "expr": "sum(rate(sesiones_iniciadas_total{namespace=\"sa-p8\", resultado=\"exitosa\"}[5m])) * 60", "legendFormat": "sesiones por minuto", "refId": "B" },
+        { "expr": "sum(rate(transacciones_rechazadas_total{namespace=\"sa-p8\"}[5m])) * 60", "legendFormat": "transacciones rechazadas por minuto", "refId": "C" }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "Errores",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 22 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Proporcion de error por servicio",
+      "description": "Responde a que servicio esta fallando, que es la primera pregunta ante una alerta de disponibilidad.",
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 23 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{
+        "expr": "sum by (servicio) (rate(http_server_requests_total{namespace=\"sa-p8\", servicio=~\"$servicio\", familia=\"5xx\"}[5m])) / clamp_min(sum by (servicio) (rate(http_server_requests_total{namespace=\"sa-p8\", servicio=~\"$servicio\"}[5m])), 0.001)",
+        "legendFormat": "{{servicio}}",
+        "refId": "A"
+      }],
+      "fieldConfig": { "defaults": { "unit": "percentunit" } }
+    },
+    {
+      "type": "timeseries",
+      "title": "Errores por ruta",
+      "description": "Responde a que operacion concreta esta fallando, para saltar de ahi a la traza.",
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 23 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{
+        "expr": "sum by (servicio, ruta, codigo) (rate(http_server_requests_total{namespace=\"sa-p8\", servicio=~\"$servicio\", familia=\"5xx\"}[5m]))",
+        "legendFormat": "{{servicio}} {{ruta}} {{codigo}}",
+        "refId": "A"
+      }]
+    },
+    {
+      "type": "row",
+      "title": "Saturacion",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 30 }
+    },
+    {
+      "type": "timeseries",
+      "title": "CPU consumida frente a lo reservado",
+      "description": "Responde a si la lentitud se explica por falta de recursos antes de buscar la causa en el codigo.",
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 31 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{
+        "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"sa-p8\", container!=\"\"}[5m])) / clamp_min(sum by (pod) (kube_pod_container_resource_requests{namespace=\"sa-p8\", resource=\"cpu\"}), 0.001)",
+        "legendFormat": "{{pod}}",
+        "refId": "A"
+      }],
+      "fieldConfig": { "defaults": { "unit": "percentunit" } }
+    },
+    {
+      "type": "timeseries",
+      "title": "Reinicios de contenedor",
+      "description": "Responde a si algun servicio esta cayendo y volviendo a arrancar, que no se ve en la latencia.",
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 31 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{
+        "expr": "sum by (pod) (increase(kube_pod_container_status_restarts_total{namespace=\"sa-p8\"}[15m]))",
+        "legendFormat": "{{pod}}",
+        "refId": "A"
+      }]
+    }
+  ]
+}

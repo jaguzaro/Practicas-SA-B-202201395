@@ -29,6 +29,10 @@ spec:
         - analysis:
             templates:
               - templateName: {{ $.Chart.Name }}-canary
+            args:
+              - name: version-pod
+                valueFrom:
+                  podTemplateHashValue: Latest
         {{- end }}
   template:
     metadata:
@@ -69,6 +73,25 @@ spec:
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
+            - name: metricas
+              containerPort: {{ .Values.telemetria.puertoMetricas }}
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: SERVICE_VERSION
+              value: {{ .Values.image.tag | quote }}
+            - name: OTEL_SERVICE_NAME
+              value: {{ .Chart.Name | quote }}
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: {{ .Values.telemetria.destinoTrazas | quote }}
+            - name: METRICS_PORT
+              value: {{ .Values.telemetria.puertoMetricas | quote }}
           envFrom:
             - configMapRef:
                 name: {{ .Chart.Name }}-config

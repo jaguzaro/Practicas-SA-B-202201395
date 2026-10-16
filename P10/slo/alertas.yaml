@@ -1,0 +1,53 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: alertas-presupuesto
+  namespace: observabilidad
+  labels:
+    release: prometheus
+spec:
+  groups:
+    - name: presupuesto.disponibilidad
+      interval: 30s
+      rules:
+        - alert: PresupuestoDisponibilidadQuemaRapida
+          expr: slo:disponibilidad:quema1h > 14.4 and slo:disponibilidad:quema6h > 6
+          for: 2m
+          labels:
+            severidad: critica
+            slo: disponibilidad
+          annotations:
+            resumen: La plataforma consume su presupuesto de error de disponibilidad a ritmo critico
+            descripcion: >-
+              Al ritmo de la ultima hora el presupuesto mensual de disponibilidad se agotaria en dos dias.
+              Confirmado tambien en la ventana de seis horas, de modo que no es un pico aislado.
+            runbook: P10/runbooks/disponibilidad.md
+
+        - alert: PresupuestoDisponibilidadQuemaLenta
+          expr: slo:disponibilidad:quema6h > 3 and slo:disponibilidad:presupuesto_consumido > 0.5
+          for: 15m
+          labels:
+            severidad: aviso
+            slo: disponibilidad
+          annotations:
+            resumen: La plataforma consume su presupuesto de disponibilidad mas rapido de lo sostenible
+            descripcion: >-
+              El ritmo de las ultimas seis horas agota el presupuesto antes de que termine la ventana,
+              y mas de la mitad del presupuesto mensual ya esta consumido.
+            runbook: P10/runbooks/disponibilidad.md
+
+    - name: presupuesto.latencia
+      interval: 30s
+      rules:
+        - alert: PresupuestoLatenciaQuemaRapida
+          expr: slo:latencia:quema1h > 14.4 and slo:latencia:quema6h > 6
+          for: 2m
+          labels:
+            severidad: critica
+            slo: latencia
+          annotations:
+            resumen: El registro de lotes responde por encima del umbral comprometido
+            descripcion: >-
+              La proporcion de peticiones a transactions-service atendidas bajo medio segundo cayo
+              lo suficiente para agotar el presupuesto mensual en dos dias.
+            runbook: P10/runbooks/latencia.md

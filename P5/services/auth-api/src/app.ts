@@ -1,4 +1,6 @@
 import express from "express";
+import { instrumentarHttp } from "./telemetria/http.js";
+import { crearRegistrador } from "./telemetria/registro.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { env } from "./config/env.js";
@@ -10,8 +12,11 @@ import { JwtTokenService } from "./auth/jwt-token.service.js";
 import { createUserRouter } from "./users/user.controller.js";
 import { errorHandler } from "./middleware/error-handler.js";
 
+const registrador = crearRegistrador("auth-api");
+
 export function createApp() {
   const app = express();
+  app.use(instrumentarHttp("auth-api", registrador));
   app.use(cors({ origin: env.frontendOrigin, credentials: true }));
   app.use(express.json());
   app.use(cookieParser());

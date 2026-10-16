@@ -6,7 +6,7 @@ COPY tsconfig.json ./
 COPY src ./src
 RUN npm run build
 
-FROM node:18-alpine
+FROM node:22-alpine
 WORKDIR /app
 ENV NODE_ENV=production
 COPY package*.json ./
@@ -14,4 +14,5 @@ RUN npm install --omit=dev && npm cache clean --force \
     && rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 COPY --from=build /app/dist ./dist
 EXPOSE 4001
-CMD ["node", "dist/server.js"]
+EXPOSE 9464
+CMD ["node", "--import", "./dist/telemetria/arranque.js", "dist/server.js"]

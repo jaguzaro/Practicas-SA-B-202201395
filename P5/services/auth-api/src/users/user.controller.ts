@@ -3,6 +3,9 @@ import type { UserService } from "./user.service.js";
 import type { TokenService } from "../auth/token.service.js";
 import { ROLES, type Role } from "./user.types.js";
 import { AppError } from "../errors/app-error.js";
+import { crearSenalesDeNegocio } from "../telemetria/negocio.js";
+
+const senales = crearSenalesDeNegocio("auth-api");
 import { clearAuthCookie, setAuthCookie } from "../auth/cookie.js";
 import { requireAuth, type AuthenticatedRequest } from "../middleware/require-auth.js";
 
@@ -22,6 +25,7 @@ export function createUserRouter(userService: UserService, tokenService: TokenSe
       }
 
       const user = await userService.register({ nombre, correo, password, rol });
+      senales.usuariosRegistrados.add(1, { rol: user.rol });
       res.status(201).json(user);
     } catch (error) {
       next(error);
@@ -39,8 +43,10 @@ export function createUserRouter(userService: UserService, tokenService: TokenSe
       const user = await userService.login({ correo, password });
       const token = tokenService.sign({ sub: String(user.id), role: user.rol });
       setAuthCookie(res, token);
+      senales.sesionesIniciadas.add(1, { resultado: "exitosa", rol: user.rol });
       res.status(200).json({ ...user, token });
     } catch (error) {
+      senales.sesionesIniciadas.add(1, { resultado: "fallida", rol: "desconocido" });
       next(error);
     }
   });

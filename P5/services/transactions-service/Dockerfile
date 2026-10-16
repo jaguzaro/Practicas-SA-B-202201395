@@ -15,4 +15,5 @@ RUN npm install --omit=dev && npm cache clean --force \
 COPY --from=build /app/dist ./dist
 COPY src/db/schema.sql ./dist/db/schema.sql
 EXPOSE 4002
-CMD ["node", "dist/server.js"]
+EXPOSE 9464
+CMD ["node", "--import", "./dist/telemetria/arranque.js", "dist/server.js"]

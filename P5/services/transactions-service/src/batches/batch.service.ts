@@ -2,6 +2,7 @@ import type { BatchRepository } from "./batch.repository.js";
 import type { Batch, BatchDetail, CreateBatchInput } from "./batch.types.js";
 import type { TransactionValidator } from "../validation/transaction-validator.js";
 import type { AuditClient } from "../audit/audit-client.js";
+import { crearSenalesDeNegocio } from "../telemetria/negocio.js";
 import { AppError } from "../errors/app-error.js";
 
 interface PostgresUniqueViolation {
@@ -11,6 +12,8 @@ interface PostgresUniqueViolation {
 function isUniqueViolation(error: unknown): error is PostgresUniqueViolation {
   return typeof error === "object" && error !== null && (error as PostgresUniqueViolation).code === "23505";
 }
+
+const senales = crearSenalesDeNegocio("transactions-service");
 
 export class BatchService {
   constructor(
@@ -42,6 +45,12 @@ export class BatchService {
         batchId: batch.id,
         detail: `${batch.validTransactions} de ${batch.totalTransactions} transacciones validas`,
       });
+
+      senales.lotesCreados.add(1, { estado: batch.status });
+      senales.montoProcesado.add(totalAmount, { estado: batch.status });
+      for (const rechazada of transactions.filter((transaction) => transaction.status === "invalid")) {
+        senales.transaccionesRechazadas.add(1, { motivo: rechazada.reason ?? "desconocido" });
+      }
 
       return batch;
     } catch (error) {

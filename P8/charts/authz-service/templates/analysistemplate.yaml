@@ -6,64 +6,59 @@ metadata:
     app: {{ .Chart.Name }}
     {{- include "servicio.labels" . | nindent 4 }}
 spec:
+  args:
+    - name: servicio
+      value: {{ .Chart.Name | quote }}
+    - name: namespace
+      value: {{ .Release.Namespace | quote }}
+    - name: version-pod
   metrics:
-    - name: prueba-de-humo
-      count: 1
-      failureLimit: 0
+    - name: tasa-de-error
+      initialDelay: {{ .Values.analisis.esperaInicial }}
+      interval: {{ .Values.analisis.intervalo }}
+      count: {{ .Values.analisis.mediciones }}
+      failureLimit: {{ .Values.analisis.fallosTolerados }}
+      successCondition: result[0] <= {{ .Values.analisis.umbrales.tasaErrorMax }}
       provider:
-        job:
-          metadata:
-            labels:
-              app: {{ .Chart.Name }}-analisis
-          spec:
-            backoffLimit: 0
-            ttlSecondsAfterFinished: {{ .Values.analysis.ttlSecondsAfterFinished }}
-            template:
-              metadata:
-                labels:
-                  app: {{ .Chart.Name }}-analisis
-              spec:
-                restartPolicy: Never
-                automountServiceAccountToken: false
-                securityContext:
-                  runAsNonRoot: true
-                  runAsUser: 12345
-                  seccompProfile:
-                    type: RuntimeDefault
-                containers:
-                  - name: k6
-                    image: {{ .Values.analysis.image | quote }}
-                    args: ["run", "/scripts/humo.js"]
-                    env:
-                      - name: BASE_URL
-                        value: {{ printf "http://%s-canary:%v" .Chart.Name .Values.service.port | quote }}
-                      - name: RUTAS
-                        value: {{ .Values.analysis.rutas | toJson | quote }}
-                      - name: VUS
-                        value: {{ .Values.analysis.vus | quote }}
-                      - name: DURACION
-                        value: {{ .Values.analysis.duracion | quote }}
-                      - name: TASA_ERROR_MAX
-                        value: {{ .Values.analysis.umbrales.tasaErrorMax | quote }}
-                      - name: P95_MS
-                        value: {{ .Values.analysis.umbrales.p95Ms | quote }}
-                    securityContext:
-                      readOnlyRootFilesystem: true
-                      allowPrivilegeEscalation: false
-                      capabilities:
-                        drop:
-                          - ALL
-                    resources:
-                      {{- toYaml .Values.analysis.resources | nindent 22 }}
-                    volumeMounts:
-                      - name: scripts
-                        mountPath: /scripts
-                        readOnly: true
-                      - name: tmp
-                        mountPath: /tmp
-                volumes:
-                  - name: scripts
-                    configMap:
-                      name: {{ .Chart.Name }}-analisis
-                  - name: tmp
-                    emptyDir: {}
+        prometheus:
+          address: {{ .Values.analisis.prometheus }}
+          query: |
+            sum(
+              rate(http_server_requests_total{
+                namespace="{{ "{{args.namespace}}" }}",
+                servicio="{{ "{{args.servicio}}" }}",
+                version_pod="{{ "{{args.version-pod}}" }}",
+                familia="5xx"
+              }[{{ .Values.analisis.ventana }}])
+            )
+            /
+            clamp_min(
+              sum(
+                rate(http_server_requests_total{
+                  namespace="{{ "{{args.namespace}}" }}",
+                  servicio="{{ "{{args.servicio}}" }}",
+                  version_pod="{{ "{{args.version-pod}}" }}"
+                }[{{ .Values.analisis.ventana }}])
+              ),
+              0.001
+            )
+
+    - name: latencia-p95
+      initialDelay: {{ .Values.analisis.esperaInicial }}
+      interval: {{ .Values.analisis.intervalo }}
+      count: {{ .Values.analisis.mediciones }}
+      failureLimit: {{ .Values.analisis.fallosTolerados }}
+      successCondition: result[0] <= {{ .Values.analisis.umbrales.p95Segundos }}
+      provider:
+        prometheus:
+          address: {{ .Values.analisis.prometheus }}
+          query: |
+            histogram_quantile(0.95,
+              sum by (le) (
+                rate(http_server_duration_seconds_bucket{
+                  namespace="{{ "{{args.namespace}}" }}",
+                  servicio="{{ "{{args.servicio}}" }}",
+                  version_pod="{{ "{{args.version-pod}}" }}"
+                }[{{ .Values.analisis.ventana }}])
+              )
+            )

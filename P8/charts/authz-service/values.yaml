@@ -23,11 +23,11 @@ telemetria:
 
 analisis:
   prometheus: http://prometheus-kube-prometheus-prometheus.observabilidad:9090
-  esperaInicial: 120s
-  intervalo: 30s
-  mediciones: 4
+  esperaInicial: 45s
+  intervalo: 20s
+  mediciones: 2
   fallosTolerados: 0
-  ventana: 2m
+  ventana: 90s
   umbrales:
     tasaErrorMax: "0.02"
     p95Segundos: "0.5"

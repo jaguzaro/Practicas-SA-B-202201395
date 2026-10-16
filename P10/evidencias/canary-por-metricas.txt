@@ -1,0 +1,55 @@
+Canary gobernado por metricas
+
+El analisis consulta Prometheus en lugar de ejecutar un trabajo de pruebas
+http://prometheus-kube-prometheus-prometheus.observabilidad:9090 http://prometheus-kube-prometheus-prometheus.observabilidad:9090
+
+Consultas que deciden la promocion
+
+== tasa-de-error  condicion de exito: result[0] <= 0.02
+sum(
+  rate(http_server_requests_total{
+    namespace="{{args.namespace}}",
+    servicio="{{args.servicio}}",
+    version_pod="{{args.version-pod}}",
+    familia="5xx"
+  }[2m])
+)
+/
+clamp_min(
+  sum(
+    rate(http_server_requests_total{
+      namespace="{{args.namespace}}",
+      servicio="{{args.servicio}}",
+      version_pod="{{args.version-pod}}"
+    }[2m])
+  ),
+  0.001
+)
+or on() vector(0)
+
+== latencia-p95  condicion de exito: result[0] <= 0.5
+histogram_quantile(0.95,
+  sum by (le) (
+    rate(http_server_duration_seconds_bucket{
+      namespace="{{args.namespace}}",
+      servicio="{{args.servicio}}",
+      version_pod="{{args.version-pod}}"
+    }[2m])
+  )
+)
+or on() vector(0)
+
+El identificador de la version candidata lo inyecta el propio Rollout
+{"args":[{"name":"version-pod","valueFrom":{"podTemplateHashValue":"Latest"}}],"templates":[{"templateName":"transactions-service-canary"}]}
+
+Resultado de los analisis durante la promocion de v1.3.2
+authz-service-6df4b6ccdd-3-2            Error
+authz-service-6df4b6ccdd-3-2.1          Successful
+authz-service-6df4b6ccdd-3-5            Successful
+authz-service-6df4b6ccdd-3-8            Successful
+authz-service-74b74b559c-2-2            Error
+transactions-service-5b55d99b65-2-2     Error
+transactions-service-6cfdf8b444-3-2     Error
+transactions-service-6cfdf8b444-3-2.1   Successful
+transactions-service-6cfdf8b444-3-5     Successful
+transactions-service-6cfdf8b444-3-8     Successful

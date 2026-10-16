@@ -1,6 +1,7 @@
 fastapi==0.118.0
 uvicorn[standard]==0.37.0
 strawberry-graphql[fastapi]==0.283.1
+graphql-core==3.2.12
 psycopg[binary,pool]==3.2.10
 pyjwt==2.14.0
 httpx==0.28.1

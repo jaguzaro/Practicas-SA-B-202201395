@@ -103,7 +103,18 @@ export class PostgresBatchRepository implements BatchRepository {
        FROM batches
        ORDER BY id DESC`,
     );
-    return result.rows.map(toBatch);
+
+    const lotes: Batch[] = [];
+    for (const row of result.rows) {
+      const detalle = await this.pool.query<TransactionRow>(
+        `SELECT source_account, target_account, beneficiary, amount, status, reason
+         FROM batch_transactions
+         WHERE batch_id = $1`,
+        [row.id],
+      );
+      lotes.push({ ...toBatch(row), validTransactions: detalle.rows.filter((t) => t.status === "valid").length });
+    }
+    return lotes;
   }
 
   async findById(id: number): Promise<BatchDetail | null> {

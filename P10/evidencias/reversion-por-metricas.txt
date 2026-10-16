@@ -1,0 +1,13 @@
+Reversion del canary provocada por metricas reales
+
+Fallo inducido: el listado de lotes consulta el detalle de cada lote por separado, una consulta por fila sobre 2265 lotes.
+La ruta sigue respondiendo 200, de modo que una prueba sintetica de codigos HTTP la habria dado por buena.
+
+2026-10-16T04:44:56Z  latencia observada antes de desplegar, percentil 95 del listado
+             /health 5 ms
+             /transactions/batches 4298 ms
+rollout 'transactions-service' undo
+2026-10-16T04:44:57Z  se revierte a la version anterior para que ArgoCD vuelva a aplicar la candidata
+2026-10-16T04:45:07Z  ArgoCD reaplica v1.4.0 y Rollouts inicia el canary
+2026-10-16T04:45:08Z  fase: Healthy
+

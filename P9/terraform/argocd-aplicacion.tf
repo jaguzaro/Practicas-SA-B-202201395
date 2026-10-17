@@ -29,6 +29,13 @@ resource "helm_release" "aplicacion_raiz" {
             selfHeal = true
           }
         }
+        ignoreDifferences = [
+          {
+            group        = "argoproj.io"
+            kind         = "Application"
+            jsonPointers = ["/metadata/finalizers"]
+          }
+        ]
       }
     }
   })]

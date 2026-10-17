@@ -41,15 +41,10 @@ spec:
     spec:
       serviceAccountName: {{ .Chart.Name }}
       automountServiceAccountToken: false
+      {{- with .Values.affinity }}
       affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                topologyKey: kubernetes.io/hostname
-                labelSelector:
-                  matchLabels:
-                    app: {{ .Chart.Name }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       securityContext:
         runAsNonRoot: true
         runAsUser: {{ .Values.securityContext.runAsUser }}

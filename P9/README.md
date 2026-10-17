@@ -120,7 +120,16 @@ El procedimiento completo esta en runbook.md, escrito para que lo ejecute alguie
 
 ## Video
 
-PENDIENTE_VIDEO
+https://drive.google.com/drive/folders/1Hjqo2IHasX-f175W1FRpp_1Syr6e57XX?usp=sharing
+
+0:00 Presentacion y los tres puntos unicos de fallo
+0:45 Bootstrap de dia cero, el punto de entrada unico y el alcance de Terraform
+2:00 Estado remoto en Cloud Storage y la prueba del bloqueo
+3:00 Calendarios de Velero, respaldos y bucket externo al cluster
+4:45 Llave de los secretos fuera del cluster y su adopcion durante el arranque
+6:00 Prueba de perdida de nodo y el procedimiento que la corrigio
+6:45 Datos verificables y restauracion
+7:00 Desastre total, tiempos medidos y brecha frente al objetivo
 
 ## Preguntas teoricas
 

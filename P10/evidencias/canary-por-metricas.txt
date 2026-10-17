@@ -1,18 +1,20 @@
 Canary gobernado por metricas
 
-El analisis consulta Prometheus en lugar de ejecutar un trabajo de pruebas
-http://prometheus-kube-prometheus-prometheus.observabilidad:9090 http://prometheus-kube-prometheus-prometheus.observabilidad:9090
+El AnalysisTemplate consulta Prometheus y ya no ejecuta un trabajo de pruebas sinteticas.
+
+Direccion consultada
+http://prometheus-kube-prometheus-prometheus.observabilidad:9090
 
 Consultas que deciden la promocion
 
-== tasa-de-error  condicion de exito: result[0] <= 0.02
+--- tasa-de-error   condicion de exito: result[0] <= 0.02
 sum(
   rate(http_server_requests_total{
     namespace="{{args.namespace}}",
     servicio="{{args.servicio}}",
     version_pod="{{args.version-pod}}",
     familia="5xx"
-  }[2m])
+  }[90s])
 )
 /
 clamp_min(
@@ -21,35 +23,51 @@ clamp_min(
       namespace="{{args.namespace}}",
       servicio="{{args.servicio}}",
       version_pod="{{args.version-pod}}"
-    }[2m])
+    }[90s])
   ),
   0.001
 )
 or on() vector(0)
 
-== latencia-p95  condicion de exito: result[0] <= 0.5
+--- latencia-p95   condicion de exito: result[0] <= 0.5
 histogram_quantile(0.95,
   sum by (le) (
     rate(http_server_duration_seconds_bucket{
       namespace="{{args.namespace}}",
       servicio="{{args.servicio}}",
       version_pod="{{args.version-pod}}"
-    }[2m])
+    }[90s])
   )
 )
 or on() vector(0)
 
-El identificador de la version candidata lo inyecta el propio Rollout
+--- El Rollout inyecta el identificador de la version candidata
 {"args":[{"name":"version-pod","valueFrom":{"podTemplateHashValue":"Latest"}}],"templates":[{"templateName":"transactions-service-canary"}]}
 
-Resultado de los analisis durante la promocion de v1.3.2
-authz-service-6df4b6ccdd-3-2            Error
-authz-service-6df4b6ccdd-3-2.1          Successful
-authz-service-6df4b6ccdd-3-5            Successful
-authz-service-6df4b6ccdd-3-8            Successful
-authz-service-74b74b559c-2-2            Error
-transactions-service-5b55d99b65-2-2     Error
-transactions-service-6cfdf8b444-3-2     Error
-transactions-service-6cfdf8b444-3-2.1   Successful
-transactions-service-6cfdf8b444-3-5     Successful
-transactions-service-6cfdf8b444-3-8     Successful
+--- Analisis ejecutados sobre las promociones de produccion
+          auth-api-6d58bbbf7d-3-2 Error
+          authz-service-6df4b6ccdd-3-2 Error
+          transactions-service-6cfdf8b444-3-2 Error
+          audit-service-c4876bb5f-4-5 Successful
+          authz-service-fbc767957-5-5 Successful
+          auth-api-754877844c-5-5 Successful
+          audit-service-c4876bb5f-4-8 Successful
+          authz-service-fbc767957-5-8 Successful
+          auth-api-754877844c-5-8 Successful
+          audit-service-575d5f5b4c-5-2 Successful
+          auth-api-85d8dcdb46-6-2 Successful
+          audit-service-575d5f5b4c-5-5 Successful
+          auth-api-85d8dcdb46-6-5 Successful
+          audit-service-575d5f5b4c-5-8 Successful
+          authz-service-5898f6c944-6-2 Successful
+          auth-api-85d8dcdb46-6-8 Successful
+          authz-service-5898f6c944-6-5 Successful
+          authz-service-5898f6c944-6-8 Successful
+          transactions-service-595bd5d469-9-5 Successful
+          transactions-service-595bd5d469-9-8 Successful
+          transactions-service-7ff8f869f4-10-2 Successful
+          transactions-service-7ff8f869f4-10-5 Successful
+          transactions-service-7ff8f869f4-10-8 Successful
+          transactions-service-595bd5d469-11-2 Failed
+
+El ultimo de la lista corresponde a la version defectuosa v1.4.0 y es el que aborto el despliegue. El detalle con marcas de tiempo esta en reversion-por-metricas.txt.

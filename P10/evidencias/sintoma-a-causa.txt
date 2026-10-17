@@ -1,0 +1,27 @@
+Recorrido del sintoma a la causa
+
+Punto de partida: la alerta de presupuesto de latencia, sin saber nada mas del sistema.
+
+2026-10-16T16:40:12Z  PASO 1  la alerta dice que objetivo se esta incumpliendo
+          proporcion de peticiones bajo medio segundo: 95.5 por ciento, objetivo 99.0
+2026-10-16T16:40:12Z  PASO 2  que servicio y que ruta. Se desagrega el percentil 95 por ruta
+          transactions-service   /transactions/batches      5000 ms
+          auth-api               /media../.git/config       nan ms
+          auth-api               /health                    5 ms
+          auth-api               /login                     nan ms
+2026-10-16T16:40:13Z            la ruta mas lenta es /transactions/batches en transactions-service
+2026-10-16T16:40:13Z  PASO 3  no es saturacion. Se descarta que la lentitud venga de falta de recursos
+          postgres-0                                     70 por ciento del limite
+          transactions-service-595bd5d469-h8q7z          43 por ciento del limite
+          transactions-service-595bd5d469-26jq2          35 por ciento del limite
+2026-10-16T16:40:13Z  PASO 4  se busca una peticion lenta concreta en el almacen de registros
+          traza b9d82771af59f1938c51f935e6dfdf8b ruta /transactions/batches estado 200 duracion 5652 ms
+2026-10-16T16:40:15Z  PASO 5  se abre esa traza y se mira donde se fue el tiempo
+          authz-service          POST /authorize                1 ms
+          transactions-service   GET /transactions/batches      5652 ms
+
+Conclusion: la lentitud esta en la propia ruta /transactions/batches de transactions-service, no en una dependencia ni en falta de recursos,
+y el tiempo se consume dentro del span del servicio, lo que apunta al acceso a datos de esa operacion.
+
+Identificador de traza que unio las tres senales: b9d82771af59f1938c51f935e6dfdf8b
+Tiempo del recorrido completo, de la alerta a la causa: 5 segundos

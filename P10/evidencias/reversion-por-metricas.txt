@@ -1,13 +1,25 @@
-Reversion del canary provocada por metricas reales
+Reversion automatica del canary provocada por metricas reales
 
-Fallo inducido: el listado de lotes consulta el detalle de cada lote por separado, una consulta por fila sobre 2265 lotes.
-La ruta sigue respondiendo 200, de modo que una prueba sintetica de codigos HTTP la habria dado por buena.
+Fallo inducido, distinto al de la practica anterior. El listado de lotes pasa a consultar el detalle de cada lote por separado, una consulta adicional por fila sobre 2265 lotes almacenados. La ruta sigue respondiendo 200, el codigo compila y las quince pruebas unitarias pasan, de modo que ni el compilador ni las pruebas ni una comprobacion sintetica de codigos HTTP lo detectan.
 
-2026-10-16T04:44:56Z  latencia observada antes de desplegar, percentil 95 del listado
-             /health 5 ms
-             /transactions/batches 4298 ms
-rollout 'transactions-service' undo
-2026-10-16T04:44:57Z  se revierte a la version anterior para que ArgoCD vuelva a aplicar la candidata
-2026-10-16T04:45:07Z  ArgoCD reaplica v1.4.0 y Rollouts inicia el canary
-2026-10-16T04:45:08Z  fase: Healthy
+Estado previo, version sana v1.4.1 promovida y recibiendo trafico
+          percentil 95 de /transactions/batches      250 ms
+          percentil 95 de /health                     10 ms
+          analisis del canary de esa misma version    tasa-de-error 0, latencia-p95 0.009 y 0.008 segundos, Successful
 
+Reversion de la version defectuosa v1.4.0
+
+2026-10-16T18:03:32Z  ArgoCD aplica el commit que fija v1.4.0 y Rollouts inicia la revision 11 al 20 por ciento
+2026-10-16T18:03:54Z  arranca el AnalysisRun transactions-service-595bd5d469-11-2 sobre el Rollout transactions-service
+2026-10-16T18:04:39Z  primera medicion sobre la version candidata
+          tasa-de-error    0        umbral 0.02     Successful
+          latencia-p95     5 s      umbral 0.5 s    Failed
+2026-10-16T18:04:39Z  AnalysisRunFailed, Metric "latencia-p95" assessed Failed due to failed (1) > failureLimit (0)
+2026-10-16T18:04:39Z  RolloutAborted, Rollout aborted update to revision 11
+2026-10-16T18:04:39Z  SwitchService, el selector del servicio canario vuelve de 595bd5d469 a 7ff8f869f4
+
+Resultado. Los cuatro pods que atienden produccion quedan en v1.4.1, el conjunto de replicas estable sigue siendo 7ff8f869f4 y la version defectuosa nunca llego a recibir el cien por cien del trafico.
+
+Tiempo entre la aplicacion del commit defectuoso y la reversion automatica: 67 segundos.
+
+La tasa de error dio cero en la misma medicion que aborto el despliegue. Un analisis que solo vigilara codigos de respuesta habria promovido la version, y es la metrica de latencia medida sobre el identificador del conjunto de replicas de la version candidata la que la detuvo.

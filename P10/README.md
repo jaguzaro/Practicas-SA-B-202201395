@@ -12,13 +12,13 @@ El sistema entregado hasta ahora se construye, despliega, protege y recupera sol
 | Repositorio GitOps | https://github.com/jaguzaro/Practicas-SA-B-202201395-gitops |
 | Servicios instrumentados | auth-api, authz-service y transactions-service, en el namespace sa-p8 |
 | AnalysisTemplate por metricas | transactions-service-canary, definido en P8/charts/transactions-service/templates/analysistemplate.yaml y replicado en los charts de auth-api y authz-service |
-| Consultas del analisis | PENDIENTE_CONSULTAS |
+| Consultas del analisis | tasa-de-error, proporcion de respuestas de familia 5xx sobre el total de peticiones de la version candidata, y latencia-p95, percentil 95 de http_server_duration_seconds_bucket, ambas filtradas por version_pod. Texto completo de las dos consultas en P10/evidencias/canary-por-metricas.txt |
 | SLO declarados | Disponibilidad del 99.5 por ciento y latencia del registro de lotes bajo medio segundo en el 99 por ciento de las peticiones, ambos sobre una ventana de treinta dias |
 | Reglas de alerta | observabilidad/alertas.yaml en el repositorio GitOps, con copia en P10/slo/alertas.yaml |
 | Tablero | P10/tableros/operacion.json |
-| Reversion por metricas | PENDIENTE_REVERSION |
-| Recorrido sintoma a causa | PENDIENTE_RECORRIDO |
-| Video demostrativo | PENDIENTE_VIDEO |
+| Reversion por metricas | AnalysisRun transactions-service-595bd5d469-11-2 fallido sobre el Rollout transactions-service del namespace sa-p8, detalle en P10/evidencias/reversion-por-metricas.txt |
+| Recorrido sintoma a causa | P10/evidencias/sintoma-a-causa.txt, cinco segundos de la alerta a la causa |
+| Video demostrativo | https://drive.google.com/file/d/1wc79yikD4XOXPOiem3wEF4B0LMKO6Klu/view |
 
 ## Diagrama del flujo de telemetria
 
@@ -104,6 +104,8 @@ El analisis del canary dejo de ejecutar un trabajo de pruebas sinteticas y ahora
 
 La consulta filtra por el identificador del conjunto de replicas de la version candidata, que Argo Rollouts inyecta como argumento al analisis, de modo que lo que se mide es el comportamiento de la version nueva bajo el trafico que le corresponde y no el promedio de todo el servicio. Un umbral de dos por ciento de error y medio segundo de percentil noventa y cinco detienen la promocion, y como el limite de fallos del analisis es cero, una sola medicion fuera de rango aborta el despliegue.
 
+Para que esa medicion exista hace falta que la version candidata reciba peticiones. El Rollout declara un servicio estable y un servicio canario y no hay enrutador de trafico que reparta por peso, de modo que Rollouts mantiene cada servicio apuntando al conjunto de replicas que le corresponde y el gateway, que ademas reutiliza conexiones ya abiertas hacia los pods estables, no alcanza al pod nuevo. El generador de carga que se usa durante el ejercicio llama a los dos servicios por nombre para reproducir lo que haria el reparto por peso. Esta es la limitacion mas seria de la configuracion actual, porque el peso declarado en los pasos del canary describe una intencion y no el trafico que realmente se reparte, y resolverla requiere un enrutador que entienda de pesos.
+
 ## Objetivos de nivel de servicio
 
 El primer objetivo es de disponibilidad. El indicador es la proporcion de peticiones del namespace de produccion que no terminan en un codigo de familia cinco, y el objetivo es el 99.5 por ciento sobre treinta dias. El numero sale de lo que la plataforma puede sostener con la arquitectura que tiene, dos replicas por servicio sobre tres nodos sin replicacion de base de datos, y de que medio por ciento de peticiones fallidas al mes deja margen para un despliegue que salga mal y se revierta sin incumplir el compromiso. Prometer tres nueves con esta arquitectura seria prometer algo que no se puede cumplir.
@@ -126,11 +128,21 @@ El tablero esta organizado por las cuatro senales de oro y cada panel responde u
 
 ## Fallo inducido y recorrido del sintoma a la causa
 
-PENDIENTE_RECORRIDO_DETALLE
+El fallo inducido vive en el listado de lotes del servicio de transacciones. Donde habia una consulta unica que devolvia todos los lotes, el commit introduce una consulta adicional por cada lote del resultado y lo presenta como un enriquecimiento del listado con el detalle de cada lote. Sobre los 2265 lotes almacenados son 2266 lecturas en lugar de una. El codigo compila, las pruebas unitarias del servicio pasan, la ruta responde con codigo 200 y el contenido es correcto, asi que una prueba sintetica de codigos de respuesta lo aprueba sin objetar nada. Lo unico que cambia es el tiempo, y por eso es el tipo de fallo que solo una metrica medida sobre la version candidata bajo trafico puede detener.
+
+El recorrido parte de la alerta de presupuesto de latencia y no de saber que se habia desplegado. La regla de registro del objetivo da el sintoma, el percentil 95 desagregado por ruta ubica el servicio y la ruta, el consumo de CPU descarta la falta de recursos, el almacen de registros entrega una peticion concreta de 5652 milisegundos con su identificador de traza, y la traza muestra que el tiempo se consume dentro del span del propio servicio y no en la llamada a autorizacion, que respondio en un milisegundo. El recorrido completo tomo cinco segundos y quedo registrado con marcas de tiempo en P10/evidencias/sintoma-a-causa.txt. El script que lo reproduce es P10/pruebas/sintoma-a-causa.sh.
 
 ## Video
 
-PENDIENTE_VIDEO
+https://drive.google.com/file/d/1wc79yikD4XOXPOiem3wEF4B0LMKO6Klu/view
+
+0:00 Presentacion de la practica
+0:30 Diagrama del flujo de telemetria, instrumentacion de los servicios, metricas y alertas
+1:45 Tablero de operacion, cumplimiento de los dos objetivos y las cuatro senales de oro
+3:00 AnalysisTemplate, las dos consultas a Prometheus y el filtro por version candidata
+4:30 Rollout abortado por la latencia con la tasa de error en cero
+5:15 Evidencias de la entrega y recorrido del sintoma a la causa
+6:30 Linea de tiempo de la reversion automatica y cierre en el tablero y ArgoCD
 
 ## Preguntas teoricas
 
